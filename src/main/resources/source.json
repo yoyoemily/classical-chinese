@@ -16568,6 +16568,279 @@
               "definition": "来（表目的）",
               "wordBookId": "wb_c_153"
             }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "庆",
+              "role": "plain"
+            },
+            {
+              "charText": "历",
+              "role": "plain"
+            },
+            {
+              "charText": "四",
+              "role": "plain"
+            },
+            {
+              "charText": "年",
+              "role": "plain"
+            },
+            {
+              "charText": "春",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "滕",
+              "role": "plain"
+            },
+            {
+              "charText": "子",
+              "role": "plain"
+            },
+            {
+              "charText": "京",
+              "role": "plain"
+            },
+            {
+              "charText": "谪",
+              "role": "content",
+              "definition": "贬官降职"
+            },
+            {
+              "charText": "守",
+              "role": "content",
+              "definition": "担任太守"
+            },
+            {
+              "charText": "巴",
+              "role": "plain"
+            },
+            {
+              "charText": "陵",
+              "role": "plain"
+            },
+            {
+              "charText": "郡",
+              "role": "content",
+              "definition": "古代行政区划"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            },
+            {
+              "charText": "越",
+              "role": "content",
+              "definition": "到了，经过"
+            },
+            {
+              "charText": "明",
+              "role": "plain"
+            },
+            {
+              "charText": "年",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "政",
+              "role": "content",
+              "definition": "政事"
+            },
+            {
+              "charText": "通",
+              "role": "content",
+              "definition": "顺利"
+            },
+            {
+              "charText": "人",
+              "role": "content",
+              "definition": "百姓"
+            },
+            {
+              "charText": "和",
+              "role": "content",
+              "definition": "和睦安乐"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "百",
+              "role": "plain"
+            },
+            {
+              "charText": "废",
+              "role": "content",
+              "definition": "荒废的事业"
+            },
+            {
+              "charText": "具",
+              "role": "content",
+              "definition": "通\"俱\"，全、都"
+            },
+            {
+              "charText": "兴",
+              "role": "content",
+              "definition": "兴办起来"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "乃",
+              "role": "function",
+              "definition": "于是，就"
+            },
+            {
+              "charText": "重",
+              "role": "content",
+              "definition": "重新"
+            },
+            {
+              "charText": "修",
+              "role": "content",
+              "definition": "修建"
+            },
+            {
+              "charText": "岳",
+              "role": "plain"
+            },
+            {
+              "charText": "阳",
+              "role": "plain"
+            },
+            {
+              "charText": "楼",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "增",
+              "role": "content",
+              "definition": "扩大"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "它的"
+            },
+            {
+              "charText": "旧",
+              "role": "content",
+              "definition": "原来的"
+            },
+            {
+              "charText": "制",
+              "role": "content",
+              "definition": "规模，格局"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "刻",
+              "role": "content",
+              "definition": "镌刻"
+            },
+            {
+              "charText": "唐",
+              "role": "plain"
+            },
+            {
+              "charText": "贤",
+              "role": "content",
+              "definition": "有才德的贤士"
+            },
+            {
+              "charText": "今",
+              "role": "plain"
+            },
+            {
+              "charText": "人",
+              "role": "plain"
+            },
+            {
+              "charText": "诗",
+              "role": "content",
+              "definition": "诗作"
+            },
+            {
+              "charText": "赋",
+              "role": "content",
+              "definition": "一种韵文文体"
+            },
+            {
+              "charText": "于",
+              "role": "function",
+              "definition": "在"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "它的"
+            },
+            {
+              "charText": "上",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "属",
+              "role": "content",
+              "definition": "通\"嘱\"，嘱托"
+            },
+            {
+              "charText": "予",
+              "role": "content",
+              "definition": "我"
+            },
+            {
+              "charText": "作",
+              "role": "content",
+              "definition": "写作"
+            },
+            {
+              "charText": "文",
+              "role": "content",
+              "definition": "文章"
+            },
+            {
+              "charText": "以",
+              "role": "function",
+              "definition": "来（表目的）"
+            },
+            {
+              "charText": "记",
+              "role": "content",
+              "definition": "记述"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "这件事"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            }
           ]
         },
         {
@@ -16592,6 +16865,281 @@
               "definition": "景象，景观",
               "wordBookId": "wb_c_015"
             }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "予",
+              "role": "content",
+              "definition": "我"
+            },
+            {
+              "charText": "观",
+              "role": "content",
+              "definition": "观看"
+            },
+            {
+              "charText": "夫",
+              "role": "function",
+              "definition": "那（指示代词）"
+            },
+            {
+              "charText": "巴",
+              "role": "plain"
+            },
+            {
+              "charText": "陵",
+              "role": "plain"
+            },
+            {
+              "charText": "胜",
+              "role": "content",
+              "definition": "壮美的"
+            },
+            {
+              "charText": "状",
+              "role": "content",
+              "definition": "景色"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "在",
+              "role": "function",
+              "definition": "在于"
+            },
+            {
+              "charText": "洞",
+              "role": "plain"
+            },
+            {
+              "charText": "庭",
+              "role": "plain"
+            },
+            {
+              "charText": "一",
+              "role": "plain"
+            },
+            {
+              "charText": "湖",
+              "role": "content",
+              "definition": "湖泊"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            },
+            {
+              "charText": "衔",
+              "role": "content",
+              "definition": "衔含，连接"
+            },
+            {
+              "charText": "远",
+              "role": "content",
+              "definition": "远方的"
+            },
+            {
+              "charText": "山",
+              "role": "content",
+              "definition": "山峦"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "吞",
+              "role": "content",
+              "definition": "吞纳"
+            },
+            {
+              "charText": "长",
+              "role": "plain"
+            },
+            {
+              "charText": "江",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "浩",
+              "role": "content",
+              "definition": "水势盛大"
+            },
+            {
+              "charText": "浩",
+              "role": "content",
+              "definition": "水势盛大"
+            },
+            {
+              "charText": "汤",
+              "role": "content",
+              "definition": "水势浩大（shāng）"
+            },
+            {
+              "charText": "汤",
+              "role": "content",
+              "definition": "水势浩大（shāng）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "横",
+              "role": "content",
+              "definition": "广阔"
+            },
+            {
+              "charText": "无",
+              "role": "content",
+              "definition": "没有"
+            },
+            {
+              "charText": "际",
+              "role": "content",
+              "definition": "边际"
+            },
+            {
+              "charText": "涯",
+              "role": "content",
+              "definition": "尽头"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "朝",
+              "role": "content",
+              "definition": "早晨"
+            },
+            {
+              "charText": "晖",
+              "role": "content",
+              "definition": "日光"
+            },
+            {
+              "charText": "夕",
+              "role": "content",
+              "definition": "傍晚"
+            },
+            {
+              "charText": "阴",
+              "role": "content",
+              "definition": "阴暗"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "气",
+              "role": "content",
+              "definition": "气象"
+            },
+            {
+              "charText": "象",
+              "role": "content",
+              "definition": "景象"
+            },
+            {
+              "charText": "万",
+              "role": "plain"
+            },
+            {
+              "charText": "千",
+              "role": "plain"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "此",
+              "role": "function",
+              "definition": "这"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "就是"
+            },
+            {
+              "charText": "岳",
+              "role": "plain"
+            },
+            {
+              "charText": "阳",
+              "role": "plain"
+            },
+            {
+              "charText": "楼",
+              "role": "plain"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "大",
+              "role": "content",
+              "definition": "雄伟的"
+            },
+            {
+              "charText": "观",
+              "role": "content",
+              "definition": "景象"
+            },
+            {
+              "charText": "也",
+              "role": "function",
+              "definition": "啊（感叹语气）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "前",
+              "role": "content",
+              "definition": "前代的"
+            },
+            {
+              "charText": "人",
+              "role": "content",
+              "definition": "文人"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "述",
+              "role": "content",
+              "definition": "记述"
+            },
+            {
+              "charText": "备",
+              "role": "content",
+              "definition": "详尽"
+            },
+            {
+              "charText": "矣",
+              "role": "function",
+              "definition": "了（陈述语气）"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            }
           ]
         },
         {
@@ -16602,6 +17150,258 @@
               "word": "薄暮",
               "definition": "傍晚。薄=迫近",
               "wordBookId": "wb_c_003"
+            }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "若",
+              "role": "function",
+              "definition": "像那（发语词）"
+            },
+            {
+              "charText": "夫",
+              "role": "function",
+              "definition": "发语词"
+            },
+            {
+              "charText": "淫",
+              "role": "content",
+              "definition": "连绵不断的"
+            },
+            {
+              "charText": "雨",
+              "role": "content",
+              "definition": "雨水"
+            },
+            {
+              "charText": "霏",
+              "role": "content",
+              "definition": "雨雪繁密"
+            },
+            {
+              "charText": "霏",
+              "role": "content",
+              "definition": "雨雪繁密"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "连",
+              "role": "content",
+              "definition": "连续"
+            },
+            {
+              "charText": "月",
+              "role": "content",
+              "definition": "整月"
+            },
+            {
+              "charText": "不",
+              "role": "function",
+              "definition": "不（否定）"
+            },
+            {
+              "charText": "开",
+              "role": "content",
+              "definition": "放晴"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "阴",
+              "role": "content",
+              "definition": "阴冷的"
+            },
+            {
+              "charText": "风",
+              "role": "content",
+              "definition": "寒风"
+            },
+            {
+              "charText": "怒",
+              "role": "content",
+              "definition": "猛烈地"
+            },
+            {
+              "charText": "号",
+              "role": "content",
+              "definition": "呼啸"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "浊",
+              "role": "content",
+              "definition": "浑浊的"
+            },
+            {
+              "charText": "浪",
+              "role": "content",
+              "definition": "波浪"
+            },
+            {
+              "charText": "排",
+              "role": "content",
+              "definition": "冲向"
+            },
+            {
+              "charText": "空",
+              "role": "content",
+              "definition": "天空"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "日",
+              "role": "content",
+              "definition": "太阳"
+            },
+            {
+              "charText": "星",
+              "role": "content",
+              "definition": "星辰"
+            },
+            {
+              "charText": "隐",
+              "role": "content",
+              "definition": "隐藏"
+            },
+            {
+              "charText": "曜",
+              "role": "content",
+              "definition": "光辉"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "山",
+              "role": "content",
+              "definition": "山峰"
+            },
+            {
+              "charText": "岳",
+              "role": "content",
+              "definition": "高山"
+            },
+            {
+              "charText": "潜",
+              "role": "content",
+              "definition": "隐没"
+            },
+            {
+              "charText": "形",
+              "role": "content",
+              "definition": "形迹"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "商",
+              "role": "content",
+              "definition": "商人"
+            },
+            {
+              "charText": "旅",
+              "role": "content",
+              "definition": "旅客"
+            },
+            {
+              "charText": "不",
+              "role": "function",
+              "definition": "不能（否定）"
+            },
+            {
+              "charText": "行",
+              "role": "content",
+              "definition": "通行"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "樯",
+              "role": "content",
+              "definition": "船桅"
+            },
+            {
+              "charText": "倾",
+              "role": "content",
+              "definition": "倾倒"
+            },
+            {
+              "charText": "楫",
+              "role": "content",
+              "definition": "船桨"
+            },
+            {
+              "charText": "摧",
+              "role": "content",
+              "definition": "折断"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "薄",
+              "role": "content",
+              "definition": "迫近"
+            },
+            {
+              "charText": "暮",
+              "role": "content",
+              "definition": "傍晚"
+            },
+            {
+              "charText": "冥",
+              "role": "content",
+              "definition": "昏暗"
+            },
+            {
+              "charText": "冥",
+              "role": "content",
+              "definition": "昏暗"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "虎",
+              "role": "content",
+              "definition": "老虎"
+            },
+            {
+              "charText": "啸",
+              "role": "content",
+              "definition": "长声吼叫"
+            },
+            {
+              "charText": "猿",
+              "role": "content",
+              "definition": "猿猴"
+            },
+            {
+              "charText": "啼",
+              "role": "content",
+              "definition": "啼叫"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
             }
           ]
         },
@@ -16618,6 +17418,148 @@
               "definition": "连词，表承接",
               "wordBookId": "wb_c_152"
             }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "登",
+              "role": "content",
+              "definition": "登上"
+            },
+            {
+              "charText": "斯",
+              "role": "function",
+              "definition": "这"
+            },
+            {
+              "charText": "楼",
+              "role": "content",
+              "definition": "楼阁"
+            },
+            {
+              "charText": "也",
+              "role": "function",
+              "definition": "啊（语气词）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "就"
+            },
+            {
+              "charText": "有",
+              "role": "content",
+              "definition": "产生"
+            },
+            {
+              "charText": "去",
+              "role": "content",
+              "definition": "离开"
+            },
+            {
+              "charText": "国",
+              "role": "content",
+              "definition": "国都"
+            },
+            {
+              "charText": "怀",
+              "role": "content",
+              "definition": "怀念"
+            },
+            {
+              "charText": "乡",
+              "role": "content",
+              "definition": "家乡"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "担忧"
+            },
+            {
+              "charText": "谗",
+              "role": "content",
+              "definition": "谗言"
+            },
+            {
+              "charText": "畏",
+              "role": "content",
+              "definition": "害怕"
+            },
+            {
+              "charText": "讥",
+              "role": "content",
+              "definition": "讥讽"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "满",
+              "role": "content",
+              "definition": "满眼"
+            },
+            {
+              "charText": "目",
+              "role": "content",
+              "definition": "眼中所见"
+            },
+            {
+              "charText": "萧",
+              "role": "content",
+              "definition": "萧条"
+            },
+            {
+              "charText": "然",
+              "role": "function",
+              "definition": "……的样子"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "感",
+              "role": "content",
+              "definition": "感慨"
+            },
+            {
+              "charText": "极",
+              "role": "content",
+              "definition": "到极点"
+            },
+            {
+              "charText": "而",
+              "role": "function",
+              "definition": "因而（表因果）"
+            },
+            {
+              "charText": "悲",
+              "role": "content",
+              "definition": "悲伤"
+            },
+            {
+              "charText": "者",
+              "role": "function",
+              "definition": "……的心境"
+            },
+            {
+              "charText": "矣",
+              "role": "function",
+              "definition": "啊（感叹）"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            }
           ]
         },
         {
@@ -16631,6 +17573,502 @@
             {
               "word": "锦鳞",
               "definition": "美丽的鱼。鳞借指鱼"
+            }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "至",
+              "role": "content",
+              "definition": "到了"
+            },
+            {
+              "charText": "若",
+              "role": "function",
+              "definition": "像那（发语词）"
+            },
+            {
+              "charText": "春",
+              "role": "content",
+              "definition": "春天"
+            },
+            {
+              "charText": "和",
+              "role": "content",
+              "definition": "和煦"
+            },
+            {
+              "charText": "景",
+              "role": "content",
+              "definition": "日光"
+            },
+            {
+              "charText": "明",
+              "role": "content",
+              "definition": "明媚"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "波",
+              "role": "content",
+              "definition": "波浪"
+            },
+            {
+              "charText": "澜",
+              "role": "content",
+              "definition": "大波浪"
+            },
+            {
+              "charText": "不",
+              "role": "function",
+              "definition": "不（否定）"
+            },
+            {
+              "charText": "惊",
+              "role": "content",
+              "definition": "起，涌动"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "上",
+              "role": "content",
+              "definition": "上面"
+            },
+            {
+              "charText": "下",
+              "role": "content",
+              "definition": "下面"
+            },
+            {
+              "charText": "天",
+              "role": "content",
+              "definition": "天空"
+            },
+            {
+              "charText": "光",
+              "role": "content",
+              "definition": "光亮"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "一",
+              "role": "function",
+              "definition": "一片"
+            },
+            {
+              "charText": "碧",
+              "role": "content",
+              "definition": "碧绿"
+            },
+            {
+              "charText": "万",
+              "role": "plain"
+            },
+            {
+              "charText": "顷",
+              "role": "content",
+              "definition": "广阔无边（百亩为顷）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "沙",
+              "role": "content",
+              "definition": "沙滩上的"
+            },
+            {
+              "charText": "鸥",
+              "role": "content",
+              "definition": "水鸟"
+            },
+            {
+              "charText": "翔",
+              "role": "content",
+              "definition": "飞翔"
+            },
+            {
+              "charText": "集",
+              "role": "content",
+              "definition": "栖止"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "锦",
+              "role": "content",
+              "definition": "如锦缎般美丽的"
+            },
+            {
+              "charText": "鳞",
+              "role": "content",
+              "definition": "鱼（借指）"
+            },
+            {
+              "charText": "游",
+              "role": "content",
+              "definition": "游动"
+            },
+            {
+              "charText": "泳",
+              "role": "content",
+              "definition": "潜行水中"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "岸",
+              "role": "content",
+              "definition": "岸边"
+            },
+            {
+              "charText": "芷",
+              "role": "content",
+              "definition": "白芷（香草）"
+            },
+            {
+              "charText": "汀",
+              "role": "content",
+              "definition": "水中小洲"
+            },
+            {
+              "charText": "兰",
+              "role": "content",
+              "definition": "兰花"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "郁",
+              "role": "content",
+              "definition": "香气浓郁"
+            },
+            {
+              "charText": "郁",
+              "role": "content",
+              "definition": "香气浓郁"
+            },
+            {
+              "charText": "青",
+              "role": "content",
+              "definition": "青翠"
+            },
+            {
+              "charText": "青",
+              "role": "content",
+              "definition": "青翠"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            },
+            {
+              "charText": "而",
+              "role": "function",
+              "definition": "至于（另提一事）"
+            },
+            {
+              "charText": "或",
+              "role": "function",
+              "definition": "有时"
+            },
+            {
+              "charText": "长",
+              "role": "content",
+              "definition": "大片"
+            },
+            {
+              "charText": "烟",
+              "role": "content",
+              "definition": "烟雾"
+            },
+            {
+              "charText": "一",
+              "role": "function",
+              "definition": "全"
+            },
+            {
+              "charText": "空",
+              "role": "content",
+              "definition": "消散"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "皓",
+              "role": "content",
+              "definition": "皎洁的"
+            },
+            {
+              "charText": "月",
+              "role": "content",
+              "definition": "月亮"
+            },
+            {
+              "charText": "千",
+              "role": "plain"
+            },
+            {
+              "charText": "里",
+              "role": "content",
+              "definition": "广大范围"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "浮",
+              "role": "content",
+              "definition": "浮动的"
+            },
+            {
+              "charText": "光",
+              "role": "content",
+              "definition": "月光"
+            },
+            {
+              "charText": "跃",
+              "role": "content",
+              "definition": "跳跃"
+            },
+            {
+              "charText": "金",
+              "role": "content",
+              "definition": "金色（波光如金）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "静",
+              "role": "content",
+              "definition": "静静的"
+            },
+            {
+              "charText": "影",
+              "role": "content",
+              "definition": "月影"
+            },
+            {
+              "charText": "沉",
+              "role": "content",
+              "definition": "沉入"
+            },
+            {
+              "charText": "璧",
+              "role": "content",
+              "definition": "圆玉（喻月影）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "渔",
+              "role": "content",
+              "definition": "渔人"
+            },
+            {
+              "charText": "歌",
+              "role": "content",
+              "definition": "歌声"
+            },
+            {
+              "charText": "互",
+              "role": "content",
+              "definition": "互相"
+            },
+            {
+              "charText": "答",
+              "role": "content",
+              "definition": "应答"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "此",
+              "role": "function",
+              "definition": "这种"
+            },
+            {
+              "charText": "乐",
+              "role": "content",
+              "definition": "快乐"
+            },
+            {
+              "charText": "何",
+              "role": "function",
+              "definition": "哪里"
+            },
+            {
+              "charText": "极",
+              "role": "content",
+              "definition": "尽头"
+            },
+            {
+              "charText": "！",
+              "role": "punct"
+            },
+            {
+              "charText": "登",
+              "role": "content",
+              "definition": "登上"
+            },
+            {
+              "charText": "斯",
+              "role": "function",
+              "definition": "这"
+            },
+            {
+              "charText": "楼",
+              "role": "content",
+              "definition": "楼阁"
+            },
+            {
+              "charText": "也",
+              "role": "function",
+              "definition": "啊（语气）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "就"
+            },
+            {
+              "charText": "有",
+              "role": "content",
+              "definition": "产生"
+            },
+            {
+              "charText": "心",
+              "role": "content",
+              "definition": "心胸"
+            },
+            {
+              "charText": "旷",
+              "role": "content",
+              "definition": "开阔"
+            },
+            {
+              "charText": "神",
+              "role": "content",
+              "definition": "精神"
+            },
+            {
+              "charText": "怡",
+              "role": "content",
+              "definition": "愉悦"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "宠",
+              "role": "content",
+              "definition": "恩宠"
+            },
+            {
+              "charText": "辱",
+              "role": "content",
+              "definition": "屈辱"
+            },
+            {
+              "charText": "偕",
+              "role": "content",
+              "definition": "全都"
+            },
+            {
+              "charText": "忘",
+              "role": "content",
+              "definition": "忘记"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "把",
+              "role": "content",
+              "definition": "端着"
+            },
+            {
+              "charText": "酒",
+              "role": "content",
+              "definition": "酒杯"
+            },
+            {
+              "charText": "临",
+              "role": "content",
+              "definition": "面对"
+            },
+            {
+              "charText": "风",
+              "role": "content",
+              "definition": "清风"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "那"
+            },
+            {
+              "charText": "喜",
+              "role": "content",
+              "definition": "喜悦"
+            },
+            {
+              "charText": "洋",
+              "role": "content",
+              "definition": "盛大的样子"
+            },
+            {
+              "charText": "洋",
+              "role": "content",
+              "definition": "盛大的样子"
+            },
+            {
+              "charText": "者",
+              "role": "function",
+              "definition": "……的状态"
+            },
+            {
+              "charText": "矣",
+              "role": "function",
+              "definition": "啊（感叹）"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
             }
           ]
         },
@@ -16652,6 +18090,493 @@
               "word": "归",
               "definition": "归依",
               "wordBookId": "wb_c_016"
+            }
+          ],
+          "charAnnotations": [
+            {
+              "charText": "嗟",
+              "role": "function",
+              "definition": "唉（叹词）"
+            },
+            {
+              "charText": "夫",
+              "role": "function",
+              "definition": "啊（叹词后缀）"
+            },
+            {
+              "charText": "！",
+              "role": "punct"
+            },
+            {
+              "charText": "予",
+              "role": "content",
+              "definition": "我"
+            },
+            {
+              "charText": "尝",
+              "role": "content",
+              "definition": "曾经"
+            },
+            {
+              "charText": "求",
+              "role": "content",
+              "definition": "探求"
+            },
+            {
+              "charText": "古",
+              "role": "content",
+              "definition": "古代的"
+            },
+            {
+              "charText": "仁",
+              "role": "content",
+              "definition": "仁德的"
+            },
+            {
+              "charText": "人",
+              "role": "content",
+              "definition": "贤人"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "心",
+              "role": "content",
+              "definition": "思想情怀"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "或",
+              "role": "function",
+              "definition": "或许"
+            },
+            {
+              "charText": "异",
+              "role": "content",
+              "definition": "不同于"
+            },
+            {
+              "charText": "二",
+              "role": "plain"
+            },
+            {
+              "charText": "者",
+              "role": "function",
+              "definition": "两种（心境）"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "为",
+              "role": "content",
+              "definition": "表现"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "何",
+              "role": "function",
+              "definition": "为什么"
+            },
+            {
+              "charText": "哉",
+              "role": "function",
+              "definition": "呢（疑问）"
+            },
+            {
+              "charText": "？",
+              "role": "punct"
+            },
+            {
+              "charText": "不",
+              "role": "function",
+              "definition": "不"
+            },
+            {
+              "charText": "以",
+              "role": "function",
+              "definition": "因为"
+            },
+            {
+              "charText": "物",
+              "role": "content",
+              "definition": "外物（环境好坏）"
+            },
+            {
+              "charText": "喜",
+              "role": "content",
+              "definition": "欢喜"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "不",
+              "role": "function",
+              "definition": "不"
+            },
+            {
+              "charText": "以",
+              "role": "function",
+              "definition": "因为"
+            },
+            {
+              "charText": "己",
+              "role": "content",
+              "definition": "个人得失"
+            },
+            {
+              "charText": "悲",
+              "role": "content",
+              "definition": "悲伤"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "居",
+              "role": "content",
+              "definition": "身处"
+            },
+            {
+              "charText": "庙",
+              "role": "content",
+              "definition": "宗庙"
+            },
+            {
+              "charText": "堂",
+              "role": "content",
+              "definition": "殿堂"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的（定语后置标志）"
+            },
+            {
+              "charText": "高",
+              "role": "content",
+              "definition": "高位（指在朝做官）"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "就"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "担忧"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "他的"
+            },
+            {
+              "charText": "民",
+              "role": "content",
+              "definition": "百姓"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "处",
+              "role": "content",
+              "definition": "身处"
+            },
+            {
+              "charText": "江",
+              "role": "plain"
+            },
+            {
+              "charText": "湖",
+              "role": "plain"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的（定语后置标志）"
+            },
+            {
+              "charText": "远",
+              "role": "content",
+              "definition": "偏远之地（不在朝中）"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "就"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "担忧"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "他的"
+            },
+            {
+              "charText": "君",
+              "role": "content",
+              "definition": "君王"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            },
+            {
+              "charText": "是",
+              "role": "function",
+              "definition": "这样"
+            },
+            {
+              "charText": "进",
+              "role": "content",
+              "definition": "入朝做官"
+            },
+            {
+              "charText": "亦",
+              "role": "function",
+              "definition": "也"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "忧虑"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "退",
+              "role": "content",
+              "definition": "退居江湖"
+            },
+            {
+              "charText": "亦",
+              "role": "function",
+              "definition": "也"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "忧虑"
+            },
+            {
+              "charText": "。",
+              "role": "punct"
+            },
+            {
+              "charText": "然",
+              "role": "function",
+              "definition": "既然这样"
+            },
+            {
+              "charText": "则",
+              "role": "function",
+              "definition": "那么"
+            },
+            {
+              "charText": "何",
+              "role": "function",
+              "definition": "什么"
+            },
+            {
+              "charText": "时",
+              "role": "content",
+              "definition": "时候"
+            },
+            {
+              "charText": "而",
+              "role": "function",
+              "definition": "才"
+            },
+            {
+              "charText": "乐",
+              "role": "content",
+              "definition": "快乐"
+            },
+            {
+              "charText": "耶",
+              "role": "function",
+              "definition": "呢（疑问）"
+            },
+            {
+              "charText": "？",
+              "role": "punct"
+            },
+            {
+              "charText": "其",
+              "role": "function",
+              "definition": "大概（推测）"
+            },
+            {
+              "charText": "必",
+              "role": "content",
+              "definition": "一定"
+            },
+            {
+              "charText": "曰",
+              "role": "content",
+              "definition": "说"
+            },
+            {
+              "charText": "'",
+              "role": "punct"
+            },
+            {
+              "charText": "先",
+              "role": "content",
+              "definition": "在……之前"
+            },
+            {
+              "charText": "天",
+              "role": "plain"
+            },
+            {
+              "charText": "下",
+              "role": "plain"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "忧愁"
+            },
+            {
+              "charText": "而",
+              "role": "function",
+              "definition": "才（顺承）"
+            },
+            {
+              "charText": "忧",
+              "role": "content",
+              "definition": "担忧"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "后",
+              "role": "content",
+              "definition": "在……之后"
+            },
+            {
+              "charText": "天",
+              "role": "plain"
+            },
+            {
+              "charText": "下",
+              "role": "plain"
+            },
+            {
+              "charText": "之",
+              "role": "function",
+              "definition": "的"
+            },
+            {
+              "charText": "乐",
+              "role": "content",
+              "definition": "快乐"
+            },
+            {
+              "charText": "而",
+              "role": "function",
+              "definition": "才（顺承）"
+            },
+            {
+              "charText": "乐",
+              "role": "content",
+              "definition": "享乐"
+            },
+            {
+              "charText": "'",
+              "role": "punct"
+            },
+            {
+              "charText": "乎",
+              "role": "function",
+              "definition": "吧（感叹）"
+            },
+            {
+              "charText": "！",
+              "role": "punct"
+            },
+            {
+              "charText": "噫",
+              "role": "function",
+              "definition": "唉（叹词）"
+            },
+            {
+              "charText": "！",
+              "role": "punct"
+            },
+            {
+              "charText": "微",
+              "role": "content",
+              "definition": "如果没有"
+            },
+            {
+              "charText": "斯",
+              "role": "function",
+              "definition": "这种"
+            },
+            {
+              "charText": "人",
+              "role": "content",
+              "definition": "人（指古仁人）"
+            },
+            {
+              "charText": "，",
+              "role": "punct"
+            },
+            {
+              "charText": "吾",
+              "role": "content",
+              "definition": "我"
+            },
+            {
+              "charText": "谁",
+              "role": "function",
+              "definition": "谁（宾语前置）"
+            },
+            {
+              "charText": "与",
+              "role": "function",
+              "definition": "和，同"
+            },
+            {
+              "charText": "归",
+              "role": "content",
+              "definition": "归依，同道"
+            },
+            {
+              "charText": "？",
+              "role": "punct"
             }
           ]
         }
