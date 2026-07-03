@@ -38,9 +38,13 @@ public class StudyService {
     );
 
     /** 生成今日学习任务 */
-    public Map<String, Object> getTodayTask(Long userId, String wordBookId) {
+    public Map<String, Object> getTodayTask(Long userId, String wordBookId, Integer dailyNew, Integer dailyReview) {
         WordBook book = wordBookMapper.selectById(wordBookId);
         if (book == null) throw new ResourceNotFoundException("词书不存在");
+
+        // 未传则使用默认值
+        int newLimit = dailyNew != null ? dailyNew : 20;
+        int reviewLimit = dailyReview != null ? dailyReview : Integer.MAX_VALUE;
 
         // 获取用户的词进度
         List<UserWordProgress> allProgress = userWordProgressMapper.selectList(
@@ -82,9 +86,9 @@ public class StudyService {
             if (item != null) newWords.add(item);
         }
 
-        // 每日学习上限
-        int maxPerDay = 20;
-        if (newWords.size() > maxPerDay) newWords = newWords.subList(0, maxPerDay);
+        // 按参数截断
+        if (reviewWords.size() > reviewLimit) reviewWords = reviewWords.subList(0, reviewLimit);
+        if (newWords.size() > newLimit) newWords = newWords.subList(0, newLimit);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("date", today.toString());

@@ -10,6 +10,7 @@ public class Word {
     @TableId
     private String id;
     private String wordBookId;
+    @TableField("`character`")
     private String character;
     private String pinyin;
     private String characterType;

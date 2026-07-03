@@ -86,6 +86,7 @@ src/main/java/com/bogutongjin/
 │   └── GlobalExceptionHandler.java   # 全局异常处理（@RestControllerAdvice）
 ├── config/
 │   ├── MyBatisPlusConfig.java        # 分页插件
+│   ├── MyMetaObjectHandler.java      # 自动填充 createdAt/updatedAt
 │   └── CorsConfig.java              # 跨域配置（允许所有来源）
 ├── controller/（11 个）
 │   ├── WordBookController.java       # 词书列表 + 详情
@@ -153,7 +154,7 @@ data/
 |------|-----------|------|------|-------------|
 | 词书 | WordBookController | GET | `/api/wordbooks` | fetchWordBooks |
 | 词书 | WordBookController | GET | `/api/wordbooks/{id}` | fetchWordBookDetail |
-| 学习 | StudyController | GET | `/api/study/today?wordBookId=&userId=` | fetchTodayTask |
+| 学习 | StudyController | GET | `/api/study/today?wordBookId=&dailyNew=&dailyReview=&userId=` | fetchTodayTask |
 | 学习 | StudyController | POST | `/api/study/answer?userId=` | submitAnswer |
 | 学习 | StudyController | POST | `/api/study/complete?userId=` | completeStudy |
 | 进度 | ProgressController | GET | `/api/progress?wordBookId=&userId=` | fetchProgress |

@@ -19,13 +19,15 @@ public class StudyController {
 
     /**
      * 获取今日任务
-     * GET /api/study/today?wordBookId=xxx
+     * GET /api/study/today?wordBookId=xxx&dailyNew=10&dailyReview=5
      */
     @GetMapping("/today")
     public Result<Map<String, Object>> getTodayTask(
             @RequestParam String wordBookId,
+            @RequestParam(required = false) Integer dailyNew,
+            @RequestParam(required = false) Integer dailyReview,
             @RequestParam(required = false, defaultValue = "1") Long userId) {
-        return Result.ok(studyService.getTodayTask(userId, wordBookId));
+        return Result.ok(studyService.getTodayTask(userId, wordBookId, dailyNew, dailyReview));
     }
 
     /**

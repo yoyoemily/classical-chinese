@@ -9,6 +9,7 @@ public class SimilarShape {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String wordId;
+    @TableField("`character`")
     private String character;
     private Integer sortOrder;
 }

@@ -23,10 +23,10 @@ public class ArticleService {
     public List<Map<String, Object>> getArticles(String category, String textbook) {
         LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>().orderByAsc(Article::getSortOrder);
 
-        if (category != null && !"all".equals(category)) {
+        if (category != null && !"undefined".equals(category) && !"all".equals(category)) {
             qw.eq(Article::getCategory, category);
         }
-        if (textbook != null && !"all".equals(textbook)) {
+        if (textbook != null && !"undefined".equals(textbook) && !"all".equals(textbook)) {
             qw.eq(Article::getTextbook, textbook);
         }
 

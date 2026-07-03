@@ -10,6 +10,7 @@ public class ArticleCharAnnotation {
     private Long id;
     private Long articleSentenceId;
     private String charText;
+    @TableField("`role`")
     private String role;
     private String definition;
     private Integer sortOrder;
