@@ -30,7 +30,7 @@ CREATE TABLE word_book (
 CREATE TABLE word (
   id                VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '字词ID，如 wb_c_001',
   word_book_id      VARCHAR(32)  NOT NULL COMMENT '所属词书ID',
-  character         VARCHAR(8)   NOT NULL COMMENT '汉字',
+  `character`         VARCHAR(8)   NOT NULL COMMENT '汉字',
   pinyin            VARCHAR(32)  NOT NULL DEFAULT '' COMMENT '拼音',
   character_type    VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '字型: 象形字/指事字/会意字/形声字',
   explanation       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '字形解释',
@@ -41,8 +41,7 @@ CREATE TABLE word (
   created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_word_book_id (word_book_id),
-  INDEX idx_character (character),
-  CONSTRAINT fk_word_book FOREIGN KEY (word_book_id) REFERENCES word_book(id) ON DELETE CASCADE
+  INDEX idx_character (`character`)
 ) ENGINE=InnoDB COMMENT='字词';
 
 -- ============================================
@@ -57,8 +56,7 @@ CREATE TABLE meaning (
   translation VARCHAR(512) NOT NULL DEFAULT '' COMMENT '例句翻译',
   source      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '例句出处，如《论语·为政》',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  INDEX idx_word_id (word_id),
-  CONSTRAINT fk_meaning_word FOREIGN KEY (word_id) REFERENCES word(id) ON DELETE CASCADE
+  INDEX idx_word_id (word_id)
 ) ENGINE=InnoDB COMMENT='义项';
 
 -- ============================================
@@ -81,8 +79,7 @@ CREATE TABLE sentence (
   updated_at            DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_word_id (word_id),
   INDEX idx_article_id (article_id),
-  INDEX idx_difficulty (difficulty),
-  CONSTRAINT fk_sentence_word FOREIGN KEY (word_id) REFERENCES word(id) ON DELETE CASCADE
+  INDEX idx_difficulty (difficulty)
 ) ENGINE=InnoDB COMMENT='考题句子';
 
 -- ============================================
@@ -93,8 +90,7 @@ CREATE TABLE sentence_distractor (
   sentence_id VARCHAR(32)  NOT NULL COMMENT '所属句子ID',
   text        VARCHAR(128) NOT NULL COMMENT '干扰项文本',
   sort_order  TINYINT      NOT NULL DEFAULT 0 COMMENT '排序序号',
-  INDEX idx_sentence_id (sentence_id),
-  CONSTRAINT fk_distractor_sentence FOREIGN KEY (sentence_id) REFERENCES sentence(id) ON DELETE CASCADE
+  INDEX idx_sentence_id (sentence_id)
 ) ENGINE=InnoDB COMMENT='句子干扰项';
 
 -- ============================================
@@ -103,10 +99,9 @@ CREATE TABLE sentence_distractor (
 CREATE TABLE similar_homophone (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
   word_id     VARCHAR(32)  NOT NULL COMMENT '所属字词ID',
-  character   VARCHAR(8)   NOT NULL COMMENT '同音易混字',
+  `character`   VARCHAR(8)   NOT NULL COMMENT '同音易混字',
   sort_order  TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_word_id (word_id),
-  CONSTRAINT fk_homophone_word FOREIGN KEY (word_id) REFERENCES word(id) ON DELETE CASCADE
+  INDEX idx_word_id (word_id)
 ) ENGINE=InnoDB COMMENT='同音易混字';
 
 -- ============================================
@@ -115,10 +110,9 @@ CREATE TABLE similar_homophone (
 CREATE TABLE similar_shape (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
   word_id     VARCHAR(32)  NOT NULL COMMENT '所属字词ID',
-  character   VARCHAR(8)   NOT NULL COMMENT '形近字',
+  `character`   VARCHAR(8)   NOT NULL COMMENT '形近字',
   sort_order  TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_word_id (word_id),
-  CONSTRAINT fk_shape_word FOREIGN KEY (word_id) REFERENCES word(id) ON DELETE CASCADE
+  INDEX idx_word_id (word_id)
 ) ENGINE=InnoDB COMMENT='形近字';
 
 -- ============================================
@@ -149,8 +143,7 @@ CREATE TABLE article_sentence (
   translation VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '句子翻译',
   audio_url   VARCHAR(256) COMMENT '句子音频URL',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '句子序号',
-  INDEX idx_article_id (article_id),
-  CONSTRAINT fk_as_article FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE
+  INDEX idx_article_id (article_id)
 ) ENGINE=InnoDB COMMENT='名篇句子';
 
 -- ============================================
@@ -164,8 +157,7 @@ CREATE TABLE article_keyword (
   word_book_id         VARCHAR(32)  COMMENT '所属词书ID',
   mastery_level        VARCHAR(16)  COMMENT '掌握程度，可为空',
   sort_order           TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_as_id (article_sentence_id),
-  CONSTRAINT fk_ak_sentence FOREIGN KEY (article_sentence_id) REFERENCES article_sentence(id) ON DELETE CASCADE
+  INDEX idx_as_id (article_sentence_id)
 ) ENGINE=InnoDB COMMENT='名篇句子内联生词';
 
 -- ============================================
@@ -175,11 +167,10 @@ CREATE TABLE article_char_annotation (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
   article_sentence_id  BIGINT       NOT NULL COMMENT '所属名篇句子ID',
   char_text            VARCHAR(4)   NOT NULL COMMENT '单个汉字或标点',
-  role                 VARCHAR(10)  NOT NULL COMMENT '角色: content(实词)/function(虚词)/punct(标点)',
+  `role`                 VARCHAR(10)  NOT NULL COMMENT '角色: content(实词)/function(虚词)/punct(标点)',
   definition           VARCHAR(256) COMMENT '释义（实词必填，虚词可选，标点无）',
   sort_order           INT          NOT NULL DEFAULT 0 COMMENT '字符序号',
-  INDEX idx_as_id (article_sentence_id),
-  CONSTRAINT fk_aca_sentence FOREIGN KEY (article_sentence_id) REFERENCES article_sentence(id) ON DELETE CASCADE
+  INDEX idx_as_id (article_sentence_id)
 ) ENGINE=InnoDB COMMENT='名篇逐字标注';
 
 -- ============================================
@@ -191,9 +182,7 @@ CREATE TABLE article_related_word (
   word_id     VARCHAR(32)  NOT NULL,
   UNIQUE KEY uk_article_word (article_id, word_id),
   INDEX idx_article_id (article_id),
-  INDEX idx_word_id (word_id),
-  CONSTRAINT fk_arw_article FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE,
-  CONSTRAINT fk_arw_word FOREIGN KEY (word_id) REFERENCES word(id) ON DELETE CASCADE
+  INDEX idx_word_id (word_id)
 ) ENGINE=InnoDB COMMENT='名篇关联字词';
 
 -- ============================================
@@ -214,7 +203,7 @@ CREATE TABLE badge (
 -- ============================================
 -- 14. 用户表
 -- ============================================
-CREATE TABLE user (
+CREATE TABLE `user` (
   id             BIGINT       AUTO_INCREMENT PRIMARY KEY,
   open_id        VARCHAR(64)  NOT NULL COMMENT '微信openId',
   union_id       VARCHAR(64)  COMMENT '微信unionId',
@@ -247,8 +236,7 @@ CREATE TABLE user_word_progress (
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_word (user_id, word_book_id, word_id),
   INDEX idx_user_id (user_id),
-  INDEX idx_next_review (next_review_date),
-  CONSTRAINT fk_uwp_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+  INDEX idx_next_review (next_review_date)
 ) ENGINE=InnoDB COMMENT='用户字词学习进度';
 
 -- ============================================
@@ -264,8 +252,7 @@ CREATE TABLE user_article_progress (
   created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_article (user_id, article_id),
-  INDEX idx_user_id (user_id),
-  CONSTRAINT fk_uap_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+  INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB COMMENT='用户名篇阅读进度';
 
 -- ============================================
@@ -278,8 +265,7 @@ CREATE TABLE user_checkin (
   created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_date (user_id, checkin_date),
   INDEX idx_user_id (user_id),
-  INDEX idx_checkin_date (checkin_date),
-  CONSTRAINT fk_uc_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+  INDEX idx_checkin_date (checkin_date)
 ) ENGINE=InnoDB COMMENT='用户打卡记录';
 
 -- ============================================
@@ -293,9 +279,7 @@ CREATE TABLE user_badge (
   notified    TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已通知用户',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_badge (user_id, badge_id),
-  INDEX idx_user_id (user_id),
-  CONSTRAINT fk_ub_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-  CONSTRAINT fk_ub_badge FOREIGN KEY (badge_id) REFERENCES badge(id) ON DELETE CASCADE
+  INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB COMMENT='用户获得的勋章';
 
 -- ============================================
@@ -312,8 +296,7 @@ CREATE TABLE user_answer_history (
   timestamp_ms     BIGINT       NOT NULL COMMENT '答题时间戳(ms)',
   created_at       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_user_word (user_id, word_book_id, word_id),
-  INDEX idx_created (created_at),
-  CONSTRAINT fk_uah_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+  INDEX idx_created (created_at)
 ) ENGINE=InnoDB COMMENT='答题历史记录';
 
 -- ============================================
@@ -334,8 +317,7 @@ CREATE TABLE feedback (
   updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category),
   INDEX idx_source (source),
-  INDEX idx_resolved (resolved),
-  CONSTRAINT fk_fb_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE SET NULL
+  INDEX idx_resolved (resolved)
 ) ENGINE=InnoDB COMMENT='错误反馈';
 
 -- ============================================
@@ -356,6 +338,5 @@ CREATE TABLE daily_task (
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_date_book (user_id, date, word_book_id),
   INDEX idx_user_id (user_id),
-  INDEX idx_date (date),
-  CONSTRAINT fk_dt_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+  INDEX idx_date (date)
 ) ENGINE=InnoDB COMMENT='每日学习任务';

@@ -140,7 +140,7 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?, ?)";
         String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-        String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, role, definition, sort_order) " +
+        String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, `role`, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
         for (SourceArticle a : articles) {
