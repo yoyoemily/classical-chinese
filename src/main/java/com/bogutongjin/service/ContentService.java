@@ -32,6 +32,7 @@ public class ContentService {
         result.put("explanation", word.getExplanation());
         result.put("examFrequency", word.getExamFrequency());
         result.put("mnemonic", word.getMnemonic());
+        result.put("wordType", word.getWordType());
 
         // 义项
         List<Meaning> meanings = meaningMapper.selectList(

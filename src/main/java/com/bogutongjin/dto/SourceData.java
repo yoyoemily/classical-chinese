@@ -50,6 +50,7 @@ public class SourceData {
         private List<String> similarHomophones;
         private List<String> similarShapes;
         private String mnemonic;
+        private String wordType;
     }
 
     // ---- 义项 ----

@@ -18,6 +18,7 @@ public class Word {
     private String oracleForm;
     private String examFrequency;
     private String mnemonic;
+    private String wordType;
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)

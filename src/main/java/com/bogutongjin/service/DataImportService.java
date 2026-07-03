@@ -102,11 +102,11 @@ public class DataImportService {
 
     private void insertWord(String bookId, SourceWord w) {
         jdbc.update(
-                "INSERT INTO word (id, word_book_id, `character`, pinyin, character_type, explanation, oracle_form, exam_frequency, mnemonic, sort_order) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO word (id, word_book_id, `character`, pinyin, character_type, explanation, oracle_form, exam_frequency, mnemonic, word_type, sort_order) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 w.getId(), bookId, w.getCharacter(), nvl(w.getPinyin()), nvl(w.getCharacterType()),
                 nvl(w.getExplanation()), nvl(w.getOracleForm()), nvl(w.getExamFrequency()),
-                nvl(w.getMnemonic()), 0);
+                nvl(w.getMnemonic()), nvl(w.getWordType()), 0);
 
         if (CollUtil.isNotEmpty(w.getMeanings())) {
             String sql = "INSERT INTO meaning (word_id, definition, pinyin, example, translation, source, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)";

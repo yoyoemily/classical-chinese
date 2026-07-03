@@ -54,6 +54,7 @@ public class WordBookService {
             wm.put("oracleForm", w.getOracleForm());
             wm.put("examFrequency", w.getExamFrequency());
             wm.put("mnemonic", w.getMnemonic());
+            wm.put("wordType", w.getWordType());
 
             // 义项
             List<Meaning> meanings = meaningMapper.selectList(

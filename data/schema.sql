@@ -37,6 +37,7 @@ CREATE TABLE word (
   oracle_form       VARCHAR(256) NOT NULL DEFAULT '' COMMENT '甲骨文图片URL',
   exam_frequency    VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '考试频次，如 5年3考',
   mnemonic          VARCHAR(256) NOT NULL DEFAULT '' COMMENT '记忆口诀',
+  word_type         VARCHAR(8)   NOT NULL DEFAULT '' COMMENT '字词类型: 实词/虚词/通假字',
   sort_order        INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
