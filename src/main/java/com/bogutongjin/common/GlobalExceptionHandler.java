@@ -32,6 +32,13 @@ public class GlobalExceptionHandler {
         return Result.fail(10003, e.getMessage());
     }
 
+    /** 认证/登录异常 */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthException.class)
+    public Result<Void> handleAuth(AuthException e) {
+        return Result.fail(e.getCode(), e.getMessage());
+    }
+
     /** 业务异常 */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BusinessException.class)

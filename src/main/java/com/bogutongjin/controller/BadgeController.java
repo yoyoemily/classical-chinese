@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.service.BadgeService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,7 @@ public class BadgeController {
     private final BadgeService badgeService;
 
     @GetMapping
-    public Result<Map<String, Object>> getBadges(
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+    public Result<Map<String, Object>> getBadges(@CurrentUser Long userId) {
         return Result.ok(badgeService.getBadges(userId));
     }
 }

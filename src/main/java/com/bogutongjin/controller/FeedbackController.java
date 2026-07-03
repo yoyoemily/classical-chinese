@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.SubmitFeedbackRequest;
 import com.bogutongjin.service.FeedbackService;
@@ -19,7 +20,7 @@ public class FeedbackController {
     @PostMapping
     public Result<Map<String, Object>> submitFeedback(
             @Valid @RequestBody SubmitFeedbackRequest req,
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+            @CurrentUser Long userId) {
         return Result.ok(feedbackService.submitFeedback(userId, req));
     }
 }

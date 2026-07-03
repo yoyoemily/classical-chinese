@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.SaveUserInfoRequest;
 import com.bogutongjin.service.UserService;
@@ -18,8 +19,7 @@ public class UserController {
 
     /** 获取等级信息 */
     @GetMapping("/profile")
-    public Result<Map<String, Object>> getProfile(
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+    public Result<Map<String, Object>> getProfile(@CurrentUser Long userId) {
         Map<String, Object> profile = userService.getUserProfile(userId);
         if (profile == null) return Result.fail(10003, "用户不存在");
         return Result.ok(profile);
@@ -27,8 +27,7 @@ public class UserController {
 
     /** 获取个人信息 */
     @GetMapping("/info")
-    public Result<Map<String, Object>> getInfo(
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+    public Result<Map<String, Object>> getInfo(@CurrentUser Long userId) {
         Map<String, Object> info = userService.getUserInfo(userId);
         if (info == null) return Result.fail(10003, "用户不存在");
         return Result.ok(info);
@@ -38,7 +37,7 @@ public class UserController {
     @PutMapping("/info")
     public Result<Void> saveInfo(
             @Valid @RequestBody SaveUserInfoRequest req,
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+            @CurrentUser Long userId) {
         userService.saveUserInfo(userId, req.getAvatarUrl(), req.getNickName(), req.getGrade());
         return Result.ok();
     }

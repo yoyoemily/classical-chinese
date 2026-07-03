@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.service.VocabularyService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class VocabularyController {
     public Result<Map<String, Object>> getVocabulary(
             @RequestParam String wordBookId,
             @RequestParam String tab,
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+            @CurrentUser Long userId) {
         return Result.ok(vocabularyService.getVocabulary(userId, wordBookId, tab));
     }
 }

@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-博古通今（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 15 个 HTTP API 端点，基于艾宾浩斯遗忘曲线管理学习与复习节奏。
+博古通今（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 16 个 HTTP API 端点（含登录），基于艾宾浩斯遗忘曲线管理学习与复习节奏。
 
 **前端工程**位于 `/Users/zhutx/weixin_applet_space/classical-chinese-applet/`——微信原生小程序（WXML + SCSS + TS），15 个页面全部搭建完成，核心学习回路已跑通。后端 API 完整覆盖前端所有接口需求，前后端通过 `{code: 0, message: "ok", data: ...}` 统一响应格式约定。
 
@@ -43,7 +43,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 简化代码 | Lombok（`@Data`、`@RequiredArgsConstructor`、`@Slf4j`） |
 | 参数校验 | Spring Boot Validation（`@Valid`、`@NotBlank`、`@NotNull`） |
 | JSON | Jackson（自动驼峰-下划线互转） |
-| 认证 | JWT（jjwt 0.12.3，依赖已引入，**待实现**） |
+| 认证 | JWT（jjwt 0.12.3）——微信登录→JWT 签发→拦截器校验→@CurrentUser 参数注入，完整链路已实现 |
 | 响应格式 | 统一 `Result<T>`，`code=0` 成功，非 0 为业务异常 |
 
 ### 响应格式约定
@@ -52,11 +52,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 { "code": 0, "message": "ok", "data": { ... } }
 ```
 
-成功时 `code=0`；参数校验失败 `code=10001`；资源不存在 `code=10003`；服务端异常 `code=10006`。`data` 为 `null` 时不序列化（`non_null`）。
+成功时 `code=0`；参数校验失败 `code=10001`；认证失败 `code=10401`；资源不存在 `code=10003`；服务端异常 `code=10006`。`data` 为 `null` 时不序列化（`non_null`）。
 
 ### 代码组织约定
 
-- **Controller**：`@RestController` + `@RequestMapping`，仅做路由和参数接收，委托给 Service。使用 `@RequiredArgsConstructor` 注入依赖。
+- **Controller**：`@RestController` + `@RequestMapping`，仅做路由和参数接收，委托给 Service。使用 `@RequiredArgsConstructor` 注入依赖。需要用户身份的接口用 `@CurrentUser Long userId` 参数注入。
 - **Service**：`@Service` + `@Transactional`，所有业务逻辑在此层。对外统一返回 `Map<String, Object>` 结构（方便前端直接消费，不强制 DTO）。
 - **Mapper**：继承 MyBatis-Plus `BaseMapper<T>`，零 XML，使用 `LambdaQueryWrapper` 构建查询条件。
 - **Entity**：`@TableName` 指定表名，驼峰字段名自动映射数据库下划线字段名。
@@ -69,9 +69,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 配置项 | 说明 | 默认值 |
 |--------|------|--------|
 | `spring.datasource.url` | MySQL 连接 | `jdbc:mysql://localhost:3306/classical_chinese?...` |
-| `spring.datasource.password` | 数据库密码 | `${MYSQL_PASSWORD:root}`（环境变量覆盖） |
+| `spring.datasource.password` | 数据库密码 | `${MYSQL_PASSWORD:123456}`（环境变量覆盖） |
 | `wechat.app-id` | 微信小程序 AppID | `wxc50759cc61eda134` |
-| `wechat.app-secret` | 微信密钥 | `${WECHAT_APP_SECRET:}`（空，需环境变量覆盖） |
+| `wechat.app-secret` | 微信密钥 | `${WECHAT_APP_SECRET:}`（空，**开发模式**：未配时固定使用 `dev-openid` 兜底，上线前必须替换为真值） |
+| `jwt.secret` | JWT 签名密钥 | `${JWT_SECRET:bogutongjin-jwt-secret-key-2024-miniapp}`（环境变量覆盖） |
+| `jwt.expire-hours` | JWT 过期时间 | `168`（7 天） |
 | `app.source-data-path` | 冷启动数据源路径 | `classpath:source.json` |
 
 ## 源码结构
@@ -83,24 +85,34 @@ src/main/java/com/bogutongjin/
 │   ├── Result.java                   # 统一响应 {code, message, data}
 │   ├── BusinessException.java        # 业务异常（含 code 字段）
 │   ├── ResourceNotFoundException.java # 资源不存在异常
-│   └── GlobalExceptionHandler.java   # 全局异常处理（@RestControllerAdvice）
+│   ├── AuthException.java            # 认证异常（code=10401）
+│   └── GlobalExceptionHandler.java   # 全局异常处理（@RestControllerAdvice，含 401 处理）
+├── annotation/
+│   └── CurrentUser.java              # @CurrentUser 注解，标记需要注入 userId 的 Controller 参数
+├── util/
+│   └── JwtUtil.java                  # JWT 签发/解析/校验，密钥与过期时间取自 yml 配置
 ├── config/
 │   ├── MyBatisPlusConfig.java        # 分页插件
 │   ├── MyMetaObjectHandler.java      # 自动填充 createdAt/updatedAt
-│   └── CorsConfig.java              # 跨域配置（允许所有来源）
-├── controller/（11 个）
+│   ├── CorsConfig.java               # 跨域配置（允许所有来源）
+│   ├── LoginInterceptor.java         # JWT 拦截器：从 Authorization header 解析 JWT → request.setAttribute("userId")
+│   ├── CurrentUserResolver.java      # @CurrentUser 参数解析器，从 request.getAttribute("userId") 取值
+│   └── WebMvcConfig.java             # 注册拦截器（放行 /api/auth/**, /api/admin/**）+ 参数解析器
+├── controller/（12 个）
+│   ├── AuthController.java           # POST /api/auth/login（微信 code → JWT）— 无需认证
 │   ├── WordBookController.java       # 词书列表 + 详情
-│   ├── StudyController.java          # 今日任务 + 提交答案 + 完成学习
+│   ├── StudyController.java          # 今日任务 + 提交答案 + 完成学习（@CurrentUser）
 │   ├── ArticleController.java        # 名篇列表 + 详情
 │   ├── ContentController.java        # 单字详情 + 全文阅读
-│   ├── ProgressController.java       # 学习进度
-│   ├── VocabularyController.java     # 生词本
-│   ├── CheckinController.java        # 打卡记录
-│   ├── BadgeController.java          # 勋章系统
-│   ├── UserController.java           # 用户信息（等级/个人信息 GET+PUT）
-│   ├── FeedbackController.java       # 错误反馈
-│   └── ImportController.java         # 数据导入（管理后台）
-├── service/（10 个）
+│   ├── ProgressController.java       # 学习进度（@CurrentUser）
+│   ├── VocabularyController.java     # 生词本（@CurrentUser）
+│   ├── CheckinController.java        # 打卡记录（@CurrentUser）
+│   ├── BadgeController.java          # 勋章系统（@CurrentUser）
+│   ├── UserController.java           # 用户信息（等级/个人信息 GET+PUT）（@CurrentUser）
+│   ├── FeedbackController.java       # 错误反馈（@CurrentUser）
+│   └── ImportController.java         # 数据导入（管理后台，放行）
+├── service/（11 个）
+│   ├── AuthService.java              # 微信 code2session → openId → 查找/创建用户 → 签发 JWT
 │   ├── WordBookService.java
 │   ├── StudyService.java             # 核心：艾宾浩斯调度、答题、完成
 │   ├── ArticleService.java
@@ -135,8 +147,9 @@ src/main/java/com/bogutongjin/
 │   ├── FeedbackMapper.java
 │   └── DailyTaskMapper.java
 ├── entity/（21 个，与 mapper 一一对应，略）
-├── dto/（4 个）
+├── dto/（5 个）
 │   ├── SourceData.java               # 数据源 JSON 结构（嵌套类定义完整层级）
+│   ├── LoginRequest.java             # 微信登录请求 { code }
 │   ├── SubmitAnswerRequest.java
 │   ├── CompleteStudyRequest.java
 │   ├── SaveUserInfoRequest.java
@@ -150,28 +163,54 @@ data/
 
 ## API 端点对照表（Controller ↔ 前端）
 
-| 分类 | Controller | 方法 | 路径 | 对应前端 API |
-|------|-----------|------|------|-------------|
-| 词书 | WordBookController | GET | `/api/wordbooks` | fetchWordBooks |
-| 词书 | WordBookController | GET | `/api/wordbooks/{id}` | fetchWordBookDetail |
-| 学习 | StudyController | GET | `/api/study/today?wordBookId=&dailyNew=&dailyReview=&userId=` | fetchTodayTask |
-| 学习 | StudyController | POST | `/api/study/answer?userId=` | submitAnswer |
-| 学习 | StudyController | POST | `/api/study/complete?userId=` | completeStudy |
-| 进度 | ProgressController | GET | `/api/progress?wordBookId=&userId=` | fetchProgress |
-| 生词本 | VocabularyController | GET | `/api/vocabulary?wordBookId=&tab=&userId=` | fetchVocabulary |
-| 打卡 | CheckinController | GET | `/api/checkin?year=&month=&userId=` | fetchCheckinRecords |
-| 勋章 | BadgeController | GET | `/api/badges?userId=` | fetchBadges |
-| 用户 | UserController | GET | `/api/user/profile?userId=` | fetchUserProfile |
-| 用户 | UserController | GET | `/api/user/info?userId=` | fetchUserInfo |
-| 用户 | UserController | PUT | `/api/user/info?userId=` | saveUserInfo |
-| 名篇 | ArticleController | GET | `/api/articles?category=&textbook=` | fetchArticles |
-| 名篇 | ArticleController | GET | `/api/articles/{id}` | fetchArticleDetail |
-| 内容 | ContentController | GET | `/api/words/{id}` | fetchWordDetail |
-| 内容 | ContentController | GET | `/api/full-text/{sentenceId}` | fetchFullText |
-| 反馈 | FeedbackController | POST | `/api/feedback?userId=` | submitFeedback |
-| 管理 | ImportController | POST | `/api/admin/import` | （管理后台，无前端对应） |
+| 分类 | Controller | 方法 | 路径 | 认证 | 对应前端 API |
+|------|-----------|------|------|------|-------------|
+| 认证 | AuthController | POST | `/api/auth/login` | — | app.ts 登录流程（wx.login → code → token） |
+| 词书 | WordBookController | GET | `/api/wordbooks` | Bearer | fetchWordBooks |
+| 词书 | WordBookController | GET | `/api/wordbooks/{id}` | Bearer | fetchWordBookDetail |
+| 学习 | StudyController | GET | `/api/study/today?wordBookId=&dailyNew=&dailyReview=` | Bearer | fetchTodayTask |
+| 学习 | StudyController | POST | `/api/study/answer` | Bearer | submitAnswer |
+| 学习 | StudyController | POST | `/api/study/complete` | Bearer | completeStudy |
+| 进度 | ProgressController | GET | `/api/progress?wordBookId=` | Bearer | fetchProgress |
+| 生词本 | VocabularyController | GET | `/api/vocabulary?wordBookId=&tab=` | Bearer | fetchVocabulary |
+| 打卡 | CheckinController | GET | `/api/checkin?year=&month=` | Bearer | fetchCheckinRecords |
+| 勋章 | BadgeController | GET | `/api/badges` | Bearer | fetchBadges |
+| 用户 | UserController | GET | `/api/user/profile` | Bearer | fetchUserProfile |
+| 用户 | UserController | GET | `/api/user/info` | Bearer | fetchUserInfo |
+| 用户 | UserController | PUT | `/api/user/info` | Bearer | saveUserInfo |
+| 名篇 | ArticleController | GET | `/api/articles?category=&textbook=` | Bearer | fetchArticles |
+| 名篇 | ArticleController | GET | `/api/articles/{id}` | Bearer | fetchArticleDetail |
+| 内容 | ContentController | GET | `/api/words/{id}` | Bearer | fetchWordDetail |
+| 内容 | ContentController | GET | `/api/full-text/{sentenceId}` | Bearer | fetchFullText |
+| 反馈 | FeedbackController | POST | `/api/feedback` | Bearer | submitFeedback |
+| 管理 | ImportController | POST | `/api/admin/import` | — | （管理后台，无前端对应） |
 
-> **注意**：当前所有接口通过 `userId` 请求参数传递用户身份（默认值 `1`），未集成微信登录。后续改为从 JWT token 中解析 userId。
+> **认证机制**：`LoginInterceptor` 拦截 `/api/**`（放行 `/api/auth/**`、`/api/admin/**`），从 `Authorization: Bearer <token>` 解析 JWT 获取 userId，写入 `request.setAttribute("userId")`。Controller 通过 `@CurrentUser Long userId` 参数注入（由 `CurrentUserResolver` 从 request attribute 读取）。前端 `utils/request.ts` 自动带 token、401 时自动 re-login 并重试。
+
+## 认证流程
+
+```
+小程序 wx.login() → code
+    ↓
+POST /api/auth/login { code }
+    ↓
+AuthService.code2session(code) → 微信 API → openId
+    ↓
+UserMapper 查找 openId → 不存在则 INSERT 创建新用户
+    ↓
+JwtUtil.generate(userId) → 签发 JWT（有效期 7 天，yml 可配）
+    ↓
+返回 { token, userId }
+    ↓
+小程序存储 token → 后续请求带 Authorization: Bearer <token>
+    ↓
+LoginInterceptor 解析 JWT → @CurrentUser 注入 userId → Controller
+```
+
+- 新用户首次登录自动创建账号（无需注册流程）
+- Token 过期（401）→ 前端自动 re-login 并重试请求（内置防并发）
+- JWT payload 仅含 userId（sub），无其他敏感信息
+- /api/auth/login 和 /api/admin/import 两个路径放行，不校验 token
 
 ## 数据库设计（21 张表）
 
@@ -208,7 +247,7 @@ DDL 位于 `data/schema.sql`，覆盖完整业务模型：
 ### 分层架构
 
 ```
-Controller（路由 + 参数接收，@Valid 校验）
+Controller（路由 + 参数接收，@Valid 校验，@CurrentUser 获取 userId）
     ↓
 Service（业务逻辑 + @Transactional 事务）
     ↓
@@ -220,7 +259,7 @@ Database（MySQL 8.0，21 张表）
 - **Service 层返回值**：统一 `Map<String, Object>`，Controller 用 `Result.ok(map)` 包装后返回。
 - **分页**：MyBatis-Plus 分页插件已配置（`MyBatisPlusConfig`），直接使用 `Page<T>` 即可。
 - **事务**：`StudyService` 和 `DataImportService` 核心方法标注 `@Transactional`。
-- **异常处理**：`GlobalExceptionHandler` 拦截 4 类异常（参数校验、资源不存在、业务异常、未知异常），统一返回 `Result.fail(code, msg)`。
+- **异常处理**：`GlobalExceptionHandler` 拦截 5 类异常（参数校验、认证、资源不存在、业务异常、未知异常），统一返回 `Result.fail(code, msg)`。
 
 ### 冷启动数据导入
 
@@ -260,11 +299,12 @@ Database（MySQL 8.0，21 张表）
 
 ### 已完成
 
-- ✅ 11 个 Controller 完整对接前端 15 个 API 端点
+- ✅ 12 个 Controller 完整对接前端 15 个 API 端点 + 1 个登录接口 + 1 个管理导入接口
+- ✅ 微信登录认证体系：code2session → openId 查找/创建用户 → JWT 签发 → LoginInterceptor 校验 → @CurrentUser 参数注入（含开发模式 AppSecret 兜底）
 - ✅ 21 张表 DDL（含完整索引、外键、注释）
 - ✅ 冷启动数据导入（188KB source.json → 13 张业务表，JDBC 批处理 + 事务保护）
 - ✅ 统一响应格式 `Result<T>`（`code=0` 约定）
-- ✅ 全局异常处理（参数校验/资源不存在/业务异常/未知异常）
+- ✅ 全局异常处理（参数校验/认证/资源不存在/业务异常/未知异常）
 - ✅ 跨域配置（允许所有来源，适配小程序开发调试）
 - ✅ MyBatis-Plus 分页插件
 - ✅ 艾宾浩斯引擎服务端实现（与前端 `utils/ebbinghaus.ts` 逻辑对齐）
@@ -273,19 +313,21 @@ Database（MySQL 8.0，21 张表）
 
 ### 待开发
 
-- **微信登录**：JWT 依赖已引入（jjwt 0.12.3），需实现微信 code2Session 换取 openId → 签发 token → 拦截器校验。当前所有接口用 `userId` 参数模拟用户身份
-- **用户注册**：首次登录时自动创建 user 记录
-- **接口鉴权**：JWT 拦截器统一校验，从 token 中解析 userId（替换当前 `@RequestParam userId` 模式）
 - **单元测试**：测试依赖已引入（`spring-boot-starter-test`），尚未编写
+- **深层字词标注**：更多数据覆盖
+
+### ⚠️ 上线前必须完成
+
+- **替换 `WECHAT_APP_SECRET` 为真实值**：当前开发模式未配 AppSecret 时固定使用 `dev-openid` 兜底（`AuthService.resolveOpenId()`），仅适合本地开发。上线前需在微信公众平台 → 开发管理 → 开发设置 → AppSecret 获取真实值，设为环境变量 `WECHAT_APP_SECRET`。
 
 ## 与前端的关系
 
 - **前端工程路径**：`/Users/zhutx/weixin_applet_space/classical-chinese-applet/`
-- **前端 API 层**：`api/index.ts`（15 个端点，`USE_MOCK = true` 默认 Mock 模式）
-- **前端请求封装**：`utils/request.ts`（`BASE_URL` 占位值 `https://api.example.com`）
+- **前端 API 层**：`api/index.ts`（15 个端点，`USE_MOCK = false`）
+- **前端请求封装**：`utils/request.ts`（`BASE_URL = 'http://localhost:8080'`，自动带 JWT、401 自动 re-login）
 - **对接方式**：
-  1. 前端将 `api/index.ts` 中 `USE_MOCK` 设为 `false`
-  2. 前端将 `utils/request.ts` 中 `BASE_URL` 替换为 `http://localhost:8080`
+  1. 前端 `app.ts` 启动时调用 `wx.login()` → `POST /api/auth/login` 获取 token
+  2. 前端 `utils/request.ts` 自动在请求头带 `Authorization: Bearer <token>`
   3. 后端启动后先调用 `POST /api/admin/import` 导入冷启动数据
 - **前端 CLAUDE.md**：包含完整的前端架构、15 页面清单、API 端点表、样式体系、页面开发规范等
 

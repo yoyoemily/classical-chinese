@@ -29,6 +29,10 @@ wechat:
   app-id: wxc50759cc61eda134
   app-secret: ${WECHAT_APP_SECRET:}
 
+jwt:
+  secret: ${JWT_SECRET:bogutongjin-jwt-secret-key-2024-miniapp}
+  expire-hours: 168   # 7 天
+
 app:
   source-data-path: classpath:source.json
 

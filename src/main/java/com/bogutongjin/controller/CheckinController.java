@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.service.CheckinService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class CheckinController {
     public Result<List<String>> getCheckinRecords(
             @RequestParam Integer year,
             @RequestParam Integer month,
-            @RequestParam(required = false, defaultValue = "1") Long userId) {
+            @CurrentUser Long userId) {
         return Result.ok(checkinService.getCheckinRecords(userId, year, month));
     }
 }
