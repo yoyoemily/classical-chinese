@@ -48,9 +48,9 @@ public class UserService {
         User user = userMapper.selectById(userId);
         if (user == null) return;
 
-        user.setAvatarUrl(avatarUrl);
-        user.setNickName(nickName);
-        user.setGrade(grade);
+        if (avatarUrl != null && !avatarUrl.isEmpty()) user.setAvatarUrl(avatarUrl);
+        if (nickName != null && !nickName.isEmpty()) user.setNickName(nickName);
+        if (grade != null) user.setGrade(grade);  // grade 允许设为空字符串（"不设置"）
         userMapper.updateById(user);
     }
 

@@ -4,7 +4,6 @@ import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.SaveUserInfoRequest;
 import com.bogutongjin.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +32,10 @@ public class UserController {
         return Result.ok(info);
     }
 
-    /** 保存个人信息 */
+    /** 保存个人信息——字段选填，传哪个改哪个 */
     @PutMapping("/info")
     public Result<Void> saveInfo(
-            @Valid @RequestBody SaveUserInfoRequest req,
+            @RequestBody SaveUserInfoRequest req,
             @CurrentUser Long userId) {
         userService.saveUserInfo(userId, req.getAvatarUrl(), req.getNickName(), req.getGrade());
         return Result.ok();
