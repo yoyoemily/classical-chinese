@@ -1,16 +1,18 @@
 package com.bogutongjin.service;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
 import com.bogutongjin.dto.SourceData;
 import com.bogutongjin.dto.SourceData.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,9 +29,25 @@ public class DataImportService {
 
     private final JdbcTemplate jdbc;
 
+    @Value("${app.source-data-path:classpath:source.json}")
+    private String sourceDataPath;
+
     @Transactional(rollbackFor = Exception.class)
-    public void importFromJson(String jsonPath) {
-        String json = FileUtil.readString(jsonPath, StandardCharsets.UTF_8);
+    public void importFromJson() {
+        String json;
+        String path = sourceDataPath;
+        try {
+            if (path.startsWith("classpath:")) {
+                ClassPathResource resource = new ClassPathResource(path.substring("classpath:".length()));
+                try (InputStream in = resource.getInputStream()) {
+                    json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                }
+            } else {
+                json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Path.of(path)), StandardCharsets.UTF_8);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("读取数据源文件失败: " + sourceDataPath, e);
+        }
         SourceData source = JSONUtil.toBean(json, SourceData.class);
         log.info("数据源解析完成: {} 本词书, {} 篇名篇, {} 枚勋章",
                 source.getWordBooks().size(),

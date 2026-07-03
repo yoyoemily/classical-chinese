@@ -18,10 +18,9 @@ public class ImportController {
     private final DataImportService importService;
 
     @PostMapping("/import")
-    public Result<Map<String, Object>> doImport(@RequestBody(required = false) Map<String, String> body) {
-        String path = body != null ? body.getOrDefault("path", "data/source.json") : "data/source.json";
+    public Result<Map<String, Object>> doImport() {
         long start = System.currentTimeMillis();
-        importService.importFromJson(path);
+        importService.importFromJson();
         long elapsed = System.currentTimeMillis() - start;
         return Result.ok(Map.of("success", true, "elapsedMs", elapsed, "message", "数据源导入完成"));
     }

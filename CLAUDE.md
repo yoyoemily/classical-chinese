@@ -2,6 +2,17 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 工作流程（必读）
+
+**修改任何代码之前，必须先给出方案并等待确认，再动手执行。** 流程如下：
+
+1. **分析**：阅读相关代码，理清问题根因
+2. **方案**：列出受影响文件、具体改动内容、改动原因，输出给用户确认
+3. **执行**：用户确认后再动手改代码
+4. **更新手册**：改动完成后同步更新本文件中的相关描述（如架构、配置项、API 签名等）
+
+> 此规则适用于所有代码修改。typo 修正、单行注释修正等极微小的修正可酌情跳过第 2 步，但仍需在第 4 步更新手册。
+
 ## 项目概述
 
 博古通今（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 15 个 HTTP API 端点，基于艾宾浩斯遗忘曲线管理学习与复习节奏。
@@ -215,10 +226,11 @@ Database（MySQL 8.0，21 张表）
 `POST /api/admin/import` → `DataImportService.importFromJson()`
 
 流程：
-1. 读取 `source.json`（188KB，Jackson 反序列化 → `SourceData` DTO）
-2. `SET FOREIGN_KEY_CHECKS = 0` → 清空 13 张业务表（保留 user 相关表数据）→ 恢复外键检查
-3. 批量导入勋章 → 词书（含字词、义项、句子、干扰项、同音字、形近字）→ 名篇（含句子、生词、逐字标注、关联字词）
-4. JDBC Template 批处理（`jdbc.batchUpdate`），单事务保护
+1. 从 `@Value("${app.source-data-path}")` 读取配置的路径，支持 `classpath:` 前缀（`ClassPathResource`）和文件系统路径两种方式
+2. 读取 `source.json`（188KB，Hutool JSONUtil 反序列化 → `SourceData` DTO）
+3. `SET FOREIGN_KEY_CHECKS = 0` → 清空 13 张业务表（保留 user 相关表数据）→ 恢复外键检查
+4. 批量导入勋章 → 词书（含字词、义项、句子、干扰项、同音字、形近字）→ 名篇（含句子、生词、逐字标注、关联字词）
+5. JDBC Template 批处理（`jdbc.batchUpdate`），单事务保护
 
 数据源结构与前端 `data/source.json` 完全相同：3 词书 75 字 + 20 篇名篇 + 8 勋章。
 
