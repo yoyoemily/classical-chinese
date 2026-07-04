@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: classical-chinese
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://scroll.rwlb.rds.aliyuncs.com:3306/classical_chinese?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: cc_admin
+    password: ${MYSQL_PASSWORD:fqg#U2%#_ODD32fkp}
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+wechat:
+  app-id: wxc50759cc61eda134
+  app-secret: ${WECHAT_APP_SECRET:}
+
+jwt:
+  secret: ${JWT_SECRET:bogutongjin-jwt-secret-key-2024-miniapp}
+  expire-hours: 168   # 7 天
+
+app:
+  source-data-path: classpath:source.json
+
+logging:
+  level:
+    com.bogutongjin: DEBUG
