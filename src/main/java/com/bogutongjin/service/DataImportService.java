@@ -160,6 +160,8 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?, ?, ?)";
         String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, `role`, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
+        String glossarySql = "INSERT INTO article_glossary (article_sentence_id, word, definition, sort_order) " +
+                "VALUES (?, ?, ?, ?)";
 
         for (SourceArticle a : articles) {
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
@@ -189,6 +191,15 @@ public class DataImportService {
                     }
                     jdbc.batchUpdate(annotationSql, caBatch);
                 }
+
+                if (CollUtil.isNotEmpty(s.getGlossary())) {
+                    List<Object[]> gBatch = new ArrayList<>();
+                    for (int j = 0; j < s.getGlossary().size(); j++) {
+                        SourceGlossaryItem g = s.getGlossary().get(j);
+                        gBatch.add(new Object[]{sentenceId, g.getWord(), g.getDefinition(), j});
+                    }
+                    jdbc.batchUpdate(glossarySql, gBatch);
+                }
             }
         }
         log.info("名篇导入完成: {} 篇", articles.size());
@@ -213,7 +224,7 @@ public class DataImportService {
 
     private void truncateAll() {
         String[] tables = {
-                "article_related_word", "article_char_annotation", "article_keyword",
+                "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
                 "article_sentence", "article",
                 "sentence_distractor", "sentence", "meaning",
                 "similar_homophone", "similar_shape",

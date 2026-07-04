@@ -162,7 +162,7 @@ CREATE TABLE article_keyword (
 ) ENGINE=InnoDB COMMENT='名篇句子内联生词';
 
 -- ============================================
--- 11. 名篇逐字标注
+-- 11. 名篇逐字标注（已废弃，保留兼容，典故注释已改用 article_glossary 表）
 -- ============================================
 CREATE TABLE article_char_annotation (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -173,6 +173,18 @@ CREATE TABLE article_char_annotation (
   sort_order           INT          NOT NULL DEFAULT 0 COMMENT '字符序号',
   INDEX idx_as_id (article_sentence_id)
 ) ENGINE=InnoDB COMMENT='名篇逐字标注';
+
+-- ============================================
+-- 11b. 名篇典故注释
+-- ============================================
+CREATE TABLE article_glossary (
+  id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  article_sentence_id  BIGINT       NOT NULL COMMENT '所属名篇句子ID',
+  word                 VARCHAR(64)  NOT NULL COMMENT '被标注的词或短语',
+  definition           VARCHAR(512) NOT NULL COMMENT '文化背景释义',
+  sort_order           INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  INDEX idx_ag_sid (article_sentence_id)
+) ENGINE=InnoDB COMMENT='名篇典故注释';
 
 -- ============================================
 -- 12. 名篇关联字词（多对多）

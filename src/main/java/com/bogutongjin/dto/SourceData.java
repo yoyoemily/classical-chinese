@@ -100,6 +100,7 @@ public class SourceData {
         private List<SourceKeyWord> keyWords;
         private String audioUrl;
         private List<SourceCharAnnotation> charAnnotations;
+        private List<SourceGlossaryItem> glossary;
     }
 
     @Data
@@ -114,6 +115,12 @@ public class SourceData {
     public static class SourceCharAnnotation {
         private String charText;
         private String role;
+        private String definition;
+    }
+
+    @Data
+    public static class SourceGlossaryItem {
+        private String word;
         private String definition;
     }
 

@@ -18,6 +18,7 @@ public class ArticleService {
     private final ArticleSentenceMapper articleSentenceMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleCharAnnotationMapper articleCharAnnotationMapper;
+    private final ArticleGlossaryMapper articleGlossaryMapper;
     private final ArticleRelatedWordMapper articleRelatedWordMapper;
 
     public List<Map<String, Object>> getArticles(String category, String textbook) {
@@ -66,7 +67,7 @@ public class ArticleService {
                 return km;
             }).collect(Collectors.toList()));
 
-            // 逐字标注
+            // 逐字标注（废弃，保留兼容）
             List<ArticleCharAnnotation> annotations = articleCharAnnotationMapper.selectList(
                     new LambdaQueryWrapper<ArticleCharAnnotation>()
                             .eq(ArticleCharAnnotation::getArticleSentenceId, s.getId())
@@ -77,6 +78,18 @@ public class ArticleService {
                 cm.put("role", ca.getRole());
                 cm.put("definition", ca.getDefinition());
                 return cm;
+            }).collect(Collectors.toList()));
+
+            // 典故注释
+            List<ArticleGlossary> glossaryList = articleGlossaryMapper.selectList(
+                    new LambdaQueryWrapper<ArticleGlossary>()
+                            .eq(ArticleGlossary::getArticleSentenceId, s.getId())
+                            .orderByAsc(ArticleGlossary::getSortOrder));
+            sm.put("glossary", glossaryList.stream().map(g -> {
+                Map<String, Object> gm = new LinkedHashMap<>();
+                gm.put("word", g.getWord());
+                gm.put("definition", g.getDefinition());
+                return gm;
             }).collect(Collectors.toList()));
 
             return sm;
