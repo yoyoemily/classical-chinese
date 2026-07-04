@@ -14620,7 +14620,9 @@
           "wordType": "虚词"
         }
       ],
-      "sortOrder": 0
+      "sortOrder": 0,
+      "examLevel": "zhongkao",
+      "initialized": true
     },
     {
       "id": "wb_zhongkao_tongjia",
@@ -16536,7 +16538,9 @@
           "wordType": "通假字"
         }
       ],
-      "sortOrder": 1
+      "sortOrder": 1,
+      "examLevel": "zhongkao",
+      "initialized": true
     },
     {
       "id": "wb_zhongkao_gujinyi",
@@ -16548,7 +16552,9 @@
       "coverColor": "#6B8E7B",
       "totalWords": 0,
       "words": [],
-      "sortOrder": 2
+      "sortOrder": 2,
+      "examLevel": "zhongkao",
+      "initialized": false
     },
     {
       "id": "wb_zhongkao_cileihuoyong",
@@ -16560,7 +16566,65 @@
       "coverColor": "#8B7D6B",
       "totalWords": 0,
       "words": [],
-      "sortOrder": 3
+      "sortOrder": 3,
+      "examLevel": "zhongkao",
+      "initialized": false
+    },
+    {
+      "id": "wb_gaokao_shixu",
+      "name": "高考实词虚词一本通",
+      "description": "收录高考必考高频文言实词与虚词，涵盖一词多义核心考点，每个词配有真实典籍例句与实战题目。",
+      "category": "high_school",
+      "coverColor": "#3a5a4e",
+      "studyMode": "standard",
+      "identifyPrompt": null,
+      "examLevel": "gaokao",
+      "initialized": false,
+      "totalWords": 0,
+      "sortOrder": 4,
+      "words": []
+    },
+    {
+      "id": "wb_gaokao_tongjia",
+      "name": "高考通假字一本通",
+      "description": "收录高考必考高频通假字，每个字包含本义与通假义，配备真实古籍例句。",
+      "category": "tongjia",
+      "coverColor": "#b9995e",
+      "studyMode": "identify_first",
+      "identifyPrompt": "请从句子中找出通假字",
+      "examLevel": "gaokao",
+      "initialized": false,
+      "totalWords": 0,
+      "sortOrder": 5,
+      "words": []
+    },
+    {
+      "id": "wb_gaokao_gujinyi",
+      "name": "高考古今异义一本通",
+      "description": "收录高考必考高频古今异义词，对比古今词义差异，帮助掌握文言文阅读中的词义辨析。",
+      "category": "ancient_modern",
+      "coverColor": "#5B7E6B",
+      "studyMode": "identify_first",
+      "identifyPrompt": "请从句子中找出古今异义词",
+      "examLevel": "gaokao",
+      "initialized": false,
+      "totalWords": 0,
+      "sortOrder": 6,
+      "words": []
+    },
+    {
+      "id": "wb_gaokao_cileihuoyong",
+      "name": "高考词类活用一本通",
+      "description": "收录高考常考的词类活用现象，涵盖名词作动词、使动用法、意动用法等六大类型。",
+      "category": "flexible_usage",
+      "coverColor": "#7B6D5B",
+      "studyMode": "identify_first",
+      "identifyPrompt": "请从句子中找出词类活用字",
+      "examLevel": "gaokao",
+      "initialized": false,
+      "totalWords": 0,
+      "sortOrder": 7,
+      "words": []
     }
   ],
   "articles": [

@@ -19,6 +19,8 @@ CREATE TABLE word_book (
   cover_color     VARCHAR(9)   NOT NULL DEFAULT '#4a6a5e' COMMENT '封面主题色',
   study_mode      VARCHAR(20)  NOT NULL DEFAULT 'standard' COMMENT '学习模式: standard/identify_first',
   identify_prompt VARCHAR(100) DEFAULT NULL COMMENT '前置步骤提示文案',
+  exam_level      VARCHAR(10)  NOT NULL DEFAULT 'zhongkao' COMMENT '考试级别: zhongkao/gaokao',
+  initialized     TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已完成数据初始化',
   total_words     INT          NOT NULL DEFAULT 0 COMMENT '收录字词总数',
   sort_order      INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -15,6 +15,8 @@ public class WordBook {
     private String coverColor;
     private String studyMode;
     private String identifyPrompt;
+    private String examLevel;
+    private Boolean initialized;
     private Integer totalWords;
     private Integer sortOrder;
 

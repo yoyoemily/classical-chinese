@@ -34,6 +34,8 @@ public class WordBookService {
                     map.put("coverColor", b.getCoverColor());
                     map.put("studyMode", b.getStudyMode());
                     map.put("identifyPrompt", b.getIdentifyPrompt());
+                    map.put("examLevel", b.getExamLevel());
+                    map.put("initialized", b.getInitialized());
                     map.put("totalWords", b.getTotalWords());
                     return map;
                 }).collect(Collectors.toList());
@@ -116,6 +118,8 @@ public class WordBookService {
         result.put("coverColor", book.getCoverColor());
         result.put("studyMode", book.getStudyMode());
         result.put("identifyPrompt", book.getIdentifyPrompt());
+        result.put("examLevel", book.getExamLevel());
+        result.put("initialized", book.getInitialized());
         result.put("totalWords", book.getTotalWords());
         result.put("words", wordList);
         return result;
