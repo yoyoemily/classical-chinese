@@ -12,15 +12,17 @@ USE classical_chinese;
 -- 1. 词书
 -- ============================================
 CREATE TABLE word_book (
-  id           VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '词书ID，如 wb_content_001',
-  name         VARCHAR(64)  NOT NULL COMMENT '词书名称',
-  description  VARCHAR(512) NOT NULL DEFAULT '' COMMENT '词书简介',
-  category     VARCHAR(24)  NOT NULL DEFAULT 'middle_school' COMMENT '分类: middle_school/high_school/function/tongjia/ancient_modern',
-  cover_color  VARCHAR(9)   NOT NULL DEFAULT '#4a6a5e' COMMENT '封面主题色',
-  total_words  INT          NOT NULL DEFAULT 0 COMMENT '收录字词总数',
-  sort_order   INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id              VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '词书ID，如 wb_content_001',
+  name            VARCHAR(64)  NOT NULL COMMENT '词书名称',
+  description     VARCHAR(512) NOT NULL DEFAULT '' COMMENT '词书简介',
+  category        VARCHAR(24)  NOT NULL DEFAULT 'middle_school' COMMENT '分类: middle_school/high_school/function/tongjia/ancient_modern/flexible_usage',
+  cover_color     VARCHAR(9)   NOT NULL DEFAULT '#4a6a5e' COMMENT '封面主题色',
+  study_mode      VARCHAR(20)  NOT NULL DEFAULT 'standard' COMMENT '学习模式: standard/identify_first',
+  identify_prompt VARCHAR(100) DEFAULT NULL COMMENT '前置步骤提示文案',
+  total_words     INT          NOT NULL DEFAULT 0 COMMENT '收录字词总数',
+  sort_order      INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category)
 ) ENGINE=InnoDB COMMENT='词书';
 

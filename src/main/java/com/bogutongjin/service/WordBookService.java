@@ -23,7 +23,8 @@ public class WordBookService {
 
     /** 获取词书列表（摘要） */
     public List<Map<String, Object>> getWordBooks() {
-        return wordBookMapper.selectList(null).stream()
+        return wordBookMapper.selectList(
+                new LambdaQueryWrapper<WordBook>().orderByAsc(WordBook::getSortOrder)).stream()
                 .map(b -> {
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("id", b.getId());
@@ -31,6 +32,8 @@ public class WordBookService {
                     map.put("description", b.getDescription());
                     map.put("category", b.getCategory());
                     map.put("coverColor", b.getCoverColor());
+                    map.put("studyMode", b.getStudyMode());
+                    map.put("identifyPrompt", b.getIdentifyPrompt());
                     map.put("totalWords", b.getTotalWords());
                     return map;
                 }).collect(Collectors.toList());
@@ -111,6 +114,8 @@ public class WordBookService {
         result.put("description", book.getDescription());
         result.put("category", book.getCategory());
         result.put("coverColor", book.getCoverColor());
+        result.put("studyMode", book.getStudyMode());
+        result.put("identifyPrompt", book.getIdentifyPrompt());
         result.put("totalWords", book.getTotalWords());
         result.put("words", wordList);
         return result;

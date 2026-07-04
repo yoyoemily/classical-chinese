@@ -31,7 +31,10 @@ public class SourceData {
         private String description;
         private String category;
         private String coverColor;
+        private String studyMode;
+        private String identifyPrompt;
         private Integer totalWords;
+        private Integer sortOrder;
         private List<SourceWord> words;
     }
 

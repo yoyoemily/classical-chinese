@@ -96,8 +96,10 @@ public class DataImportService {
 
     private void insertWordBook(SourceWordBook b) {
         jdbc.update(
-                "INSERT INTO word_book (id, name, description, category, cover_color, total_words, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                b.getId(), b.getName(), b.getDescription(), b.getCategory(), b.getCoverColor(), b.getTotalWords(), 0);
+                "INSERT INTO word_book (id, name, description, category, cover_color, study_mode, identify_prompt, total_words, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                b.getId(), b.getName(), b.getDescription(), b.getCategory(), b.getCoverColor(),
+                nvl(b.getStudyMode(), "standard"), b.getIdentifyPrompt(),
+                b.getTotalWords(), b.getSortOrder() != null ? b.getSortOrder() : 0);
     }
 
     private void insertWord(String bookId, SourceWord w) {
