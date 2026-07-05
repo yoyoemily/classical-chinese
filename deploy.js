@@ -23,9 +23,9 @@ const CONFIG = {
     LOCAL_JAR: resolve(process.cwd(), 'classical-chinese/target/classical-chinese.jar'),
 
     // SSH 配置
-    SSH_KEY: resolve(homedir(), '.ssh/dmit/id_rsa.pem'),
-    SSH_PORT: '33661',
-    SERVER: 'service@182.16.107.30',
+    SSH_KEY: resolve(homedir(), '.ssh/aliyun/yinque-key.pem'),
+    SSH_PORT: '31749',
+    SERVER: 'service@47.97.254.112',
 
     // 远程目录
     REMOTE_DIR: '/home/service',
