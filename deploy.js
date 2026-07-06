@@ -20,7 +20,7 @@ import { homedir } from 'os'
 // ==================== 配置（按需修改）====================
 const CONFIG = {
     // 本地 jar 包路径（相对于脚本位置或绝对路径）
-    LOCAL_JAR: resolve(process.cwd(), 'classical-chinese/target/classical-chinese.jar'),
+    LOCAL_JAR: resolve(process.cwd(), 'target/classical-chinese.jar'),
 
     // SSH 配置
     SSH_KEY: resolve(homedir(), '.ssh/aliyun/yinque-key.pem'),
