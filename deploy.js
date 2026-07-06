@@ -30,7 +30,7 @@ const CONFIG = {
     // 远程目录
     REMOTE_DIR: '/home/service',
     REMOTE_JAR_NAME: 'classical-chinese.jar',
-    RESTART_SCRIPT: '.classical-chinese.sh restart'
+    RESTART_SCRIPT: './classical-chinese.sh restart'
 }
 // =====================================================
 
