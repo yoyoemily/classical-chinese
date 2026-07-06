@@ -3,7 +3,7 @@
 AppName=classical-chinese.jar
 
 # JVM参数
-JVM_OPTS="-Dname=$AppName  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDateStamps  -XX:+PrintGCDetails -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+UseParallelGC -XX:+UseParallelOldGC"
+JVM_OPTS="-Dname=$AppName  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Xlog:gc*:file=$LOG_PATH.gc:time -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+UseParallelGC"
 APP_OPTS="-Dspring.profiles.active=prd"
 APP_HOME=`pwd`
 LOG_PATH=$APP_HOME/logs/$AppName.log
@@ -27,8 +27,18 @@ function start()
                if [ x"$PID" != x"" ]; then
                    echo "$AppName is running..."
                else
-                       nohup java -jar $JVM_OPTS $APP_OPTS  $AppName > /dev/null 2>&1 &
-                       echo "Start $AppName success..."
+                       source /etc/profile
+                       source ~/.bashrc 2>/dev/null
+                       mkdir -p $APP_HOME/logs
+                       nohup java -jar $JVM_OPTS $APP_OPTS $AppName > $LOG_PATH 2>&1 &
+                       sleep 3
+                       PID=`ps -ef |grep java|grep $AppName|grep -v grep|awk '{print $2}'`
+                       if [ x"$PID" != x"" ]; then
+                           echo "Start $AppName success (pid:$PID)"
+                       else
+                           echo "Start $AppName failed, check log: $LOG_PATH"
+                           tail -20 $LOG_PATH
+                       fi
                fi
 }
 
