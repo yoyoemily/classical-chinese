@@ -91,6 +91,7 @@
     </dependencies>
 
     <build>
+        <finalName>classical-chinese</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
