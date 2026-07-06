@@ -3,9 +3,9 @@ spring:
     name: classical-chinese
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/classical_chinese?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
-    username: root
-    password: ${MYSQL_PASSWORD:123456}
+    url: jdbc:mysql://mars-x.rwlb.rds.aliyuncs.com:3306/classical_chinese?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: cc_admin
+    password: ${MYSQL_PASSWORD:fqg#U2%#_ODD32fkp}
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
@@ -26,8 +26,8 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 wechat:
-  app-id: wxa192d18a50c75dca
-  app-secret: ${WECHAT_APP_SECRET:3e60f050d617781d3a89c9a209d053c4}
+  app-id: wxc50759cc61eda134
+  app-secret: ${WECHAT_APP_SECRET:}
 
 jwt:
   secret: ${JWT_SECRET:bogutongjin-jwt-secret-key-2024-miniapp}
