@@ -2,7 +2,7 @@ spring:
   application:
     name: classical-chinese
   profiles:
-    active: ${spring.profiles.active:dev}
+    active: ${spring.profiles.active:prd}
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
