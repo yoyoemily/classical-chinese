@@ -19,6 +19,7 @@ public class ContentService {
     private final SentenceDistractorMapper sentenceDistractorMapper;
     private final SimilarHomophoneMapper similarHomophoneMapper;
     private final SimilarShapeMapper similarShapeMapper;
+    private final WordBookMapper wordBookMapper;
 
     public Map<String, Object> getWordDetail(String wordId) {
         Word word = wordMapper.selectById(wordId);
@@ -90,6 +91,47 @@ public class ContentService {
         result.put("title", sentence.getSource());
         result.put("author", "");
         result.put("content", sentence.getFullText());
+        return result;
+    }
+
+    /** 全局搜索字词 */
+    public List<Map<String, Object>> searchWords(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) return List.of();
+
+        List<Word> words = wordMapper.selectList(
+                new LambdaQueryWrapper<Word>().like(Word::getCharacter, keyword));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Word word : words) {
+            // 获取所有义项
+            List<Meaning> meanings = meaningMapper.selectList(
+                    new LambdaQueryWrapper<Meaning>().eq(Meaning::getWordId, word.getId())
+                            .orderByAsc(Meaning::getSortOrder));
+
+            List<Map<String, Object>> meaningList = new ArrayList<>();
+            for (Meaning m : meanings) {
+                Map<String, Object> mm = new LinkedHashMap<>();
+                mm.put("definition", m.getDefinition());
+                mm.put("example", m.getExample());
+                mm.put("translation", m.getTranslation());
+                mm.put("source", m.getSource());
+                meaningList.add(mm);
+            }
+
+            // 获取词书名称
+            String wordBookName = "";
+            WordBook book = wordBookMapper.selectById(word.getWordBookId());
+            if (book != null) wordBookName = book.getName();
+
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("wordId", word.getId());
+            item.put("character", word.getCharacter());
+            item.put("pinyin", word.getPinyin());
+            item.put("meanings", meaningList);
+            item.put("wordBookName", wordBookName);
+            item.put("wordBookId", word.getWordBookId());
+            result.add(item);
+        }
         return result;
     }
 }

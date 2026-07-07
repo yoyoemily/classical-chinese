@@ -357,3 +357,24 @@ CREATE TABLE daily_task (
   INDEX idx_user_id (user_id),
   INDEX idx_date (date)
 ) ENGINE=InnoDB COMMENT='每日学习任务';
+
+-- ============================================
+-- 22. 错题本
+-- ============================================
+CREATE TABLE study_mistake (
+  id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  user_id             BIGINT       NOT NULL COMMENT '用户ID',
+  word_id             VARCHAR(32)  NOT NULL COMMENT '字词ID',
+  word_book_id        VARCHAR(32)  NOT NULL COMMENT '词书ID',
+  sentence_text       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '答错时的原句',
+  wrong_answer        VARCHAR(128) NOT NULL DEFAULT '' COMMENT '用户错误答案',
+  correct_answer      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '正确答案',
+  mistake_count       INT          NOT NULL DEFAULT 1 COMMENT '累计错误次数',
+  last_mistake_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次答错时间',
+  consecutive_correct INT          NOT NULL DEFAULT 0 COMMENT '连续答对次数（达到阈值自动移出）',
+  created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_user_word (user_id, word_id),
+  INDEX idx_user_id (user_id),
+  INDEX idx_word_book_id (word_book_id)
+) ENGINE=InnoDB COMMENT='错题本';

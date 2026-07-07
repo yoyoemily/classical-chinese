@@ -45,4 +45,21 @@ public class StudyController {
             @CurrentUser Long userId) {
         return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount()));
     }
+
+    /** 获取错题本 */
+    @GetMapping("/mistakes")
+    public Result<Object> getMistakes(
+            @RequestParam(required = false) String wordBookId,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.getMistakes(userId, wordBookId));
+    }
+
+    /** 移除错题 */
+    @DeleteMapping("/mistakes/{wordId}")
+    public Result<Void> removeMistake(
+            @PathVariable String wordId,
+            @CurrentUser Long userId) {
+        studyService.removeMistake(userId, wordId);
+        return Result.ok();
+    }
 }

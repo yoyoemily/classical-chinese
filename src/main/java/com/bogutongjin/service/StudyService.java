@@ -30,6 +30,7 @@ public class StudyService {
     private final BadgeMapper badgeMapper;
     private final UserMapper userMapper;
     private final DailyTaskMapper dailyTaskMapper;
+    private final StudyMistakeMapper studyMistakeMapper;
 
     // -------------------- 今日任务 --------------------
 
@@ -151,6 +152,14 @@ public class StudyService {
         history.setCorrect(correct ? 1 : 0);
         history.setTimestampMs(System.currentTimeMillis());
         userAnswerHistoryMapper.insert(history);
+
+        // 答错：记录/更新错题本
+        if (!correct) {
+            recordMistake(userId, wordBookId, wordId, sentenceId, selectedOption);
+        } else {
+            // 答对：增加连续答对次数
+            incrementConsecutiveCorrect(userId, wordId);
+        }
 
         // 更新进度
         UserWordProgress progress = userWordProgressMapper.selectOne(
@@ -326,5 +335,122 @@ public class StudyService {
     private int parseStage(String stage) {
         if (stage == null || "done".equals(stage)) return 6;
         try { return Integer.parseInt(stage); } catch (NumberFormatException e) { return 0; }
+    }
+
+    // -------------------- 错题本 --------------------
+
+    /** 记录错题：答错时调用 */
+    private void recordMistake(Long userId, String wordBookId, String wordId, String sentenceId, Integer selectedOption) {
+        // 查询已有记录
+        StudyMistake existing = studyMistakeMapper.selectOne(
+                new LambdaQueryWrapper<StudyMistake>()
+                        .eq(StudyMistake::getUserId, userId)
+                        .eq(StudyMistake::getWordId, wordId));
+
+        // 获取句子信息和干扰项
+        com.bogutongjin.entity.Sentence sentence = sentenceMapper.selectById(sentenceId);
+        String sentenceText = sentence != null ? sentence.getText() : "";
+        String correctAnswer = "选项" + (getCorrectMeaningIndex(sentenceId) + 1);
+        if (sentence != null) {
+            List<SentenceDistractor> distractors = sentenceDistractorMapper.selectList(
+                    new LambdaQueryWrapper<SentenceDistractor>()
+                            .eq(SentenceDistractor::getSentenceId, sentenceId)
+                            .orderByAsc(SentenceDistractor::getSortOrder));
+            int ci = sentence.getCorrectMeaningIndex();
+            if (ci >= 0 && ci < distractors.size()) {
+                correctAnswer = distractors.get(ci).getText();
+            }
+        }
+
+        String wrongAnswer = selectedOption != null && selectedOption >= 0
+                ? getDistractorText(sentenceId, selectedOption)
+                : "不知道";
+
+        if (existing != null) {
+            existing.setSentenceText(sentenceText);
+            existing.setWrongAnswer(wrongAnswer);
+            existing.setCorrectAnswer(correctAnswer);
+            existing.setMistakeCount(existing.getMistakeCount() + 1);
+            existing.setLastMistakeTime(java.time.LocalDateTime.now());
+            existing.setConsecutiveCorrect(0); // 再次答错，重置连续答对计数
+            studyMistakeMapper.updateById(existing);
+        } else {
+            StudyMistake mistake = new StudyMistake();
+            mistake.setUserId(userId);
+            mistake.setWordBookId(wordBookId);
+            mistake.setWordId(wordId);
+            mistake.setSentenceText(sentenceText);
+            mistake.setWrongAnswer(wrongAnswer);
+            mistake.setCorrectAnswer(correctAnswer);
+            mistake.setMistakeCount(1);
+            mistake.setLastMistakeTime(java.time.LocalDateTime.now());
+            mistake.setConsecutiveCorrect(0);
+            studyMistakeMapper.insert(mistake);
+        }
+    }
+
+    /** 答对时增加连续答对计数 */
+    private void incrementConsecutiveCorrect(Long userId, String wordId) {
+        StudyMistake existing = studyMistakeMapper.selectOne(
+                new LambdaQueryWrapper<StudyMistake>()
+                        .eq(StudyMistake::getUserId, userId)
+                        .eq(StudyMistake::getWordId, wordId));
+        if (existing != null) {
+            existing.setConsecutiveCorrect(existing.getConsecutiveCorrect() + 1);
+            studyMistakeMapper.updateById(existing);
+        }
+    }
+
+    private int getCorrectMeaningIndex(String sentenceId) {
+        com.bogutongjin.entity.Sentence s = sentenceMapper.selectById(sentenceId);
+        return s != null ? s.getCorrectMeaningIndex() : 0;
+    }
+
+    private String getDistractorText(String sentenceId, int index) {
+        List<SentenceDistractor> distractors = sentenceDistractorMapper.selectList(
+                new LambdaQueryWrapper<SentenceDistractor>()
+                        .eq(SentenceDistractor::getSentenceId, sentenceId)
+                        .orderByAsc(SentenceDistractor::getSortOrder));
+        if (index >= 0 && index < distractors.size()) {
+            return distractors.get(index).getText();
+        }
+        return "选项" + (index + 1);
+    }
+
+    /** 获取错题列表 */
+    public List<Map<String, Object>> getMistakes(Long userId, String wordBookId) {
+        LambdaQueryWrapper<StudyMistake> wrapper = new LambdaQueryWrapper<StudyMistake>()
+                .eq(StudyMistake::getUserId, userId)
+                .orderByDesc(StudyMistake::getLastMistakeTime);
+        if (wordBookId != null && !wordBookId.isEmpty()) {
+            wrapper.eq(StudyMistake::getWordBookId, wordBookId);
+        }
+
+        List<StudyMistake> mistakes = studyMistakeMapper.selectList(wrapper);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (StudyMistake m : mistakes) {
+            Word word = wordMapper.selectById(m.getWordId());
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("wordId", m.getWordId());
+            item.put("character", word != null ? word.getCharacter() : "");
+            item.put("pinyin", word != null ? word.getPinyin() : "");
+            item.put("sentenceText", m.getSentenceText());
+            item.put("sentenceId", "");
+            item.put("wrongAnswer", m.getWrongAnswer());
+            item.put("correctAnswer", m.getCorrectAnswer());
+            item.put("errorCount", m.getMistakeCount());
+            item.put("lastErrorTime", m.getLastMistakeTime() != null ? m.getLastMistakeTime().toString().substring(0, 10) : "");
+            item.put("consecutiveCorrect", m.getConsecutiveCorrect());
+            result.add(item);
+        }
+        return result;
+    }
+
+    /** 移除错题 */
+    public void removeMistake(Long userId, String wordId) {
+        studyMistakeMapper.delete(
+                new LambdaQueryWrapper<StudyMistake>()
+                        .eq(StudyMistake::getUserId, userId)
+                        .eq(StudyMistake::getWordId, wordId));
     }
 }
