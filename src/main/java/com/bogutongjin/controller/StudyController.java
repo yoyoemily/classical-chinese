@@ -35,7 +35,8 @@ public class StudyController {
             @CurrentUser Long userId) {
         return Result.ok(studyService.submitAnswer(
                 userId, req.getWordBookId(), req.getWordId(), req.getSentenceId(),
-                req.getSelectedOption(), req.getCorrect()));
+                req.getSelectedOption(), req.getCorrect(),
+                req.getCorrectAnswer(), req.getWrongAnswer()));
     }
 
     /** 完成今日学习 */

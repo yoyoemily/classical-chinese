@@ -12,12 +12,8 @@ public class StudyMistake {
     private Long userId;
     private String wordId;
     private String wordBookId;
-    private String sentenceText;
-    private String wrongAnswer;
-    private String correctAnswer;
-    private Integer mistakeCount;
+    private Integer totalErrors;
     private LocalDateTime lastMistakeTime;
-    private Integer consecutiveCorrect;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

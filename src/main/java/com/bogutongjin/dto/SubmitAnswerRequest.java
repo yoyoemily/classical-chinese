@@ -19,4 +19,8 @@ public class SubmitAnswerRequest {
     private Integer selectedOption;
     @NotNull(message = "correct 不能为空")
     private Boolean correct;
+    /** 正确答案文本（由前端直接传入，避免后端重建选项列表时因 shuffle 导致序号不匹配） */
+    private String correctAnswer;
+    /** 用户选择的答案文本（由前端直接传入） */
+    private String wrongAnswer;
 }

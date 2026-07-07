@@ -22,6 +22,7 @@ public class SourceData {
 
     private List<SourceArticle> articles;
     private List<SourceBadge> badges;
+    private List<SourceClassic> classics;
 
     // ---- 词书 ----
     @Data
@@ -144,5 +145,16 @@ public class SourceData {
             private String type;
             private Integer value;
         }
+    }
+
+    // ---- 经典著作 ----
+    @Data
+    public static class SourceClassic {
+        private Integer id;
+        private String name;
+        private String era;
+        private String icon;
+        private String description;
+        private String category;
     }
 }
