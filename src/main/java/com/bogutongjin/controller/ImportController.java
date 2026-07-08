@@ -1,6 +1,7 @@
 package com.bogutongjin.controller;
 
 import com.bogutongjin.common.Result;
+import com.bogutongjin.dto.GlossaryImportRequest;
 import com.bogutongjin.service.DataImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +36,14 @@ public class ImportController {
         importService.importFromJson();
         long elapsed = System.currentTimeMillis() - start;
         return Result.ok(Map.of("success", true, "elapsedMs", elapsed, "message", "数据源导入完成"));
+    }
+
+    /**
+     * 单篇典故注释导入（幂等：先删后插）
+     */
+    @PostMapping("/import/glossary/{articleId}")
+    public Result<Map<String, Object>> importGlossary(@PathVariable String articleId,
+                                                       @RequestBody GlossaryImportRequest request) {
+        return Result.ok(importService.importGlossaryForArticle(articleId, request));
     }
 }

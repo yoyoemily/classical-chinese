@@ -2,6 +2,8 @@ package com.bogutongjin.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.bogutongjin.dto.GlossaryImportRequest;
+import com.bogutongjin.dto.GlossaryImportRequest.*;
 import com.bogutongjin.dto.SourceData;
 import com.bogutongjin.dto.SourceData.*;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,59 @@ public class DataImportService {
         importClassics(source.getClassics());
 
         log.info("数据源导入完成");
+    }
+
+    /**
+     * 单篇典故注释导入
+     * 先删除该篇所有已有 glossary，再逐句批量插入
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importGlossaryForArticle(String articleId, GlossaryImportRequest request) {
+        // 1. 查询该篇所有句子
+        List<Map<String, Object>> sentences = jdbc.queryForList(
+                "SELECT id, sort_order FROM article_sentence WHERE article_id = ? ORDER BY sort_order",
+                articleId);
+        if (sentences.isEmpty()) {
+            throw new RuntimeException("名篇不存在或无句子数据: " + articleId);
+        }
+
+        // 2. 删除该篇已有 glossary
+        jdbc.update("DELETE FROM article_glossary WHERE article_sentence_id IN " +
+                "(SELECT id FROM article_sentence WHERE article_id = ?)", articleId);
+
+        // 3. 逐句插入
+        String glossarySql = "INSERT INTO article_glossary (article_sentence_id, word, definition, sort_order) " +
+                "VALUES (?, ?, ?, ?)";
+        int sentenceCount = 0;
+        int glossaryCount = 0;
+        Map<Integer, Long> sortOrderToId = new HashMap<>();
+        for (Map<String, Object> row : sentences) {
+            sortOrderToId.put(((Number) row.get("sort_order")).intValue(), ((Number) row.get("id")).longValue());
+        }
+
+        if (CollUtil.isNotEmpty(request.getSentences())) {
+            for (SentenceGlossary sg : request.getSentences()) {
+                Long sentenceId = sortOrderToId.get(sg.getSentenceIndex());
+                if (sentenceId == null) continue;
+                if (CollUtil.isEmpty(sg.getGlossary())) continue;
+                sentenceCount++;
+
+                List<Object[]> gBatch = new ArrayList<>();
+                for (int j = 0; j < sg.getGlossary().size(); j++) {
+                    GlossaryItem g = sg.getGlossary().get(j);
+                    gBatch.add(new Object[]{sentenceId, g.getWord(), g.getDefinition(), j});
+                }
+                jdbc.batchUpdate(glossarySql, gBatch);
+                glossaryCount += gBatch.size();
+            }
+        }
+
+        log.info("典故注释导入完成: articleId={}, 句子数={}, 词条数={}", articleId, sentenceCount, glossaryCount);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("articleId", articleId);
+        result.put("sentenceCount", sentenceCount);
+        result.put("glossaryCount", glossaryCount);
+        return result;
     }
 
     private void importBadges(List<SourceBadge> badges) {
