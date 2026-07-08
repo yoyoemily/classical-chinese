@@ -13,8 +13,8 @@
     <groupId>com.bogutongjin</groupId>
     <artifactId>classical-chinese</artifactId>
     <version>1.0.0</version>
-    <name>博古通今 API</name>
-    <description>文言文学习小程序后端服务</description>
+    <name>classical-chinese API</name>
+    <description>文言雀小程序后端服务</description>
 
     <properties>
         <java.version>17</java.version>

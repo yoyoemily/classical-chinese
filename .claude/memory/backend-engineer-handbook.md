@@ -9,7 +9,7 @@ metadata:
 
 ## 项目信息
 
-- **项目名称**：博古通今（classical-chinese）
+- **项目名称**：文言雀（classical-chinese）
 - **技术栈**：Spring Boot 3.2.1 + Java 17 + MyBatis-Plus 3.5.5 + MySQL 8.0
 - **构建工具**：Maven，启动类 `com.bogutongjin.ClassicalChineseApplication`，端口 8080
 - **数据库**：`classical_chinese`，连接信息在 `application.yml`

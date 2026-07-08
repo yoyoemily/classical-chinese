@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-博古通今（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 16 个 HTTP API 端点（含登录），基于艾宾浩斯遗忘曲线管理学习与复习节奏。
+文言雀（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 16 个 HTTP API 端点（含登录），基于艾宾浩斯遗忘曲线管理学习与复习节奏。
 
 **前端工程**位于 `/Users/zhutx/weixin_applet_space/classical-chinese-applet/`——微信原生小程序（WXML + SCSS + TS），15 个页面全部搭建完成，核心学习回路已跑通。后端 API 完整覆盖前端所有接口需求，前后端通过 `{code: 0, message: "ok", data: ...}` 统一响应格式约定。
 
