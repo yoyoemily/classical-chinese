@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-博古通今（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 16 个 HTTP API 端点（含登录），基于艾宾浩斯遗忘曲线管理学习与复习节奏。
+文言雀（classical-chinese）——微信小程序的 Java 后端服务，面向中学生文言文实词/虚词/通假字学习。提供 16 个 HTTP API 端点（含登录），基于艾宾浩斯遗忘曲线管理学习与复习节奏。
 
 **前端工程**位于 `/Users/zhutx/weixin_applet_space/classical-chinese-applet/`——微信原生小程序（WXML + SCSS + TS），15 个页面全部搭建完成，核心学习回路已跑通。后端 API 完整覆盖前端所有接口需求，前后端通过 `{code: 0, message: "ok", data: ...}` 统一响应格式约定。
 
@@ -98,11 +98,12 @@ src/main/java/com/bogutongjin/
 │   ├── LoginInterceptor.java         # JWT 拦截器：从 Authorization header 解析 JWT → request.setAttribute("userId")
 │   ├── CurrentUserResolver.java      # @CurrentUser 参数解析器，从 request.getAttribute("userId") 取值
 │   └── WebMvcConfig.java             # 注册拦截器（放行 /api/auth/**, /api/admin/**）+ 参数解析器
-├── controller/（12 个）
+├── controller/（13 个）
 │   ├── AuthController.java           # POST /api/auth/login（微信 code → JWT）— 无需认证
 │   ├── WordBookController.java       # 词书列表 + 详情
 │   ├── StudyController.java          # 今日任务 + 提交答案 + 完成学习（@CurrentUser）
 │   ├── ArticleController.java        # 名篇列表 + 详情
+│   ├── ClassicController.java        # 经典著作列表（按四部分类筛选）
 │   ├── ContentController.java        # 单字详情 + 全文阅读
 │   ├── ProgressController.java       # 学习进度（@CurrentUser）
 │   ├── VocabularyController.java     # 生词本（@CurrentUser）
@@ -111,11 +112,12 @@ src/main/java/com/bogutongjin/
 │   ├── UserController.java           # 用户信息（等级/个人信息 GET+PUT）（@CurrentUser）
 │   ├── FeedbackController.java       # 错误反馈（@CurrentUser）
 │   └── ImportController.java         # 数据导入（管理后台，放行）
-├── service/（11 个）
+├── service/（12 个）
 │   ├── AuthService.java              # 微信 code2session → openId → 查找/创建用户 → 签发 JWT
 │   ├── WordBookService.java
 │   ├── StudyService.java             # 核心：艾宾浩斯调度、答题、完成
 │   ├── ArticleService.java
+│   ├── ClassicService.java           # 经典著作列表（按四部分类筛选）
 │   ├── ContentService.java
 │   ├── ProgressService.java
 │   ├── VocabularyService.java
@@ -124,7 +126,7 @@ src/main/java/com/bogutongjin/
 │   ├── UserService.java
 │   ├── FeedbackService.java
 │   └── DataImportService.java        # 冷启动数据导入
-├── mapper/（21 个，继承 BaseMapper，零 XML）
+├── mapper/（24 个，继承 BaseMapper，零 XML）
 │   ├── WordBookMapper.java
 │   ├── WordMapper.java
 │   ├── MeaningMapper.java
@@ -145,8 +147,10 @@ src/main/java/com/bogutongjin/
 │   ├── UserBadgeMapper.java
 │   ├── UserAnswerHistoryMapper.java
 │   ├── FeedbackMapper.java
-│   └── DailyTaskMapper.java
-├── entity/（21 个，与 mapper 一一对应，略）
+│   ├── DailyTaskMapper.java
+│   ├── ClassicMapper.java
+│   └── StudyMistakeSentenceMapper.java
+├── entity/（24 个，与 mapper 一一对应，略）
 ├── dto/（5 个）
 │   ├── SourceData.java               # 数据源 JSON 结构（嵌套类定义完整层级）
 │   ├── LoginRequest.java             # 微信登录请求 { code }
@@ -156,9 +160,9 @@ src/main/java/com/bogutongjin/
 │   └── SubmitFeedbackRequest.java
 src/main/resources/
 ├── application.yml                    # 应用配置
-└── source.json                        # 冷启动数据源（188KB，与前端 data/source.json 相同）
+└── source.json                        # 冷启动数据源（~1,169 KB，8 词书+37 名篇+8 勋章+36 经典）
 data/
-└── schema.sql                         # 完整 DDL（21 张表，含索引和外键）
+└── schema.sql                         # 完整 DDL（23 张表，含索引和外键）
 ```
 
 ## API 端点对照表（Controller ↔ 前端）
@@ -180,6 +184,7 @@ data/
 | 用户 | UserController | PUT | `/api/user/info` | Bearer | saveUserInfo |
 | 名篇 | ArticleController | GET | `/api/articles?category=&textbook=` | Bearer | fetchArticles |
 | 名篇 | ArticleController | GET | `/api/articles/{id}` | Bearer | fetchArticleDetail |
+| 经典 | ClassicController | GET | `/api/classics?category=` | Bearer | fetchClassics |
 | 内容 | ContentController | GET | `/api/words/{id}` | Bearer | fetchWordDetail |
 | 内容 | ContentController | GET | `/api/full-text/{sentenceId}` | Bearer | fetchFullText |
 | 反馈 | FeedbackController | POST | `/api/feedback` | Bearer | submitFeedback |
@@ -212,7 +217,7 @@ LoginInterceptor 解析 JWT → @CurrentUser 注入 userId → Controller
 - JWT payload 仅含 userId（sub），无其他敏感信息
 - /api/auth/login 和 /api/admin/import 两个路径放行，不校验 token
 
-## 数据库设计（21 张表）
+## 数据库设计（24 张表）
 
 DDL 位于 `data/schema.sql`，覆盖完整业务模型：
 
@@ -229,16 +234,20 @@ DDL 位于 `data/schema.sql`，覆盖完整业务模型：
 | 9 | `article_sentence` | 名篇句子 | FK → article |
 | 10 | `article_keyword` | 名篇句子内联生词 | FK → article_sentence |
 | 11 | `article_char_annotation` | 名篇逐字标注（实词/虚词/标点） | FK → article_sentence |
-| 12 | `article_related_word` | 名篇-字词多对多关联 | FK → article + word |
-| 13 | `badge` | 勋章定义 | — |
-| 14 | `user` | 用户（openId/头像/昵称/年级/经验/连续天数） | — |
-| 15 | `user_word_progress` | 用户字词学习进度（艾宾浩斯阶段） | FK → user + word_book + word |
-| 16 | `user_article_progress` | 用户名篇阅读进度 | FK → user + article |
-| 17 | `user_checkin` | 用户打卡记录 | FK → user |
-| 18 | `user_badge` | 用户获得的勋章 | FK → user + badge |
-| 19 | `user_answer_history` | 答题历史记录 | FK → user |
-| 20 | `feedback` | 错误反馈 | FK → user (SET NULL) |
-| 21 | `daily_task` | 每日学习任务 | FK → user |
+| 12 | `article_glossary` | 名篇典故注释 | FK → article_sentence |
+| 13 | `article_related_word` | 名篇-字词多对多关联 | FK → article + word |
+| 14 | `badge` | 勋章定义 | — |
+| 15 | `classic` | 经典著作（36 部，四部分类） | — |
+| 16 | `user` | 用户（openId/头像/昵称/年级/经验/连续天数） | — |
+| 17 | `user_word_progress` | 用户字词学习进度（艾宾浩斯阶段） | FK → user + word_book + word |
+| 18 | `user_article_progress` | 用户名篇阅读进度 | FK → user + article |
+| 19 | `user_checkin` | 用户打卡记录 | FK → user |
+| 20 | `user_badge` | 用户获得的勋章 | FK → user + badge |
+| 21 | `user_answer_history` | 答题历史记录 | FK → user |
+| 22 | `feedback` | 错误反馈 | FK → user (SET NULL) |
+| 23 | `daily_task` | 每日学习任务 | FK → user |
+| 24 | `study_mistake` | 错题本（一字一条，含 `total_errors` 冗余） | FK → user |
+| 25 | `study_mistake_sentence` | 错题本句子明细（一句一条） | FK → study_mistake |
 
 所有外键设置 `ON DELETE CASCADE`（feedback 除外，使用 `SET NULL`）。
 
@@ -253,7 +262,7 @@ Service（业务逻辑 + @Transactional 事务）
     ↓
 Mapper（MyBatis-Plus BaseMapper，零 XML）
     ↓
-Database（MySQL 8.0，21 张表）
+Database（MySQL 8.0，25 张表）
 ```
 
 - **Service 层返回值**：统一 `Map<String, Object>`，Controller 用 `Result.ok(map)` 包装后返回。
@@ -267,9 +276,9 @@ Database（MySQL 8.0，21 张表）
 
 流程：
 1. 从 `@Value("${app.source-data-path}")` 读取配置的路径，支持 `classpath:` 前缀（`ClassPathResource`）和文件系统路径两种方式
-2. 读取 `source.json`（188KB，Hutool JSONUtil 反序列化 → `SourceData` DTO）
-3. `SET FOREIGN_KEY_CHECKS = 0` → 清空 13 张业务表（保留 user 相关表数据）→ 恢复外键检查
-4. 批量导入勋章 → 词书（含字词、义项、句子、干扰项、同音字、形近字）→ 名篇（含句子、生词、逐字标注、关联字词）
+2. 读取 `source.json`（~1.2MB，Hutool JSONUtil 反序列化 → `SourceData` DTO）
+3. `SET FOREIGN_KEY_CHECKS = 0` → 清空 14 张业务表（保留 user 相关表数据）→ 恢复外键检查
+4. 批量导入勋章 → 词书（含字词、义项、句子、干扰项、同音字、形近字）→ 名篇（含句子、生词、逐字标注、典故注释、关联字词）→ 经典著作
 5. JDBC Template 批处理（`jdbc.batchUpdate`），单事务保护
 
 数据源结构与前端 `data/source.json` 完全相同：3 词书 75 字 + 20 篇名篇 + 8 勋章。
@@ -299,17 +308,16 @@ Database（MySQL 8.0，21 张表）
 
 ### 已完成
 
-- ✅ 12 个 Controller 完整对接前端 15 个 API 端点 + 1 个登录接口 + 1 个管理导入接口
+- ✅ 13 个 Controller 完整对接前端 16 个 API 端点 + 1 个登录接口 + 1 个管理导入接口
 - ✅ 微信登录认证体系：code2session → openId 查找/创建用户 → JWT 签发 → LoginInterceptor 校验 → @CurrentUser 参数注入（含开发模式 AppSecret 兜底）
-- ✅ 21 张表 DDL（含完整索引、外键、注释）
-- ✅ 冷启动数据导入（188KB source.json → 13 张业务表，JDBC 批处理 + 事务保护）
+- ✅ 25 张表 DDL（含完整索引、外键、注释）
+- ✅ 冷启动数据导入（~1.2MB source.json → 14 张业务表，JDBC 批处理 + 事务保护）
 - ✅ 统一响应格式 `Result<T>`（`code=0` 约定）
 - ✅ 全局异常处理（参数校验/认证/资源不存在/业务异常/未知异常）
 - ✅ 跨域配置（允许所有来源，适配小程序开发调试）
 - ✅ MyBatis-Plus 分页插件
 - ✅ 艾宾浩斯引擎服务端实现（与前端 `utils/ebbinghaus.ts` 逻辑对齐）
-- ✅ 勋章自动检测与发放
-- ✅ 打卡 + 连续天数计算
+- ✅ 错题本按句子粒度收录/移出，`total_errors` 冗余字段避免遍历（收录时 `+1`、移出时 `-errorCount`）
 
 ### 待开发
 
@@ -323,7 +331,7 @@ Database（MySQL 8.0，21 张表）
 ## 与前端的关系
 
 - **前端工程路径**：`/Users/zhutx/weixin_applet_space/classical-chinese-applet/`
-- **前端 API 层**：`api/index.ts`（15 个端点，`USE_MOCK = false`）
+- **前端 API 层**：`api/index.ts`（16 个端点，`USE_MOCK = false`）
 - **前端请求封装**：`utils/request.ts`（`BASE_URL = 'http://localhost:8080'`，自动带 JWT、401 自动 re-login）
 - **对接方式**：
   1. 前端 `app.ts` 启动时调用 `wx.login()` → `POST /api/auth/login` 获取 token

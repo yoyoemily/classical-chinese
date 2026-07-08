@@ -1,5 +1,5 @@
 -- ============================================
--- 博古通今 小程序 MySQL 建表语句
+-- 文言雀 小程序 MySQL 建表语句
 -- 基于 data/source.json 和 API 类型定义设计
 -- ============================================
 
@@ -357,3 +357,54 @@ CREATE TABLE daily_task (
   INDEX idx_user_id (user_id),
   INDEX idx_date (date)
 ) ENGINE=InnoDB COMMENT='每日学习任务';
+
+-- ============================================
+-- 22. 错题本
+-- ============================================
+CREATE TABLE study_mistake (
+  id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  user_id             BIGINT       NOT NULL COMMENT '用户ID',
+  word_id             VARCHAR(32)  NOT NULL COMMENT '字词ID',
+  word_book_id        VARCHAR(32)  NOT NULL COMMENT '词书ID',
+  total_errors        INT          NOT NULL DEFAULT 0 COMMENT '所有句子的错误次数之和（冗余字段，避免每次查询遍历子表）',
+  last_mistake_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次答错时间',
+  created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_user_word (user_id, word_id),
+  INDEX idx_user_id (user_id),
+  INDEX idx_word_book_id (word_book_id)
+) ENGINE=InnoDB COMMENT='错题本——一条记录一个字';
+
+-- ============================================
+-- 22b. 错题本句子明细
+-- ============================================
+CREATE TABLE study_mistake_sentence (
+  id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  mistake_id          BIGINT       NOT NULL COMMENT '所属错题记录ID',
+  sentence_id         VARCHAR(32)  NOT NULL COMMENT '句子ID',
+  sentence_text       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '答错时的原句',
+  wrong_answer        VARCHAR(128) NOT NULL DEFAULT '' COMMENT '用户错误答案',
+  correct_answer      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '正确答案',
+  mistake_count       INT          NOT NULL DEFAULT 1 COMMENT '该句子的累计错误次数',
+  consecutive_correct INT          NOT NULL DEFAULT 0 COMMENT '连续答对次数（达到阈值自动移出该句）',
+  created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_mistake_sentence (mistake_id, sentence_id),
+  INDEX idx_mistake_id (mistake_id)
+) ENGINE=InnoDB COMMENT='错题本句子明细——一条记录一个句子';
+
+-- ============================================
+-- 23. 经典著作
+-- ============================================
+CREATE TABLE classic (
+  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  name        VARCHAR(32)  NOT NULL COMMENT '经典名称',
+  era         VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '朝代',
+  icon        VARCHAR(8)   NOT NULL DEFAULT '' COMMENT 'emoji图标',
+  description VARCHAR(512) NOT NULL DEFAULT '' COMMENT '简介',
+  category    VARCHAR(4)   NOT NULL COMMENT '四部分类: 经/史/子/集',
+  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_category (category)
+) ENGINE=InnoDB COMMENT='经典著作';

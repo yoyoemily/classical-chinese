@@ -5,6 +5,7 @@ import com.bogutongjin.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +20,11 @@ public class ContentController {
         Map<String, Object> detail = contentService.getWordDetail(id);
         if (detail == null) return Result.fail(10003, "字词不存在");
         return Result.ok(detail);
+    }
+
+    @GetMapping("/words/search")
+    public Result<List<Map<String, Object>>> searchWords(@RequestParam String keyword) {
+        return Result.ok(contentService.searchWords(keyword));
     }
 
     @GetMapping("/full-text/{sentenceId}")

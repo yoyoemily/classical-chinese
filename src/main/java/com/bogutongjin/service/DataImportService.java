@@ -49,16 +49,18 @@ public class DataImportService {
             throw new RuntimeException("读取数据源文件失败: " + sourceDataPath, e);
         }
         SourceData source = JSONUtil.toBean(json, SourceData.class);
-        log.info("数据源解析完成: {} 本词书, {} 篇名篇, {} 枚勋章",
+        log.info("数据源解析完成: {} 本词书, {} 篇名篇, {} 枚勋章, {} 部经典",
                 source.getWordBooks().size(),
                 source.getArticles() != null ? source.getArticles().size() : 0,
-                source.getBadges() != null ? source.getBadges().size() : 0);
+                source.getBadges() != null ? source.getBadges().size() : 0,
+                source.getClassics() != null ? source.getClassics().size() : 0);
 
         truncateAll();
         importBadges(source.getBadges());
         importWordBooks(source.getWordBooks());
         importArticles(source.getArticles());
         importArticleRelatedWords(source.getArticles());
+        importClassics(source.getClassics());
 
         log.info("数据源导入完成");
     }
@@ -225,13 +227,29 @@ public class DataImportService {
         log.info("名篇-字词关联导入完成: {} 条", batch.size());
     }
 
+    private void importClassics(List<SourceClassic> classics) {
+        if (CollUtil.isEmpty(classics)) return;
+        String sql = "INSERT INTO classic (id, name, era, icon, description, category, sort_order) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        List<Object[]> batch = new ArrayList<>();
+        for (int i = 0; i < classics.size(); i++) {
+            SourceClassic c = classics.get(i);
+            batch.add(new Object[]{
+                    c.getId(), c.getName(), nvl(c.getEra()), nvl(c.getIcon()),
+                    nvl(c.getDescription()), nvl(c.getCategory()), i
+            });
+        }
+        jdbc.batchUpdate(sql, batch);
+        log.info("经典著作导入完成: {} 部", batch.size());
+    }
+
     private void truncateAll() {
         String[] tables = {
                 "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
                 "article_sentence", "article",
                 "sentence_distractor", "sentence", "meaning",
                 "similar_homophone", "similar_shape",
-                "word", "word_book", "badge"
+                "word", "word_book", "badge", "classic"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {
