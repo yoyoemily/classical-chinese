@@ -94,6 +94,7 @@ public class SourceData {
         private String dynasty;
         private String category;
         private String textbook;
+        private String background;
         private String fullTextAudioUrl;
         private List<SourceArticleSentence> sentences;
         private List<String> relatedWordIds;

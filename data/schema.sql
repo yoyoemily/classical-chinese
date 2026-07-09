@@ -130,6 +130,7 @@ CREATE TABLE article (
   dynasty             VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '朝代',
   category            VARCHAR(16)  NOT NULL DEFAULT 'prose' COMMENT '文体: prose/argument/poem/verse',
   textbook            VARCHAR(10)  COMMENT '教材年级: grade7a~grade9b',
+  background          TEXT         COMMENT '创作背景',
   full_text_audio_url VARCHAR(256) COMMENT '全文音频URL',
   sort_order          INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -107,6 +107,7 @@ public class ArticleService {
         result.put("dynasty", a.getDynasty());
         result.put("category", a.getCategory());
         result.put("textbook", a.getTextbook());
+        result.put("background", a.getBackground());
         result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
         result.put("sentences", sentenceList);
         result.put("relatedWordIds", relatedWordIds);

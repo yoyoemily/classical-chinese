@@ -14,6 +14,7 @@ public class Article {
     private String dynasty;
     private String category;
     private String textbook;
+    private String background;
     private String fullTextAudioUrl;
     private Integer sortOrder;
 
