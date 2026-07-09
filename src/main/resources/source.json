@@ -16545,16 +16545,2655 @@
     {
       "id": "wb_zhongkao_gujinyi",
       "name": "中考古今异义一本通",
-      "description": "收录部编版初中教材高频古今异义词，对比古今词义差异，帮助掌握文言文阅读中的词义辨析。",
+      "description": "收录部编版初中教材50个高频古今异义词，七至九年级全覆盖，每个词配2—3道实战句子题，对比古今词义差异，帮助掌握文言文阅读中的词义辨析。",
       "category": "ancient_modern",
       "studyMode": "identify_first",
       "identifyPrompt": "请从句子中找出古今异义词",
       "coverColor": "#6B8E7B",
-      "totalWords": 0,
-      "words": [],
+      "totalWords": 50,
+      "words": [
+        {
+          "id": "wb_c_230",
+          "character": "去",
+          "pinyin": "qù",
+          "characterType": "会意字",
+          "explanation": "从大从口，像人离开洞口之形。本义为'离开'，与今义'前往'方向恰好相反。中考高频考点，需特别注意古今方向反转。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：离开。今义：前往、到……去。",
+              "pinyin": "qù",
+              "example": "太丘舍去，去后乃至。",
+              "translation": "太丘丢下（友人）离开了，（他）离开后（友人）才到。",
+              "source": "《陈太丘与友期行》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0547",
+              "text": "太丘舍去，去后乃至。",
+              "source": "《陈太丘与友期行》",
+              "targetWord": "去",
+              "translation": "太丘丢下（友人）离开了，（他）离开后（友人）才到。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "前往",
+                "到达",
+                "除掉"
+              ],
+              "fullText": "友人便怒曰：'非人哉！与人期行，相委而去。'元方曰：'君与家君期日中。日中不至，则是无信；对子骂父，则是无礼。'友人惭，下车引之。元方入门不顾。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0548",
+              "text": "相委而去。",
+              "source": "《陈太丘与友期行》",
+              "targetWord": "去",
+              "translation": "丢下（我）离开了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "前往",
+                "去除",
+                "过去"
+              ],
+              "fullText": "友人便怒曰：'非人哉！与人期行，相委而去。'",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0549",
+              "text": "一狼径去，其一犬坐于前。",
+              "source": "《狼》",
+              "targetWord": "去",
+              "translation": "一只狼径直离开了，另一只像狗似的蹲坐在前面。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "前往",
+                "过去",
+                "除去"
+              ],
+              "fullText": "少时，一狼径去，其一犬坐于前。久之，目似瞑，意暇甚。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "取",
+            "曲",
+            "趣"
+          ],
+          "similarShapes": [
+            "法",
+            "丢",
+            "却"
+          ],
+          "mnemonic": "古人说'去'是离开原地，和今天'去某地'方向相反。记住：'去'在古代是'走开'不是'走去'。"
+        },
+        {
+          "id": "wb_c_231",
+          "character": "顾",
+          "pinyin": "gù",
+          "characterType": "形声字",
+          "explanation": "从页（头部）雇声，本义为'回头看'。今义泛化为'照顾、光顾'，词义范围转移且弱化。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：回头看。今义：照顾、光顾。",
+              "pinyin": "gù",
+              "example": "元方入门不顾。",
+              "translation": "元方走进门去，头也不回。",
+              "source": "《陈太丘与友期行》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0550",
+              "text": "元方入门不顾。",
+              "source": "《陈太丘与友期行》",
+              "targetWord": "顾",
+              "translation": "元方走进门去，头也不回。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "照顾",
+                "顾客",
+                "顾虑"
+              ],
+              "fullText": "友人惭，下车引之。元方入门不顾。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0551",
+              "text": "顾野有麦场，场主积薪其中。",
+              "source": "《狼》",
+              "targetWord": "顾",
+              "translation": "回头看田野里有个打麦场，场主在那里堆了柴草。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "照顾",
+                "顾客",
+                "但是"
+              ],
+              "fullText": "顾野有麦场，场主积薪其中，苫蔽成丘。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "故",
+            "固",
+            "雇"
+          ],
+          "similarShapes": [
+            "领",
+            "顿",
+            "颇"
+          ],
+          "mnemonic": "'顾'左边是'页'（头），回头看需要转头。'入门不顾'是经典例句，进门头也不回——古义'回头看'。"
+        },
+        {
+          "id": "wb_c_232",
+          "character": "儿女",
+          "pinyin": "ér nǚ",
+          "characterType": "双音节词",
+          "explanation": "古义指子侄辈的年轻后辈，不分性别；今义特指儿子和女儿，外延大幅缩小。这是典型的词义缩小现象。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：子侄辈，泛指小辈。今义：儿子和女儿。",
+              "pinyin": "ér nǚ",
+              "example": "谢太傅寒雪日内集，与儿女讲论文义。",
+              "translation": "谢太傅在一个寒冷的雪天举行家庭聚会，和子侄辈讲解讨论文章义理。",
+              "source": "《咏雪》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0552",
+              "text": "谢太傅寒雪日内集，与儿女讲论文义。",
+              "source": "《咏雪》",
+              "targetWord": "儿女",
+              "translation": "谢太傅在一个寒冷的雪天举行家庭聚会，和子侄辈讲解讨论文章义理。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "儿子和女儿",
+                "男孩女孩",
+                "子女"
+              ],
+              "fullText": "谢太傅寒雪日内集，与儿女讲论文义。俄而雪骤，公欣然曰：'白雪纷纷何所似？'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "尔",
+            "耳",
+            "二"
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "谢安给子侄辈讲课，不是只给自家儿女。古义'儿女'=家里所有小辈，今义缩小为亲生的。"
+        },
+        {
+          "id": "wb_c_233",
+          "character": "可以",
+          "pinyin": "kě yǐ",
+          "characterType": "双音节词",
+          "explanation": "古义为'可以凭借'，'以'是介词带宾语；今义为能愿动词'能够'，'以'已虚化。中考必考，需区分古今语法差异。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：可以凭借（'以'是介词）。今义：能够（'以'已虚化）。",
+              "pinyin": "kě yǐ",
+              "example": "温故而知新，可以为师矣。",
+              "translation": "温习旧知识而能有新理解，就可以凭借（这个）做老师了。",
+              "source": "《〈论语〉十二章》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0553",
+              "text": "温故而知新，可以为师矣。",
+              "source": "《〈论语〉十二章》",
+              "targetWord": "可以",
+              "translation": "温习旧知识而能有新理解，就可以凭借（这个）做老师了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "能够",
+                "可能",
+                "认可"
+              ],
+              "fullText": "子曰：'温故而知新，可以为师矣。'",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0554",
+              "text": "忠之属也，可以一战。",
+              "source": "《曹刿论战》",
+              "targetWord": "可以",
+              "translation": "（这是）尽职分之类的事，可以凭借（这个条件）打一仗。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "能够",
+                "可能",
+                "可以"
+              ],
+              "fullText": "对曰：'忠之属也。可以一战。战则请从。'",
+              "articleId": "art_006"
+            }
+          ],
+          "similarHomophones": [
+            "刻意",
+            "可疑",
+            "可依"
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "古汉语中'可以'常拆开理解：'可'=可以，'以'=凭借。'可以一战'=可以凭借这个条件打一仗。"
+        },
+        {
+          "id": "wb_c_234",
+          "character": "三",
+          "pinyin": "sān",
+          "characterType": "指事字",
+          "explanation": "古汉语中'三'常表虚数，泛指'多次'；今义为确数'三'。中考需根据上下文判断是虚指还是实指。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：泛指多次。今义：数词三。",
+              "pinyin": "sān",
+              "example": "三人行，必有我师焉。",
+              "translation": "几个人一起走路，其中必定有可以做我老师的人。",
+              "source": "《〈论语〉十二章》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0555",
+              "text": "三人行，必有我师焉。",
+              "source": "《〈论语〉十二章》",
+              "targetWord": "三",
+              "translation": "几个人一起走路，其中必定有可以做我老师的人。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "三个",
+                "数词三",
+                "第三"
+              ],
+              "fullText": "子曰：'三人行，必有我师焉。择其善者而从之，其不善者而改之。'",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0556",
+              "text": "一鼓作气，再而衰，三而竭。",
+              "source": "《曹刿论战》",
+              "targetWord": "三",
+              "translation": "第一次击鼓振作了士气，第二次击鼓士气就衰弱了，第三次击鼓士气就耗尽了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "多次",
+                "几",
+                "许多"
+              ],
+              "fullText": "一鼓作气，再而衰，三而竭。彼竭我盈，故克之。",
+              "articleId": "art_006"
+            }
+          ],
+          "similarHomophones": [
+            "散",
+            "伞",
+            "叁"
+          ],
+          "similarShapes": [
+            "王",
+            "丰",
+            "兰"
+          ],
+          "mnemonic": "'三'在古文中常常不是确数，'三人行'不是恰好三个人，而是'几个人'。但'三而竭'是确数——需根据语境判断。"
+        },
+        {
+          "id": "wb_c_235",
+          "character": "几何",
+          "pinyin": "jǐ hé",
+          "characterType": "双音节词",
+          "explanation": "古义为'多少'，表疑问数量；今义为数学学科名。中考在《狼》中必考。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：多少（表疑问）。今义：数学学科名称。",
+              "pinyin": "jǐ hé",
+              "example": "禽兽之变诈几何哉？止增笑耳。",
+              "translation": "禽兽的诡诈手段能有多少呢？只不过增加笑料罢了。",
+              "source": "《狼》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0557",
+              "text": "禽兽之变诈几何哉？止增笑耳。",
+              "source": "《狼》",
+              "targetWord": "几何",
+              "translation": "禽兽的诡诈手段能有多少呢？只不过增加笑料罢了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "数学",
+                "图形",
+                "形状"
+              ],
+              "fullText": "狼亦黠矣，而顷刻两毙，禽兽之变诈几何哉？止增笑耳。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "几盒",
+            "几河",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "古文中'几何'问数量，今天'几何'是数学课。'禽兽之变诈几何哉'——禽兽的花招能有多少？"
+        },
+        {
+          "id": "wb_c_236",
+          "character": "委",
+          "pinyin": "wěi",
+          "characterType": "会意字",
+          "explanation": "从女从禾，本义为'顺从'。在古文中常表'舍弃、丢下'，与今义'委托、委屈'差异明显。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：舍弃、丢下。今义：委托、委屈。",
+              "pinyin": "wěi",
+              "example": "与人期行，相委而去。",
+              "translation": "跟别人约好一起走，却丢下（我）离开了。",
+              "source": "《陈太丘与友期行》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0558",
+              "text": "与人期行，相委而去。",
+              "source": "《陈太丘与友期行》",
+              "targetWord": "委",
+              "translation": "跟别人约好一起走，却丢下（我）离开了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "委托",
+                "委屈",
+                "推委"
+              ],
+              "fullText": "友人便怒曰：'非人哉！与人期行，相委而去。'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "尾",
+            "伪",
+            "伟"
+          ],
+          "similarShapes": [
+            "季",
+            "秀",
+            "秃"
+          ],
+          "mnemonic": "'相委而去'中'委'=丢下不管，不是委托别人。相委=丢下对方，是最经典的古义用例。"
+        },
+        {
+          "id": "wb_c_237",
+          "character": "博士",
+          "pinyin": "bó shì",
+          "characterType": "双音节词",
+          "explanation": "古义为专掌经学传授的学官，今义为最高学位。从官职名到学位名，属于词义转移。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：专掌经学传授的学官。今义：最高学位名称。",
+              "pinyin": "bó shì",
+              "example": "孤岂欲卿治经为博士邪！",
+              "translation": "我难道是想要你研究经学成为专掌经学的学官吗？",
+              "source": "《孙权劝学》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0559",
+              "text": "孤岂欲卿治经为博士邪！",
+              "source": "《孙权劝学》",
+              "targetWord": "博士",
+              "translation": "我难道是想要你研究经学成为专掌经学的学官吗？",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "博士学位",
+                "博士后",
+                "知识渊博的人"
+              ],
+              "fullText": "权曰：'孤岂欲卿治经为博士邪！但当涉猎，见往事耳。'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "博识",
+            "博世",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "孙权说的'博士'是汉代的官，管经学教育。不是今天的PhD学位。注意'邪'通'耶'，表反问语气。"
+        },
+        {
+          "id": "wb_c_238",
+          "character": "但",
+          "pinyin": "dàn",
+          "characterType": "形声字",
+          "explanation": "古义为'只、仅仅'，表限制范围；今义为转折连词'但是'。从限制副词到转折连词，词性和词义都发生了转移。中考最高频考点之一。",
+          "examFrequency": "5年5考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：只，仅仅。今义：但是（转折连词）。",
+              "pinyin": "dàn",
+              "example": "但当涉猎，见往事耳。",
+              "translation": "只是应当粗略地阅读，了解历史罢了。",
+              "source": "《孙权劝学》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0560",
+              "text": "但当涉猎，见往事耳。",
+              "source": "《孙权劝学》",
+              "targetWord": "但",
+              "translation": "只是应当粗略地阅读，了解历史罢了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "但是",
+                "然而",
+                "可是"
+              ],
+              "fullText": "权曰：'孤岂欲卿治经为博士邪！但当涉猎，见往事耳。'",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0561",
+              "text": "但闻黄河流水鸣溅溅。",
+              "source": "《木兰诗》",
+              "targetWord": "但",
+              "translation": "只听到黄河的水流声溅溅鸣响。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "但是",
+                "然而",
+                "可是"
+              ],
+              "fullText": "旦辞爷娘去，暮宿黄河边。不闻爷娘唤女声，但闻黄河流水鸣溅溅。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "单",
+            "旦",
+            "蛋"
+          ],
+          "similarShapes": [
+            "担",
+            "胆",
+            "但"
+          ],
+          "mnemonic": "古文中'但'=only，不是but。'但闻'=只听到，'但少闲人'=只是少了闲人。凡'但'在文言中几乎都是'只'。"
+        },
+        {
+          "id": "wb_c_239",
+          "character": "往事",
+          "pinyin": "wǎng shì",
+          "characterType": "双音节词",
+          "explanation": "古义为'历史'，泛指过去发生的事；今义为'从前的事、过去的经历'，外延缩小且带有个人回忆色彩。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：历史。今义：过去的事情。",
+              "pinyin": "wǎng shì",
+              "example": "但当涉猎，见往事耳。",
+              "translation": "只是应当粗略地阅读，了解历史罢了。",
+              "source": "《孙权劝学》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0562",
+              "text": "但当涉猎，见往事耳。",
+              "source": "《孙权劝学》",
+              "targetWord": "往事",
+              "translation": "只是应当粗略地阅读，了解历史罢了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "过去的事情",
+                "从前的经历",
+                "往事回忆"
+              ],
+              "fullText": "权曰：'孤岂欲卿治经为博士邪！但当涉猎，见往事耳。'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "往世",
+            "网事",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "孙权让吕蒙读史书，'见往事'=了解历史，不是聊过去的八卦。'往事'古义比今义更宏大。"
+        },
+        {
+          "id": "wb_c_240",
+          "character": "走",
+          "pinyin": "zǒu",
+          "characterType": "会意字",
+          "explanation": "从夭从止，像人摆动两臂奔跑之形，本义为'跑'。今义为'步行'，动作由急趋变为徐行，词义完全转移。中考最高频古今异义，没有之一。",
+          "examFrequency": "5年5考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：跑，疾行。今义：步行，行走。",
+              "pinyin": "zǒu",
+              "example": "双兔傍地走，安能辨我是雄雌？",
+              "translation": "雄雌两兔贴近地面跑，怎能辨别哪是雄兔哪是雌兔呢？",
+              "source": "《木兰诗》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0563",
+              "text": "双兔傍地走，安能辨我是雄雌？",
+              "source": "《木兰诗》",
+              "targetWord": "走",
+              "translation": "雄雌两兔贴近地面跑，怎能辨别哪是雄兔哪是雌兔呢？",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "行走",
+                "散步",
+                "跳舞"
+              ],
+              "fullText": "雄兔脚扑朔，雌兔眼迷离；双兔傍地走，安能辨我是雄雌？",
+              "articleId": "art_008"
+            },
+            {
+              "id": "s_c_0564",
+              "text": "几欲先走。",
+              "source": "《口技》",
+              "targetWord": "走",
+              "translation": "几乎想要抢先逃跑。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "行走",
+                "离开",
+                "赶路"
+              ],
+              "fullText": "于是宾客无不变色离席，奋袖出臂，两股战战，几欲先走。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0565",
+              "text": "录毕，走送之，不敢稍逾约。",
+              "source": "《送东阳马生序》",
+              "targetWord": "走",
+              "translation": "抄录完毕，跑着把书送回去，不敢稍微超过约定的期限。",
+              "correctMeaningIndex": 0,
+              "difficulty": "hard",
+              "distractors": [
+                "走路",
+                "快步",
+                "赶路"
+              ],
+              "fullText": "每假借于藏书之家，手自笔录，计日以还。天大寒，砚冰坚，手指不可屈伸，弗之怠。录毕，走送之，不敢稍逾约。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "邹",
+            "奏",
+            "揍"
+          ],
+          "similarShapes": [
+            "起",
+            "赵",
+            "赶"
+          ],
+          "mnemonic": "古文'走'=跑！'走送之'=跑着去还书，不是走着去。'不胫而走'=没有腿却能跑（传播很快）。记住：古人说'走'就是今天的'跑'。"
+        },
+        {
+          "id": "wb_c_241",
+          "character": "爷",
+          "pinyin": "yé",
+          "characterType": "形声字",
+          "explanation": "古义为'父亲'，今义为'祖父'，词义从上一代变为上两代。《木兰诗》中多次出现，必考。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：父亲。今义：祖父。",
+              "pinyin": "yé",
+              "example": "阿爷无大儿，木兰无长兄。",
+              "translation": "父亲没有大儿子，木兰没有哥哥。",
+              "source": "《木兰诗》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0566",
+              "text": "阿爷无大儿，木兰无长兄。",
+              "source": "《木兰诗》",
+              "targetWord": "爷",
+              "translation": "父亲没有大儿子，木兰没有哥哥。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "爷爷",
+                "祖父",
+                "老大爷"
+              ],
+              "fullText": "昨夜见军帖，可汗大点兵，军书十二卷，卷卷有爷名。阿爷无大儿，木兰无长兄，愿为市鞍马，从此替爷征。",
+              "articleId": "art_008"
+            },
+            {
+              "id": "s_c_0567",
+              "text": "旦辞爷娘去，暮宿黄河边。",
+              "source": "《木兰诗》",
+              "targetWord": "爷",
+              "translation": "早上辞别爹娘出发，傍晚宿营在黄河边。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "爷爷",
+                "祖父",
+                "老人家"
+              ],
+              "fullText": "旦辞爷娘去，暮宿黄河边。不闻爷娘唤女声，但闻黄河流水鸣溅溅。",
+              "articleId": "art_008"
+            }
+          ],
+          "similarHomophones": [
+            "耶",
+            "也",
+            "野"
+          ],
+          "similarShapes": [
+            "斧",
+            "爸",
+            "爹"
+          ],
+          "mnemonic": "木兰替父从军，'爷'是她爸爸，不是她爷爷。古文'爷'指父亲，《木兰诗》是最好的证明。"
+        },
+        {
+          "id": "wb_c_242",
+          "character": "户",
+          "pinyin": "hù",
+          "characterType": "象形字",
+          "explanation": "像一扇门的形状，古义为'门'。今义为'人家、住户'，从具体物件变为计量单位。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：门。今义：人家、住户。",
+              "pinyin": "hù",
+              "example": "木兰当户织。",
+              "translation": "木兰对着门在织布。",
+              "source": "《木兰诗》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0568",
+              "text": "木兰当户织。",
+              "source": "《木兰诗》",
+              "targetWord": "户",
+              "translation": "木兰对着门在织布。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "窗户",
+                "人家",
+                "户口"
+              ],
+              "fullText": "唧唧复唧唧，木兰当户织。不闻机杼声，唯闻女叹息。",
+              "articleId": "art_008"
+            }
+          ],
+          "similarHomophones": [
+            "护",
+            "互",
+            "虎"
+          ],
+          "similarShapes": [
+            "房",
+            "扇",
+            "扁"
+          ],
+          "mnemonic": "'当户织'=对着门织布，不是对着窗户。古代'户'是门，'窗'才是窗。'门户'一词保留了古义。"
+        },
+        {
+          "id": "wb_c_243",
+          "character": "安",
+          "pinyin": "ān",
+          "characterType": "会意字",
+          "explanation": "从宀从女。除'安定'义项外，古义常表'怎么、哪里'，作疑问代词；今义主要为'安全、平安'。中考高频考查反问句中的疑问用法。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：怎么，哪里（疑问代词）。今义：安全、平安、安定。",
+              "pinyin": "ān",
+              "example": "安能辨我是雄雌？",
+              "translation": "怎么能辨别我是雄是雌呢？",
+              "source": "《木兰诗》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0569",
+              "text": "安能辨我是雄雌？",
+              "source": "《木兰诗》",
+              "targetWord": "安",
+              "translation": "怎么能辨别我是雄是雌呢？",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "安全",
+                "安定",
+                "安心"
+              ],
+              "fullText": "雄兔脚扑朔，雌兔眼迷离；双兔傍地走，安能辨我是雄雌？",
+              "articleId": "art_008"
+            },
+            {
+              "id": "s_c_0570",
+              "text": "尔安敢轻吾射！",
+              "source": "《卖油翁》",
+              "targetWord": "安",
+              "translation": "你怎么敢轻视我射箭的本领！",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "安全",
+                "安宁",
+                "平安"
+              ],
+              "fullText": "康肃问曰：'汝亦知射乎？吾射不亦精乎？'翁曰：'无他，但手熟尔。'康肃忿然曰：'尔安敢轻吾射！'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "按",
+            "暗",
+            "岸"
+          ],
+          "similarShapes": [
+            "按",
+            "案",
+            "要"
+          ],
+          "mnemonic": "'安'在反问句中十有八九是'怎么'。'安能''安敢'=怎么能、怎么敢，不是'安全地能'。"
+        },
+        {
+          "id": "wb_c_244",
+          "character": "妻子",
+          "pinyin": "qī zǐ",
+          "characterType": "双音节词",
+          "explanation": "古义为'妻子和儿女'，是两个词；今义为'男子的配偶'，是一个词。这是词义缩小最经典的例子，中考年年考。",
+          "examFrequency": "5年5考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：妻子和儿女。今义：男子的配偶。",
+              "pinyin": "qī zǐ",
+              "example": "率妻子邑人来此绝境。",
+              "translation": "带领妻子儿女和同乡人来到这个与世隔绝的地方。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0571",
+              "text": "率妻子邑人来此绝境。",
+              "source": "《桃花源记》",
+              "targetWord": "妻子",
+              "translation": "带领妻子儿女和同乡人来到这个与世隔绝的地方。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "配偶",
+                "老婆",
+                "太太"
+              ],
+              "fullText": "自云先世避秦时乱，率妻子邑人来此绝境，不复出焉，遂与外人间隔。",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "棋子",
+            "起子",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "古人'妻子'是两个词：妻=老婆，子=儿女。'率妻子'=带着老婆孩子，不是只带老婆。"
+        },
+        {
+          "id": "wb_c_245",
+          "character": "绝境",
+          "pinyin": "jué jìng",
+          "characterType": "双音节词",
+          "explanation": "古义为'与世隔绝的地方'，中性词；今义为'没有出路的境地'，贬义词。感情色彩从客观描述变为消极评价。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：与世隔绝的地方。今义：没有出路的境地。",
+              "pinyin": "jué jìng",
+              "example": "率妻子邑人来此绝境。",
+              "translation": "带领妻子儿女和同乡人来到这个与世隔绝的地方。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0572",
+              "text": "率妻子邑人来此绝境。",
+              "source": "《桃花源记》",
+              "targetWord": "绝境",
+              "translation": "带领妻子儿女和同乡人来到这个与世隔绝的地方。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "走投无路",
+                "极其困难",
+                "毫无希望的地方"
+              ],
+              "fullText": "自云先世避秦时乱，率妻子邑人来此绝境，不复出焉，遂与外人间隔。",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "绝景",
+            "掘井",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "桃花源的'绝境'是世外桃源——与世隔绝的好地方，不是走投无路。今义'绝境'是贬义，古义是中性。"
+        },
+        {
+          "id": "wb_c_246",
+          "character": "交通",
+          "pinyin": "jiāo tōng",
+          "characterType": "双音节词",
+          "explanation": "古义为'交错相通'，两个动词并列；今义为交通运输行业统称。从动词短语到名词，词性发生了变化。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：交错相通。今义：交通运输行业。",
+              "pinyin": "jiāo tōng",
+              "example": "阡陌交通，鸡犬相闻。",
+              "translation": "田间小路交错相通，鸡鸣狗叫的声音互相听得见。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0573",
+              "text": "阡陌交通，鸡犬相闻。",
+              "source": "《桃花源记》",
+              "targetWord": "交通",
+              "translation": "田间小路交错相通，鸡鸣狗叫的声音互相听得见。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "运输",
+                "汽车马路",
+                "交通规则"
+              ],
+              "fullText": "土地平旷，屋舍俨然，有良田、美池、桑竹之属。阡陌交通，鸡犬相闻。",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "交统",
+            "郊通",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'阡陌交通'=小路交错相通，不是路上跑汽车。古文'交通'=交互相通，和今天的交通部毫无关系。"
+        },
+        {
+          "id": "wb_c_247",
+          "character": "无论",
+          "pinyin": "wú lùn",
+          "characterType": "双音节词",
+          "explanation": "古义为'不要说，更不必说'，表递进关系（不说A，更不用说B）；今义为条件关系连词（无论A都B）。逻辑关系完全不同。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：不要说，更不必说。今义：条件关系连词。",
+              "pinyin": "wú lùn",
+              "example": "乃不知有汉，无论魏晋。",
+              "translation": "竟然不知道有汉朝，更不必说魏朝和晋朝了。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0574",
+              "text": "乃不知有汉，无论魏晋。",
+              "source": "《桃花源记》",
+              "targetWord": "无论",
+              "translation": "竟然不知道有汉朝，更不必说魏朝和晋朝了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "不管",
+                "任凭",
+                "不论"
+              ],
+              "fullText": "问今是何世，乃不知有汉，无论魏晋。",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "无伦",
+            "吴论",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'无论魏晋'=更不用说魏晋了，不是'不管是魏晋还是……'。古文'无论'=不要说，是递进不是条件。"
+        },
+        {
+          "id": "wb_c_248",
+          "character": "鲜美",
+          "pinyin": "xiān měi",
+          "characterType": "双音节词",
+          "explanation": "古义为'鲜艳美丽'，形容视觉；今义为'食物味道好'，形容味觉。从视觉到味觉，词义完全转移。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：鲜艳美丽。今义：食物味道好。",
+              "pinyin": "xiān měi",
+              "example": "芳草鲜美，落英缤纷。",
+              "translation": "芳香的青草鲜艳美丽，落花繁多纷乱。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0575",
+              "text": "芳草鲜美，落英缤纷。",
+              "source": "《桃花源记》",
+              "targetWord": "鲜美",
+              "translation": "芳香的青草鲜艳美丽，落花繁多纷乱。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "味道好",
+                "好吃",
+                "美味"
+              ],
+              "fullText": "忽逢桃花林，夹岸数百步，中无杂树，芳草鲜美，落英缤纷。",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "鲜明",
+            "先美",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'芳草鲜美'是说草长得鲜艳好看，不是草很好吃。古义'鲜美'用眼看，今义'鲜美'用嘴尝。"
+        },
+        {
+          "id": "wb_c_249",
+          "character": "不足",
+          "pinyin": "bù zú",
+          "characterType": "双音节词",
+          "explanation": "古义为'不值得，不必'；今义为'不充足，不够'。从价值判断变为数量判断。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：不值得，不必。今义：不充足，不够。",
+              "pinyin": "bù zú",
+              "example": "不足为外人道也。",
+              "translation": "不值得对外面的人说。",
+              "source": "《桃花源记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0576",
+              "text": "不足为外人道也。",
+              "source": "《桃花源记》",
+              "targetWord": "不足",
+              "translation": "不值得对外面的人说。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "不够",
+                "不充足",
+                "不充分"
+              ],
+              "fullText": "此中人语云：'不足为外人道也。'",
+              "articleId": "art_003"
+            }
+          ],
+          "similarHomophones": [
+            "不组",
+            "补足",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'不足为外人道'=不值得对外人说，不是'对外人说不够多'。古义'不足'=不值得，今义'不足'=不够。"
+        },
+        {
+          "id": "wb_c_250",
+          "character": "虽",
+          "pinyin": "suī",
+          "characterType": "形声字",
+          "explanation": "古义为'即使'，表假设让步；今义为'虽然'，表事实让步。关键区别：'即使'后面是假设情况，'虽然'后面是实际情况。中考高频。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：即使（假设让步）。今义：虽然（事实让步）。",
+              "pinyin": "suī",
+              "example": "虽乘奔御风，不以疾也。",
+              "translation": "即使骑着飞奔的马、驾着风，也不如它快。",
+              "source": "《三峡》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0577",
+              "text": "虽乘奔御风，不以疾也。",
+              "source": "《三峡》",
+              "targetWord": "虽",
+              "translation": "即使骑着飞奔的马、驾着风，也不如它快。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "虽然",
+                "但是",
+                "尽管"
+              ],
+              "fullText": "有时朝发白帝，暮到江陵，其间千二百里，虽乘奔御风，不以疾也。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0578",
+              "text": "虽人有百手，手有百指，不能指其一端。",
+              "source": "《口技》",
+              "targetWord": "虽",
+              "translation": "即使一个人有一百只手，每只手有一百个指头，也不能指明其中一种声音。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "虽然",
+                "尽管",
+                "但是"
+              ],
+              "fullText": "虽人有百手，手有百指，不能指其一端；人有百口，口有百舌，不能名其一处也。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "随",
+            "绥",
+            "睢"
+          ],
+          "similarShapes": [
+            "强",
+            "虽",
+            ""
+          ],
+          "mnemonic": "古文'虽'=即使（假设），不是虽然（事实）。'虽乘奔御风'=即使骑快马驾风，不是'虽然骑快马驾风'。"
+        },
+        {
+          "id": "wb_c_251",
+          "character": "奔",
+          "pinyin": "bēn",
+          "characterType": "会意字",
+          "explanation": "从大从卉，像人急速奔走。古义名词用法指'飞奔的马'，今义动词用法指'奔跑'。词性发生了变化。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：飞奔的马（名词）。今义：奔跑（动词）。",
+              "pinyin": "bēn",
+              "example": "虽乘奔御风，不以疾也。",
+              "translation": "即使骑着飞奔的马、驾着风，也不如它快。",
+              "source": "《三峡》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0579",
+              "text": "虽乘奔御风，不以疾也。",
+              "source": "《三峡》",
+              "targetWord": "奔",
+              "translation": "即使骑着飞奔的马、驾着风，也不如它快。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "奔跑",
+                "奔驰",
+                "猛冲"
+              ],
+              "fullText": "有时朝发白帝，暮到江陵，其间千二百里，虽乘奔御风，不以疾也。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0580",
+              "text": "猛浪若奔。",
+              "source": "《与朱元思书》",
+              "targetWord": "奔",
+              "translation": "迅猛的浪涛像飞奔的马一样。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "奔跑",
+                "狂奔",
+                "奔腾"
+              ],
+              "fullText": "急湍甚箭，猛浪若奔。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "本",
+            "苯",
+            "畚"
+          ],
+          "similarShapes": [
+            "莽",
+            "奔",
+            "卉"
+          ],
+          "mnemonic": "古文'奔'作名词时=飞奔的马。'乘奔'=骑着快马，'猛浪若奔'=浪像奔马。记住这个用法！"
+        },
+        {
+          "id": "wb_c_252",
+          "character": "或",
+          "pinyin": "huò",
+          "characterType": "会意字",
+          "explanation": "从口从戈，本义为'邦国'。古义常作代词/副词，表'有人、有时'；今义为'或许、或者'。从不定指代词到选择连词，词性发生了转移。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：有时，有人。今义：或许，或者。",
+              "pinyin": "huò",
+              "example": "或王命急宣，有时朝发白帝，暮到江陵。",
+              "translation": "有时皇帝的命令要紧急传达，早晨从白帝城出发，傍晚就到了江陵。",
+              "source": "《三峡》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0581",
+              "text": "或王命急宣，有时朝发白帝，暮到江陵。",
+              "source": "《三峡》",
+              "targetWord": "或",
+              "translation": "有时皇帝的命令要紧急传达，早晨从白帝城出发，傍晚就到了江陵。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "或许",
+                "或者",
+                "也许"
+              ],
+              "fullText": "或王命急宣，有时朝发白帝，暮到江陵，其间千二百里，虽乘奔御风，不以疾也。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "或",
+            "获",
+            "霍"
+          ],
+          "similarShapes": [
+            "成",
+            "咸",
+            "威"
+          ],
+          "mnemonic": "古文'或'=有时/有人，不是今天的'or'。'或王命急宣'=有时皇帝命令紧急传达。"
+        },
+        {
+          "id": "wb_c_253",
+          "character": "良",
+          "pinyin": "liáng",
+          "characterType": "象形字",
+          "explanation": "古义副词用法表'很、甚、确实'，今义形容词表'良好、优秀'。从程度副词到形容词，词性发生了变化。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：很，甚，确实。今义：良好，优秀。",
+              "pinyin": "liáng",
+              "example": "良多趣味。",
+              "translation": "确实有很多趣味。",
+              "source": "《三峡》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0582",
+              "text": "良多趣味。",
+              "source": "《三峡》",
+              "targetWord": "良",
+              "translation": "确实有很多趣味。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "良好",
+                "优秀",
+                "好的"
+              ],
+              "fullText": "春冬之时，则素湍绿潭，回清倒影，绝巘多生怪柏，悬泉瀑布，飞漱其间，清荣峻茂，良多趣味。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "凉",
+            "量",
+            "梁"
+          ],
+          "similarShapes": [
+            "浪",
+            "娘",
+            "粮"
+          ],
+          "mnemonic": "'良多趣味'=确实很有趣，不是'良好多趣味'。古文中'良'作副词=确实、很，和今义'好'不同。"
+        },
+        {
+          "id": "wb_c_254",
+          "character": "丈夫",
+          "pinyin": "zhàng fū",
+          "characterType": "双音节词",
+          "explanation": "古义为'成年男子'，泛指男性；今义为'女子的配偶'。从泛指到特指，词义大幅缩小。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：成年男子。今义：女子的配偶。",
+              "pinyin": "zhàng fū",
+              "example": "丈夫之冠也，父命之。",
+              "translation": "成年男子举行冠礼的时候，父亲训导他。",
+              "source": "《富贵不能淫》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0583",
+              "text": "丈夫之冠也，父命之。",
+              "source": "《富贵不能淫》",
+              "targetWord": "丈夫",
+              "translation": "成年男子举行冠礼的时候，父亲训导他。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "老公",
+                "配偶",
+                "夫君"
+              ],
+              "fullText": "丈夫之冠也，父命之；女子之嫁也，母命之。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "仗夫",
+            "章夫",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "孟子说的'丈夫'泛指男人，不是老公。'丈夫之冠'=男子的成人礼，和婚姻无关。"
+        },
+        {
+          "id": "wb_c_255",
+          "character": "曾",
+          "pinyin": "zēng",
+          "characterType": "形声字",
+          "explanation": "古义副词表'竟然、甚至'，表意外语气；今义副词表'曾经'，表过去时间。从语气副词到时间副词，词义完全不同。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：竟然，甚至（表意外）。今义：曾经（表过去）。",
+              "pinyin": "zēng",
+              "example": "曾不若孀妻弱子。",
+              "translation": "竟然还不如寡妇和幼小的孩子。",
+              "source": "《愚公移山》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0584",
+              "text": "曾不若孀妻弱子。",
+              "source": "《愚公移山》",
+              "targetWord": "曾",
+              "translation": "竟然还不如寡妇和幼小的孩子。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "曾经",
+                "从前",
+                "已经"
+              ],
+              "fullText": "以君之力，曾不能损魁父之丘，如太行、王屋何？",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0585",
+              "text": "而计其长曾不盈寸。",
+              "source": "《核舟记》",
+              "targetWord": "曾",
+              "translation": "可是计算它的长度竟然不满一寸。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "曾经",
+                "已经",
+                "从前"
+              ],
+              "fullText": "而计其长曾不盈寸。盖简桃核修狭者为之。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "增",
+            "憎",
+            "赠"
+          ],
+          "similarShapes": [
+            "增",
+            "层",
+            "僧"
+          ],
+          "mnemonic": "古文'曾'读zēng时=竟然，不是曾经。'曾不若'=竟然不如，'曾不盈寸'=竟然不满一寸。"
+        },
+        {
+          "id": "wb_c_256",
+          "character": "汤",
+          "pinyin": "tāng",
+          "characterType": "形声字",
+          "explanation": "从水昜声，古义为'热水、开水'；今义为'食物煮后的汁水'。从温度维度变为食材维度，词义大幅转移。中考必考。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：热水，开水。今义：食物煮后的汁水。",
+              "pinyin": "tāng",
+              "example": "媵人持汤沃灌，以衾拥覆。",
+              "translation": "服侍的人拿热水来浇洗，用被子裹着盖着。",
+              "source": "《送东阳马生序》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0586",
+              "text": "媵人持汤沃灌，以衾拥覆。",
+              "source": "《送东阳马生序》",
+              "targetWord": "汤",
+              "translation": "服侍的人拿热水来浇洗，用被子裹着盖着。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "菜汤",
+                "汤汁",
+                "汤药"
+              ],
+              "fullText": "至舍，四支僵劲不能动，媵人持汤沃灌，以衾拥覆，久而乃和。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0587",
+              "text": "及其日中如探汤。",
+              "source": "《两小儿辩日》",
+              "targetWord": "汤",
+              "translation": "到了中午就像把手伸进热水里一样（热）。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "菜汤",
+                "汤羹",
+                "热汤"
+              ],
+              "fullText": "一儿曰：'日初出沧沧凉凉，及其日中如探汤，此不为近者热而远者凉乎？'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "趟",
+            "烫",
+            "唐"
+          ],
+          "similarShapes": [
+            "场",
+            "扬",
+            "杨"
+          ],
+          "mnemonic": "古文'汤'=热水，不是喝的汤。'持汤沃灌'=拿热水浇洗，'探汤'=把手伸进热水。'赴汤蹈火'保留了古义。"
+        },
+        {
+          "id": "wb_c_257",
+          "character": "假",
+          "pinyin": "jiǎ",
+          "characterType": "形声字",
+          "explanation": "从人叚声，古义为'借、借来'；今义为'虚假、不真实'。从获取义变为真伪判断。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：借。今义：虚假，不真实。",
+              "pinyin": "jiǎ",
+              "example": "每假借于藏书之家。",
+              "translation": "常常向藏有书籍的人家去借书。",
+              "source": "《送东阳马生序》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0588",
+              "text": "每假借于藏书之家。",
+              "source": "《送东阳马生序》",
+              "targetWord": "假",
+              "translation": "常常向藏有书籍的人家去借书。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "假装",
+                "虚假",
+                "假冒"
+              ],
+              "fullText": "余幼时即嗜学。家贫，无从致书以观，每假借于藏书之家，手自笔录，计日以还。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0589",
+              "text": "以是人多以书假余。",
+              "source": "《送东阳马生序》",
+              "targetWord": "假",
+              "translation": "因此人们大多愿意把书借给我。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "假装",
+                "虚假",
+                "假冒"
+              ],
+              "fullText": "以是人多以书假余，余因得遍观群书。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "甲",
+            "价",
+            "驾"
+          ],
+          "similarShapes": [
+            "暇",
+            "瑕",
+            "遐"
+          ],
+          "mnemonic": "古文'假'=借，不是假的。'假借'=借，'以书假余'=把书借给我。'狐假虎威'的'假'也是'借'——狐狸借老虎的威风。"
+        },
+        {
+          "id": "wb_c_258",
+          "character": "再",
+          "pinyin": "zài",
+          "characterType": "会意字",
+          "explanation": "从冓从二，本义为'两次，第二次'；今义为'又一次'。古义是精确的'两次'，今义是泛化的'again'。中考超高频。",
+          "examFrequency": "5年5考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：两次，第二次。今义：又一次。",
+              "pinyin": "zài",
+              "example": "一鼓作气，再而衰，三而竭。",
+              "translation": "第一次击鼓振作了士气，第二次击鼓士气就衰弱了，第三次击鼓士气就耗尽了。",
+              "source": "《曹刿论战》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0590",
+              "text": "一鼓作气，再而衰，三而竭。",
+              "source": "《曹刿论战》",
+              "targetWord": "再",
+              "translation": "第一次击鼓振作了士气，第二次击鼓士气就衰弱了，第三次击鼓士气就耗尽了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "又一次",
+                "再次",
+                "又"
+              ],
+              "fullText": "一鼓作气，再而衰，三而竭。彼竭我盈，故克之。",
+              "articleId": "art_006"
+            },
+            {
+              "id": "s_c_0591",
+              "text": "日再食，无鲜肥滋味之享。",
+              "source": "《送东阳马生序》",
+              "targetWord": "再",
+              "translation": "每天吃两顿饭，没有新鲜肥美滋味可以享受。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "又一次",
+                "再次",
+                "多次"
+              ],
+              "fullText": "寓逆旅，主人日再食，无鲜肥滋味之享。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "在",
+            "载",
+            "灾"
+          ],
+          "similarShapes": [
+            "冉",
+            "再",
+            "苒"
+          ],
+          "mnemonic": "古文'再'=两次/twice，不是again。'再而衰'=第二次击鼓就衰了，'日再食'=一天吃两顿。记住：'再'有精确的数字感。"
+        },
+        {
+          "id": "wb_c_259",
+          "character": "臭",
+          "pinyin": "xiù",
+          "characterType": "会意字",
+          "explanation": "从自从犬，'自'是鼻子，狗鼻子灵敏。古义为'气味'（泛指一切气味），读xiù；今义为'难闻的气味'，读chòu。词义缩小且读音改变。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：气味（泛指）。今义：难闻的气味（chòu）。",
+              "pinyin": "xiù",
+              "example": "右备容臭。",
+              "translation": "右边挂着香袋。",
+              "source": "《送东阳马生序》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0592",
+              "text": "右备容臭。",
+              "source": "《送东阳马生序》",
+              "targetWord": "臭",
+              "translation": "右边挂着香袋。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "臭味",
+                "臭气",
+                "难闻"
+              ],
+              "fullText": "左佩刀，右备容臭，烨然若神人。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "秀",
+            "袖",
+            "锈"
+          ],
+          "similarShapes": [
+            "息",
+            "嗅",
+            "臭"
+          ],
+          "mnemonic": "'容臭'=香袋，装香料用的。'臭'古读xiù，泛指气味（香臭都是'臭'）。今读chòu，只指臭味。"
+        },
+        {
+          "id": "wb_c_260",
+          "character": "是",
+          "pinyin": "shì",
+          "characterType": "会意字",
+          "explanation": "从日从正，本义为'正、直'。古义常作指示代词'这、这个'；今义为判断动词'是'。从代词到动词，是最常见的古今异义之一。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：这，这个（指示代词）。今义：判断动词。",
+              "pinyin": "shì",
+              "example": "是非木杮，岂能为暴涨携之去？",
+              "translation": "这不是木片，怎么能被暴涨的河水带走呢？",
+              "source": "《河中石兽》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0593",
+              "text": "是非木杮，岂能为暴涨携之去？",
+              "source": "《河中石兽》",
+              "targetWord": "是",
+              "translation": "这不是木片，怎么能被暴涨的河水带走呢？",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "判断动词",
+                "对",
+                "正确"
+              ],
+              "fullText": "一讲学家设帐寺中，闻之笑曰：'尔辈不能究物理。是非木杮，岂能为暴涨携之去？'",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0594",
+              "text": "是马也，虽有千里之能……",
+              "source": "《马说》",
+              "targetWord": "是",
+              "translation": "这样的马，即使有日行千里的能力……",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "判断动词",
+                "正确",
+                "真实"
+              ],
+              "fullText": "是马也，虽有千里之能，食不饱，力不足，才美不外见。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "事",
+            "式",
+            "试"
+          ],
+          "similarShapes": [
+            "提",
+            "题",
+            "匙"
+          ],
+          "mnemonic": "古文'是'=这/这个，不是判断动词。'是非木杮'=这不是木片，'是马也'=这样的马。今天的'是'字在古文中对应'为''乃'等字。"
+        },
+        {
+          "id": "wb_c_261",
+          "character": "趋",
+          "pinyin": "qū",
+          "characterType": "形声字",
+          "explanation": "从走刍声，古义为'快步走、奔向'，表示恭敬或急切；今义为'趋势、趋向'，词性从动词变为名词。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：快步走，奔向。今义：趋势，趋向。",
+              "pinyin": "qū",
+              "example": "尝趋百里外，从乡之先达执经叩问。",
+              "translation": "曾经快步走到百里之外，跟随乡里有学问的前辈拿着经书请教。",
+              "source": "《送东阳马生序》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0595",
+              "text": "尝趋百里外，从乡之先达执经叩问。",
+              "source": "《送东阳马生序》",
+              "targetWord": "趋",
+              "translation": "曾经快步走到百里之外，跟随乡里有学问的前辈拿着经书请教。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "趋势",
+                "趋向",
+                "走过去"
+              ],
+              "fullText": "尝趋百里外，从乡之先达执经叩问。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "区",
+            "曲",
+            "屈"
+          ],
+          "similarShapes": [
+            "起",
+            "赵",
+            "趣"
+          ],
+          "mnemonic": "'趋'古代是小步快走（表示恭敬），'趋百里外'=赶路百里。今义'趋势'是从'趋'的移动方向引申而来。"
+        },
+        {
+          "id": "wb_c_262",
+          "character": "景",
+          "pinyin": "jǐng",
+          "characterType": "形声字",
+          "explanation": "从日京声。古文'景'常通借为'日光'之义，与今义'风景、景色'不同。《岳阳楼记》中考高频。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：日光。今义：风景，景色。",
+              "pinyin": "jǐng",
+              "example": "春和景明，波澜不惊。",
+              "translation": "春风和煦、日光明媚，湖面波澜不起。",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0596",
+              "text": "春和景明，波澜不惊。",
+              "source": "《岳阳楼记》",
+              "targetWord": "景",
+              "translation": "春风和煦、日光明媚，湖面波澜不起。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "景色",
+                "风景",
+                "景象"
+              ],
+              "fullText": "至若春和景明，波澜不惊，上下天光，一碧万顷。",
+              "articleId": "art_001"
+            }
+          ],
+          "similarHomophones": [
+            "警",
+            "井",
+            "颈"
+          ],
+          "similarShapes": [
+            "影",
+            "凉",
+            "京"
+          ],
+          "mnemonic": "'春和景明'=春天和暖、日光明媚。'景'=日光，不是风景。这个考点几乎是岳阳楼记的固定考题。"
+        },
+        {
+          "id": "wb_c_263",
+          "character": "国",
+          "pinyin": "guó",
+          "characterType": "会意字",
+          "explanation": "从囗从或，本义为'邦国'。古义常特指'国都、都城'，今义为'国家'。从局部到整体，词义扩大。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：国都，都城。今义：国家。",
+              "pinyin": "guó",
+              "example": "去国怀乡，忧谗畏讥。",
+              "translation": "离开国都，怀念家乡，担心被谗言中伤，害怕被人讥讽。",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0597",
+              "text": "去国怀乡，忧谗畏讥。",
+              "source": "《岳阳楼记》",
+              "targetWord": "国",
+              "translation": "离开国都，怀念家乡，担心被谗言中伤，害怕被人讥讽。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "国家",
+                "祖国",
+                "邦国"
+              ],
+              "fullText": "登斯楼也，则有去国怀乡，忧谗畏讥，满目萧然，感极而悲者矣。",
+              "articleId": "art_001"
+            }
+          ],
+          "similarHomophones": [
+            "郭",
+            "裹",
+            "果"
+          ],
+          "similarShapes": [
+            "固",
+            "围",
+            "因"
+          ],
+          "mnemonic": "'去国怀乡'=离开国都怀念家乡，不是离开国家。古人'国'有时指都城（'国人'=都城里的人），不是整个国家。"
+        },
+        {
+          "id": "wb_c_264",
+          "character": "微",
+          "pinyin": "wēi",
+          "characterType": "形声字",
+          "explanation": "古义连词用法表'如果没有'（假设否定），今义形容词表'微小、细微'。从逻辑连词到形容词，词性完全不同。中考重难点。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：如果没有（假设连词）。今义：微小，细微。",
+              "pinyin": "wēi",
+              "example": "微斯人，吾谁与归？",
+              "translation": "如果没有这种人，我跟谁在一起呢？",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0598",
+              "text": "微斯人，吾谁与归？",
+              "source": "《岳阳楼记》",
+              "targetWord": "微",
+              "translation": "如果没有这种人，我跟谁在一起呢？",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "微小",
+                "轻微",
+                "微妙"
+              ],
+              "fullText": "噫！微斯人，吾谁与归？",
+              "articleId": "art_001"
+            }
+          ],
+          "similarHomophones": [
+            "危",
+            "维",
+            "唯"
+          ],
+          "similarShapes": [
+            "徽",
+            "徵",
+            "薇"
+          ],
+          "mnemonic": "'微斯人'=如果没有这些人——这是'微'最特殊的古义。不是'微小的人'。记住这个经典结尾句。"
+        },
+        {
+          "id": "wb_c_265",
+          "character": "集",
+          "pinyin": "jí",
+          "characterType": "会意字",
+          "explanation": "从隹从木，群鸟在树上。古义为'停息、栖止'（鸟停在树上）；今义为'聚集、集合'。从停息到聚集，动作方向相反。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：停息，栖止。今义：聚集，集合。",
+              "pinyin": "jí",
+              "example": "沙鸥翔集，锦鳞游泳。",
+              "translation": "沙鸥时而飞翔时而停息，美丽的鱼儿游来游去。",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0599",
+              "text": "沙鸥翔集，锦鳞游泳。",
+              "source": "《岳阳楼记》",
+              "targetWord": "集",
+              "translation": "沙鸥时而飞翔时而停息，美丽的鱼儿游来游去。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "聚集",
+                "集合",
+                "汇集"
+              ],
+              "fullText": "至若春和景明，波澜不惊，上下天光，一碧万顷，沙鸥翔集，锦鳞游泳。",
+              "articleId": "art_001"
+            }
+          ],
+          "similarHomophones": [
+            "急",
+            "及",
+            "级"
+          ],
+          "similarShapes": [
+            "售",
+            "焦",
+            "准"
+          ],
+          "mnemonic": "'沙鸥翔集'=沙鸥飞翔和停息，'集'是落下、栖息，不是聚集。鸟停在树上叫'集'，这是本义。"
+        },
+        {
+          "id": "wb_c_266",
+          "character": "明年",
+          "pinyin": "míng nián",
+          "characterType": "双音节词",
+          "explanation": "古义为'第二年'，指紧接的下一年的时间点；今义为'今年的下一年'。看起来相似，但古义是叙事中的'接下来那年'，今义是当下的'明年'。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：第二年。今义：今年的下一年。",
+              "pinyin": "míng nián",
+              "example": "越明年，政通人和，百废具兴。",
+              "translation": "到了第二年，政事顺利，百姓和乐，各种荒废的事业都兴办起来了。",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0600",
+              "text": "越明年，政通人和，百废具兴。",
+              "source": "《岳阳楼记》",
+              "targetWord": "明年",
+              "translation": "到了第二年，政事顺利，百姓和乐，各种荒废的事业都兴办起来了。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "明年",
+                "来年",
+                "今年的下一年"
+              ],
+              "fullText": "庆历四年春，滕子京谪守巴陵郡。越明年，政通人和，百废具兴。",
+              "articleId": "art_001"
+            }
+          ],
+          "similarHomophones": [
+            "名年",
+            "鸣年",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'越明年'=到了第二年。古文中以过去某年为起点，'明年'指那之后的一年，和我们说的'明年'不同。"
+        },
+        {
+          "id": "wb_c_267",
+          "character": "秀",
+          "pinyin": "xiù",
+          "characterType": "会意字",
+          "explanation": "从禾从乃，谷物抽穗开花。古义形容词表'茂盛、繁荣'，今义形容词表'秀丽、清秀'。从生命力旺盛到外表好看，词义从内在到外在。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：茂盛，繁荣。今义：秀丽，清秀。",
+              "pinyin": "xiù",
+              "example": "佳木秀而繁阴。",
+              "translation": "好的树木枝叶茂盛，形成浓密的绿荫。",
+              "source": "《醉翁亭记》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0601",
+              "text": "佳木秀而繁阴。",
+              "source": "《醉翁亭记》",
+              "targetWord": "秀",
+              "translation": "好的树木枝叶茂盛，形成浓密的绿荫。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "秀丽",
+                "秀气",
+                "好看"
+              ],
+              "fullText": "野芳发而幽香，佳木秀而繁阴，风霜高洁，水落而石出者，山间之四时也。",
+              "articleId": "art_002"
+            }
+          ],
+          "similarHomophones": [
+            "绣",
+            "修",
+            "袖"
+          ],
+          "similarShapes": [
+            "季",
+            "秃",
+            "委"
+          ],
+          "mnemonic": "'佳木秀而繁阴'=树木茂盛、树荫浓密。'秀'=茂盛，不是好看。夏天树木生机勃勃叫'秀'。"
+        },
+        {
+          "id": "wb_c_268",
+          "character": "卑鄙",
+          "pinyin": "bēi bǐ",
+          "characterType": "双音节词",
+          "explanation": "古义为'身份低微，见识短浅'，中性偏谦的词；今义为'品行恶劣'，贬义词。感情色彩从中性/自谦变为明显的贬义。中考考了无数次。",
+          "examFrequency": "5年5考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：身份低微，见识短浅。今义：品行恶劣。",
+              "pinyin": "bēi bǐ",
+              "example": "先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中。",
+              "translation": "先帝不因为我的身份低微、见识短浅，不惜降低身份，三次到草庐来拜访我。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0602",
+              "text": "先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中。",
+              "source": "《出师表》",
+              "targetWord": "卑鄙",
+              "translation": "先帝不因为我的身份低微、见识短浅，不惜降低身份，三次到草庐来拜访我。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "道德败坏",
+                "品行恶劣",
+                "下流无耻"
+              ],
+              "fullText": "臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "杯壁",
+            "悲比",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "诸葛亮说自己'卑鄙'是谦虚（出身低微、见识少），不是说自己人品差。古义中性/自谦，今义是骂人。这道题中考必考。"
+        },
+        {
+          "id": "wb_c_269",
+          "character": "感激",
+          "pinyin": "gǎn jī",
+          "characterType": "双音节词",
+          "explanation": "古义为'感奋激发'，表示内心被触动而振作；今义为'感谢'，表示因得到帮助而谢意。感情从激昂→平和，力度完全不同。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：感奋激发。今义：感谢。",
+              "pinyin": "gǎn jī",
+              "example": "由是感激，遂许先帝以驱驰。",
+              "translation": "因此感奋激发，于是答应先帝为他奔走效劳。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0603",
+              "text": "由是感激，遂许先帝以驱驰。",
+              "source": "《出师表》",
+              "targetWord": "感激",
+              "translation": "因此感奋激发，于是答应先帝为他奔走效劳。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "感谢",
+                "感动",
+                "谢谢"
+              ],
+              "fullText": "先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中，咨臣以当世之事，由是感激，遂许先帝以驱驰。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "赶集",
+            "感极",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'感激'古义是内心震撼、振作起来，不是轻飘飘的'谢谢'。诸葛亮被刘备三顾茅庐所震撼感动而振作，才立志出山。"
+        },
+        {
+          "id": "wb_c_270",
+          "character": "痛恨",
+          "pinyin": "tòng hèn",
+          "characterType": "双音节词",
+          "explanation": "古义为'痛心遗憾'，是对事态的惋惜；今义为'极度憎恨'，是对人事的仇恨。感情从遗憾→仇恨，强度升级但方向变了。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：痛心，遗憾。今义：极度憎恨。",
+              "pinyin": "tòng hèn",
+              "example": "未尝不叹息痛恨于桓、灵也。",
+              "translation": "没有一次不对桓帝、灵帝的作为叹息痛心、深感遗憾的。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0604",
+              "text": "未尝不叹息痛恨于桓、灵也。",
+              "source": "《出师表》",
+              "targetWord": "痛恨",
+              "translation": "没有一次不对桓帝、灵帝的作为叹息痛心、深感遗憾的。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "憎恨",
+                "仇恨",
+                "极度讨厌"
+              ],
+              "fullText": "亲贤臣，远小人，此先汉所以兴隆也；亲小人，远贤臣，此后汉所以倾颓也。先帝在时，每与臣论此事，未尝不叹息痛恨于桓、灵也。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "通恨",
+            "同恨",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'痛恨'古义=痛心遗憾（对历史人物的惋惜），不是咬牙切齿地恨。诸葛亮是在惋惜桓灵二帝用人不当，不是在诅咒他们。"
+        },
+        {
+          "id": "wb_c_271",
+          "character": "开张",
+          "pinyin": "kāi zhāng",
+          "characterType": "双音节词",
+          "explanation": "古义为'扩大'，指广开言路等抽象扩展；今义为'店铺开始营业'。从抽象到具体，词义完全转移。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：扩大。今义：店铺开始营业。",
+              "pinyin": "kāi zhāng",
+              "example": "诚宜开张圣听，以光先帝遗德。",
+              "translation": "确实应该扩大圣明的听闻，来发扬光大先帝遗留下来的美德。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0605",
+              "text": "诚宜开张圣听，以光先帝遗德。",
+              "source": "《出师表》",
+              "targetWord": "开张",
+              "translation": "确实应该扩大圣明的听闻，来发扬光大先帝遗留下来的美德。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "开业",
+                "开商店",
+                "开张大吉"
+              ],
+              "fullText": "诚宜开张圣听，以光先帝遗德，恢弘志士之气。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "开章",
+            "开仗",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'开张圣听'=广开言路（扩大听取意见的范围），不是皇帝开店。古义'开张'=扩大，和商铺毫无关系。"
+        },
+        {
+          "id": "wb_c_272",
+          "character": "布衣",
+          "pinyin": "bù yī",
+          "characterType": "双音节词",
+          "explanation": "古义为'平民百姓'（因古代平民穿麻布衣服），今义为'棉布做的衣服'。从阶层称谓到物品名称，是典型的借代引申。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：平民，百姓。今义：布做的衣服。",
+              "pinyin": "bù yī",
+              "example": "臣本布衣，躬耕于南阳。",
+              "translation": "我本来是平民，在南阳亲自耕种。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0606",
+              "text": "臣本布衣，躬耕于南阳。",
+              "source": "《出师表》",
+              "targetWord": "布衣",
+              "translation": "我本来是平民，在南阳亲自耕种。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "布衣服",
+                "粗布衫",
+                "棉衣"
+              ],
+              "fullText": "臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "不一",
+            "补衣",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "诸葛亮说'臣本布衣'=我本来是老百姓，不是'我穿布衣服'。古代当官的穿丝绸，老百姓穿麻布，所以'布衣'代指平民。"
+        },
+        {
+          "id": "wb_c_273",
+          "character": "涕",
+          "pinyin": "tì",
+          "characterType": "形声字",
+          "explanation": "从水弟声，古义为'眼泪'；今义为'鼻涕'。从眼部到鼻部，词义向下转移。中考高频。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：眼泪。今义：鼻涕。",
+              "pinyin": "tì",
+              "example": "今当远离，临表涕零，不知所言。",
+              "translation": "如今正要远离，面对这份奏表眼泪流下，不知道说了些什么。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0607",
+              "text": "今当远离，临表涕零，不知所言。",
+              "source": "《出师表》",
+              "targetWord": "涕",
+              "translation": "如今正要远离，面对这份奏表眼泪流下，不知道说了些什么。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "鼻涕",
+                "口水",
+                "鼻涕眼泪"
+              ],
+              "fullText": "今当远离，临表涕零，不知所言。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "替",
+            "剃",
+            "梯"
+          ],
+          "similarShapes": [
+            "弟",
+            "悌",
+            "递"
+          ],
+          "mnemonic": "古文'涕'=眼泪，'泗'=鼻涕。'临表涕零'=面对奏表眼泪直流。'痛哭流涕'保留了古义——流的是眼泪不是鼻涕。"
+        },
+        {
+          "id": "wb_c_274",
+          "character": "所以",
+          "pinyin": "suǒ yǐ",
+          "characterType": "双音节词",
+          "explanation": "古义为'……的原因'或'用来……的办法'，表原因或手段；今义为因果连词'所以'。古义是名词性结构，今义是连词。《出师表》必考。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：……的原因/用来……的办法。今义：因果连词（因此）。",
+              "pinyin": "suǒ yǐ",
+              "example": "此先汉所以兴隆也。",
+              "translation": "这是前汉兴隆的原因。",
+              "source": "《出师表》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0608",
+              "text": "此先汉所以兴隆也。",
+              "source": "《出师表》",
+              "targetWord": "所以",
+              "translation": "这是前汉兴隆的原因。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "因此",
+                "所以",
+                "于是"
+              ],
+              "fullText": "亲贤臣，远小人，此先汉所以兴隆也；亲小人，远贤臣，此后汉所以倾颓也。",
+              "articleId": ""
+            },
+            {
+              "id": "s_c_0609",
+              "text": "所以动心忍性，增益其所不能。",
+              "source": "《生于忧患，死于安乐》",
+              "targetWord": "所以",
+              "translation": "用来使他的心受到震动、使他的性格坚韧、增加他所不具备的能力。",
+              "correctMeaningIndex": 0,
+              "difficulty": "medium",
+              "distractors": [
+                "因此",
+                "所以",
+                "于是"
+              ],
+              "fullText": "故天将降大任于是人也，必先苦其心志，劳其筋骨，饿其体肤，空乏其身，行拂乱其所为，所以动心忍性，增益其所不能。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "所已",
+            "锁以",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "古文'所以'=所+以=……的原因/用来……的。'此先汉所以兴隆也'=这就是先汉兴隆的原因。拆开理解就容易记住。"
+        },
+        {
+          "id": "wb_c_275",
+          "character": "牺牲",
+          "pinyin": "xī shēng",
+          "characterType": "双音节词",
+          "explanation": "古义为'祭祀用的纯色牲畜'（猪牛羊等）；今义为'为正义献出生命'。从祭祀供品到崇高献身，词义升格。中考高频。",
+          "examFrequency": "5年4考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：祭祀用的纯色牲畜。今义：为正义献出生命。",
+              "pinyin": "xī shēng",
+              "example": "牺牲玉帛，弗敢加也，必以信。",
+              "translation": "祭祀用的牲畜、玉器和丝织品，不敢虚报，一定以实情报告。",
+              "source": "《曹刿论战》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0610",
+              "text": "牺牲玉帛，弗敢加也，必以信。",
+              "source": "《曹刿论战》",
+              "targetWord": "牺牲",
+              "translation": "祭祀用的牲畜、玉器和丝织品，不敢虚报，一定以实情报告。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "献身",
+                "就义",
+                "捐躯"
+              ],
+              "fullText": "公曰：'牺牲玉帛，弗敢加也，必以信。'",
+              "articleId": "art_006"
+            }
+          ],
+          "similarHomophones": [
+            "西生",
+            "希生",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "古文中'牺牲'是祭品——纯色的牛羊肉。今天'牺牲'是为正义而死。两个意思完全不同。'牺牲玉帛'=祭神用的牛羊玉帛。"
+        },
+        {
+          "id": "wb_c_276",
+          "character": "狱",
+          "pinyin": "yù",
+          "characterType": "会意字",
+          "explanation": "从犬从言，两犬相争以言语辩。古义为'案件、诉讼'；今义为'监狱、监牢'。从审理对象变为关押场所，词义发生了转喻。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：案件，诉讼。今义：监狱。",
+              "pinyin": "yù",
+              "example": "小大之狱，虽不能察，必以情。",
+              "translation": "大大小小的案件，即使不能一一明察，也一定以实情来判断。",
+              "source": "《曹刿论战》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0611",
+              "text": "小大之狱，虽不能察，必以情。",
+              "source": "《曹刿论战》",
+              "targetWord": "狱",
+              "translation": "大大小小的案件，即使不能一一明察，也一定以实情来判断。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "监狱",
+                "牢房",
+                "牢狱"
+              ],
+              "fullText": "公曰：'小大之狱，虽不能察，必以情。'对曰：'忠之属也。可以一战。战则请从。'",
+              "articleId": "art_006"
+            }
+          ],
+          "similarHomophones": [
+            "玉",
+            "域",
+            "欲"
+          ],
+          "similarShapes": [
+            "岳",
+            "获",
+            "狄"
+          ],
+          "mnemonic": "古文'狱'=案件、打官司，不是坐牢的地方。'小大之狱'=大大小小的诉讼案件。曹刿说的是审案，不是说监狱。"
+        },
+        {
+          "id": "wb_c_277",
+          "character": "池",
+          "pinyin": "chí",
+          "characterType": "形声字",
+          "explanation": "从水也声，古义常特指'护城河'（军事防御工事）；今义为'池塘'（水塘）。从军事设施到自然水域，词义泛化。",
+          "examFrequency": "5年2考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：护城河。今义：池塘。",
+              "pinyin": "chí",
+              "example": "城非不高也，池非不深也。",
+              "translation": "城墙不是不高，护城河不是不深。",
+              "source": "《得道多助，失道寡助》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0612",
+              "text": "城非不高也，池非不深也。",
+              "source": "《得道多助，失道寡助》",
+              "targetWord": "池",
+              "translation": "城墙不是不高，护城河不是不深。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "池塘",
+                "水池",
+                "水塘"
+              ],
+              "fullText": "城非不高也，池非不深也，兵革非不坚利也，米粟非不多也，委而去之，是地利不如人和也。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "迟",
+            "持",
+            "驰"
+          ],
+          "similarShapes": [
+            "地",
+            "他",
+            "也"
+          ],
+          "mnemonic": "古文中'城'和'池'常连用，'城'=城墙，'池'=护城河。'池非不深'=护城河不是不深——不是游泳池不够深。"
+        },
+        {
+          "id": "wb_c_278",
+          "character": "地方",
+          "pinyin": "dì fāng",
+          "characterType": "双音节词",
+          "explanation": "古义为'土地方圆'（两个词：地+方），'方'指纵横面积；今义为'区域、地点'（一个词）。从面积描述到地点指称，词义转移。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：土地方圆。今义：区域，地点。",
+              "pinyin": "dì fāng",
+              "example": "今齐地方千里，百二十城。",
+              "translation": "如今齐国土地方圆千里，有一百二十座城池。",
+              "source": "《邹忌讽齐王纳谏》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0613",
+              "text": "今齐地方千里，百二十城。",
+              "source": "《邹忌讽齐王纳谏》",
+              "targetWord": "地方",
+              "translation": "如今齐国土地方圆千里，有一百二十座城池。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "地点",
+                "区域",
+                "处所"
+              ],
+              "fullText": "今齐地方千里，百二十城，宫妇左右莫不私王，朝廷之臣莫不畏王，四境之内莫不有求于王。",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "帝方",
+            "第方",
+            ""
+          ],
+          "similarShapes": [
+            "",
+            "",
+            ""
+          ],
+          "mnemonic": "'地方千里'=土地方圆千里。古文中'地'和'方'是两个词，不能连读。'方'=方圆/纵横，'地方'≠地点。"
+        },
+        {
+          "id": "wb_c_279",
+          "character": "谢",
+          "pinyin": "xiè",
+          "characterType": "形声字",
+          "explanation": "从言射声。古义为'道歉、认错'，今义为'感谢、致谢'。从认错到致谢，感情方向完全不同。",
+          "examFrequency": "5年3考",
+          "oracleForm": "",
+          "meanings": [
+            {
+              "definition": "古义：道歉，认错。今义：感谢。",
+              "pinyin": "xiè",
+              "example": "长跪而谢之曰。",
+              "translation": "直身跪着向他道歉说。",
+              "source": "《唐雎不辱使命》"
+            }
+          ],
+          "sentences": [
+            {
+              "id": "s_c_0614",
+              "text": "长跪而谢之曰。",
+              "source": "《唐雎不辱使命》",
+              "targetWord": "谢",
+              "translation": "直身跪着向他道歉说。",
+              "correctMeaningIndex": 0,
+              "difficulty": "basic",
+              "distractors": [
+                "感谢",
+                "致谢",
+                "道谢"
+              ],
+              "fullText": "秦王色挠，长跪而谢之曰：'先生坐！何至于此！寡人谕矣。'",
+              "articleId": ""
+            }
+          ],
+          "similarHomophones": [
+            "写",
+            "卸",
+            "蟹"
+          ],
+          "similarShapes": [
+            "射",
+            "榭",
+            "糊"
+          ],
+          "mnemonic": "古文'谢'=道歉，不是感谢。'长跪而谢'=跪着道歉。秦王是被唐雎吓到了在认错，不是在道谢。"
+        }
+      ],
       "sortOrder": 2,
       "examLevel": "zhongkao",
-      "initialized": false
+      "initialized": true
     },
     {
       "id": "wb_zhongkao_cileihuoyong",
