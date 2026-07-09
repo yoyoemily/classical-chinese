@@ -2,6 +2,7 @@ package com.bogutongjin.controller;
 
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.GlossaryImportRequest;
+import com.bogutongjin.dto.SourceData;
 import com.bogutongjin.service.DataImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -45,5 +46,14 @@ public class ImportController {
     public Result<Map<String, Object>> importGlossary(@PathVariable String articleId,
                                                        @RequestBody GlossaryImportRequest request) {
         return Result.ok(importService.importGlossaryForArticle(articleId, request));
+    }
+
+    /**
+     * 单本词书独立导入（幂等：先删后插）
+     * 接收 SourceWordBook 格式的 JSON 请求体，只影响该本词书的数据
+     */
+    @PostMapping("/import/wordbook")
+    public Result<Map<String, Object>> importWordBook(@RequestBody SourceData.SourceWordBook book) {
+        return Result.ok(importService.importWordBook(book.getId(), book));
     }
 }

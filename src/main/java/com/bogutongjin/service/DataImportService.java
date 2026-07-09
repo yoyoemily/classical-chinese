@@ -120,6 +120,51 @@ public class DataImportService {
         return result;
     }
 
+    /**
+     * 单本词书独立导入（幂等：先删后插）
+     * 只影响该词书及下属的字词/义项/句子等关联数据，不影响名篇、勋章、经典等其他数据
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importWordBook(String wordBookId, SourceWordBook book) {
+        // 1. 删除该词书已有数据（按外键依赖逆序）
+        deleteWordBookData(wordBookId);
+
+        // 2. 插入词书
+        insertWordBook(book);
+
+        // 3. 插入字词
+        if (CollUtil.isNotEmpty(book.getWords())) {
+            for (SourceWord w : book.getWords()) {
+                insertWord(book.getId(), w);
+            }
+        }
+
+        log.info("词书独立导入完成: {} ({} 词)", book.getId(), book.getTotalWords());
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("wordBookId", wordBookId);
+        result.put("name", book.getName());
+        result.put("wordCount", book.getWords() != null ? book.getWords().size() : 0);
+        return result;
+    }
+
+    private void deleteWordBookData(String wordBookId) {
+        // 按外键依赖逆序删除
+        jdbc.update("DELETE sd FROM sentence_distractor sd " +
+                "INNER JOIN sentence s ON sd.sentence_id = s.id " +
+                "INNER JOIN word w ON s.word_id = w.id " +
+                "WHERE w.word_book_id = ?", wordBookId);
+        jdbc.update("DELETE FROM sentence WHERE word_id IN " +
+                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM meaning WHERE word_id IN " +
+                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM similar_homophone WHERE word_id IN " +
+                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM similar_shape WHERE word_id IN " +
+                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM word WHERE word_book_id = ?", wordBookId);
+        jdbc.update("DELETE FROM word_book WHERE id = ?", wordBookId);
+    }
+
     private void importBadges(List<SourceBadge> badges) {
         if (CollUtil.isEmpty(badges)) return;
         String sql = "INSERT INTO badge (id, name, description, icon, category, condition_type, condition_value, created_at) " +
