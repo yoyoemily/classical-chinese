@@ -273,7 +273,8 @@ public class ClassicService {
             Map.entry(20L, "韩非"),
             Map.entry(21L, "墨子"),
             Map.entry(22L, "孙武"),
-            Map.entry(33L, "刘义庆")
+            Map.entry(33L, "刘义庆"),
+            Map.entry(36L, "佚名")
         );
         return knownAuthors.getOrDefault(classic.getId(), "佚名");
     }

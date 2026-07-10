@@ -41802,8 +41802,8 @@
       "description": "上古奇书，山川地理与神话传说交织，夸父逐日、精卫填海、大禹治水……想象力无远弗届。",
       "category": "集",
       "structureType": "volume",
-      "loadMode": "full",
-      "navMode": "strip"
+      "loadMode": "chunked",
+      "navMode": "accordion"
     }
   ]
 }
