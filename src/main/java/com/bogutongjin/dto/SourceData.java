@@ -178,6 +178,14 @@ public class SourceData {
         private Integer id;
         private String title;
         private List<SourceClassicParagraph> paragraphs;
+        /** 选集型：该门类下的条目列表 */
+        private List<SourceAnthologyEntry> entries;
+    }
+
+    @Data
+    public static class SourceAnthologyEntry {
+        private String title;
+        private List<SourceClassicParagraph> paragraphs;
     }
 
     @Data

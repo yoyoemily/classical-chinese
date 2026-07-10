@@ -383,8 +383,11 @@ public class DataImportService {
     /**
      * 导入一部经典著作的章节内容（含章节、段落、注释）
      * 幂等：先删除该经典下已有的所有章节/段落/注释数据，再重新插入
+     * 支持两种数据格式：
+     *   - 章节型（chapters 含 paragraphs 直接段落）→ 一级 chapter 结构
+     *   - 选集型（chapters 含 entries，entries 含 paragraphs）→ 二级 chapter(parent→child) 结构
      * @param classicId 经典著作 ID（classic 表主键）
-     * @param chapters  章节数组（来自 chapters.json）
+     * @param chapters  章节/门类数组（来自 chapters.json 或 entries.json）
      */
     @Transactional(rollbackFor = Exception.class)
     public void importClassicBook(Long classicId, List<SourceClassicChapter> chapters) {
@@ -392,7 +395,27 @@ public class DataImportService {
         Classic classic = classicMapper.selectById(classicId);
         String classicName = classic != null ? classic.getName() : "ID=" + classicId;
 
-        // 2. 删除该经典下已有的章节/段落/注释（幂等）
+        // 2. 检测数据格式：有 entries 字段 → 选集型（二级结构）
+        boolean isAnthology = !CollUtil.isEmpty(chapters)
+                && chapters.stream().anyMatch(ch -> !CollUtil.isEmpty(ch.getEntries()));
+
+        // 3. 删除该经典下已有的章节/段落/注释（幂等）
+        deleteClassicData(classicId);
+
+        // 4. 批量插入
+        if (CollUtil.isEmpty(chapters)) {
+            log.info("经典「{}」无章节数据，已清空旧数据", classicName);
+            return;
+        }
+
+        if (isAnthology) {
+            importAnthologyData(classicId, chapters, classicName);
+        } else {
+            importChapterData(classicId, chapters, classicName);
+        }
+    }
+
+    private void deleteClassicData(Long classicId) {
         List<Long> existingChapterIds = jdbc.queryForList(
                 "SELECT id FROM classic_chapter WHERE classic_id = ?", Long.class, classicId);
         if (!existingChapterIds.isEmpty()) {
@@ -406,45 +429,86 @@ public class DataImportService {
             jdbc.update("DELETE FROM classic_paragraph WHERE chapter_id IN (" + inClause + ")");
         }
         jdbc.update("DELETE FROM classic_chapter WHERE classic_id = ?", classicId);
+    }
 
-        // 3. 批量插入章节、段落、注释
-        if (CollUtil.isEmpty(chapters)) {
-            log.info("经典「{}」无章节数据，已清空旧数据", classicName);
-            return;
-        }
-
-        String chapterSql = "INSERT INTO classic_chapter (classic_id, title, sort_order, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?)";
-        String paragraphSql = "INSERT INTO classic_paragraph (chapter_id, sort_order, text, translation, created_at, updated_at) " +
+    /** 选集型导入：门→条目 二级结构 */
+    private void importAnthologyData(Long classicId, List<SourceClassicChapter> groups, String classicName) {
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, sort_order, created_at, updated_at) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-        String glossarySql = "INSERT INTO classic_glossary (paragraph_id, word, explanation, sort_order, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
-
         LocalDateTime now = LocalDateTime.now();
+        int groupCount = 0;
+        int entryCount = 0;
+        int totalParagraphs = 0;
 
-        for (int ci = 0; ci < chapters.size(); ci++) {
-            SourceClassicChapter chapter = chapters.get(ci);
-            jdbc.update(chapterSql, classicId, chapter.getTitle(), ci, now, now);
-            Long chapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        for (int gi = 0; gi < groups.size(); gi++) {
+            SourceClassicChapter group = groups.get(gi);
+            // 插入门类（parent_id = null）
+            jdbc.update(chapterSql, classicId, null, group.getTitle(), gi, now, now);
+            Long parentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+            groupCount++;
 
-            if (!CollUtil.isEmpty(chapter.getParagraphs())) {
-                for (int pi = 0; pi < chapter.getParagraphs().size(); pi++) {
-                    SourceClassicParagraph para = chapter.getParagraphs().get(pi);
-                    jdbc.update(paragraphSql, chapterId, pi, para.getText(),
-                            para.getTranslation() != null ? para.getTranslation() : "", now, now);
-                    Long paragraphId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+            if (CollUtil.isEmpty(group.getEntries())) continue;
 
-                    if (!CollUtil.isEmpty(para.getGlossary())) {
-                        for (int gi = 0; gi < para.getGlossary().size(); gi++) {
-                            SourceClassicGlossary gloss = para.getGlossary().get(gi);
-                            jdbc.update(glossarySql, paragraphId, gloss.getWord(), gloss.getExplanation(), gi, now, now);
-                        }
-                    }
+            for (int ei = 0; ei < group.getEntries().size(); ei++) {
+                SourceAnthologyEntry entry = group.getEntries().get(ei);
+                // 插入条目（parent_id = 门类 ID）
+                jdbc.update(chapterSql, classicId, parentId, entry.getTitle(), ei, now, now);
+                Long entryChapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+                entryCount++;
+
+                // 插入段落到条目下
+                if (!CollUtil.isEmpty(entry.getParagraphs())) {
+                    totalParagraphs += insertParagraphs(entryChapterId, entry.getParagraphs(), now);
                 }
             }
         }
 
-        log.info("经典著作「{}」章节导入完成: {} 章, 时间={}", classicName, chapters.size(), now);
+        log.info("经典「{}」(选集型) 导入完成: {} 门, {} 条, {} 段落", classicName, groupCount, entryCount, totalParagraphs);
+    }
+
+    /** 章节型导入：一级 chapter 结构（旧格式兼容） */
+    private void importChapterData(Long classicId, List<SourceClassicChapter> chapters, String classicName) {
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        LocalDateTime now = LocalDateTime.now();
+        int totalParagraphs = 0;
+
+        for (int ci = 0; ci < chapters.size(); ci++) {
+            SourceClassicChapter chapter = chapters.get(ci);
+            jdbc.update(chapterSql, classicId, null, chapter.getTitle(), ci, now, now);
+            Long chapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+
+            if (!CollUtil.isEmpty(chapter.getParagraphs())) {
+                totalParagraphs += insertParagraphs(chapterId, chapter.getParagraphs(), now);
+            }
+        }
+
+        log.info("经典「{}」(章节型) 导入完成: {} 章, {} 段落", classicName, chapters.size(), totalParagraphs);
+    }
+
+    /** 插入段落 + 注释，返回段落数 */
+    private int insertParagraphs(Long chapterId, List<SourceClassicParagraph> paragraphs, LocalDateTime now) {
+        String paragraphSql = "INSERT INTO classic_paragraph (chapter_id, sort_order, text, translation, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        String glossarySql = "INSERT INTO classic_glossary (paragraph_id, word, explanation, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        int count = 0;
+
+        for (int pi = 0; pi < paragraphs.size(); pi++) {
+            SourceClassicParagraph para = paragraphs.get(pi);
+            jdbc.update(paragraphSql, chapterId, pi, para.getText(),
+                    para.getTranslation() != null ? para.getTranslation() : "", now, now);
+            Long paragraphId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+            count++;
+
+            if (!CollUtil.isEmpty(para.getGlossary())) {
+                for (int gi = 0; gi < para.getGlossary().size(); gi++) {
+                    SourceClassicGlossary gloss = para.getGlossary().get(gi);
+                    jdbc.update(glossarySql, paragraphId, gloss.getWord(), gloss.getExplanation(), gi, now, now);
+                }
+            }
+        }
+        return count;
     }
 
     private void truncateAll() {

@@ -418,11 +418,13 @@ CREATE TABLE classic (
 CREATE TABLE classic_chapter (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
   classic_id  BIGINT       NOT NULL COMMENT '所属经典著作ID',
+  parent_id   BIGINT       DEFAULT NULL COMMENT '父章节ID（选集型：门→条目，二级 TOC）',
   title       VARCHAR(64)  NOT NULL COMMENT '章目标题，如"始计篇"',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_classic_id (classic_id)
+  INDEX idx_classic_id (classic_id),
+  INDEX idx_parent_id (parent_id)
 ) ENGINE=InnoDB COMMENT='经典章节';
 
 -- ============================================

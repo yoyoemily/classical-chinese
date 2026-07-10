@@ -10,6 +10,7 @@ public class ClassicChapter {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long classicId;
+    private Long parentId;
     private String title;
     private Integer sortOrder;
 

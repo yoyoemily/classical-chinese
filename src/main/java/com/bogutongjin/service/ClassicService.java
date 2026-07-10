@@ -143,6 +143,7 @@ public class ClassicService {
 
     /**
      * 构建目录树
+     * accordion 模式（如世说新语）构建二级树：parent chapters → children as leaf nodes
      */
     private List<Map<String, Object>> buildToc(Long classicId, String structureType, String navMode) {
         LambdaQueryWrapper<ClassicChapter> qw = new LambdaQueryWrapper<ClassicChapter>()
@@ -150,15 +151,47 @@ public class ClassicService {
                 .orderByAsc(ClassicChapter::getSortOrder);
         List<ClassicChapter> chapters = classicChapterMapper.selectList(qw);
 
+        // 按 parent_id 分组：无 parent 的为组（门类），有 parent 的为子节点（条目）
+        List<ClassicChapter> parentNodes = chapters.stream()
+                .filter(ch -> ch.getParentId() == null)
+                .collect(Collectors.toList());
+        Map<Long, List<ClassicChapter>> childrenMap = chapters.stream()
+                .filter(ch -> ch.getParentId() != null)
+                .collect(Collectors.groupingBy(ClassicChapter::getParentId));
+
         List<Map<String, Object>> nodes = new ArrayList<>();
-        for (ClassicChapter ch : chapters) {
-            Map<String, Object> node = new LinkedHashMap<>();
-            node.put("id", String.valueOf(ch.getId()));
-            node.put("title", ch.getTitle());
-            node.put("level", 0);
-            node.put("isLeaf", true);
-            // 不设 children（当前所有经典均为一层平级）
-            nodes.add(node);
+
+        if (childrenMap.isEmpty()) {
+            // 无二级结构：一级平铺（章节型）
+            for (ClassicChapter ch : parentNodes) {
+                Map<String, Object> node = new LinkedHashMap<>();
+                node.put("id", String.valueOf(ch.getId()));
+                node.put("title", ch.getTitle());
+                node.put("level", 0);
+                node.put("isLeaf", true);
+                nodes.add(node);
+            }
+        } else {
+            // 有二级结构：accordion 模式（选集型）
+            for (ClassicChapter parent : parentNodes) {
+                Map<String, Object> node = new LinkedHashMap<>();
+                node.put("id", String.valueOf(parent.getId()));
+                node.put("title", parent.getTitle());
+                node.put("level", 0);
+                node.put("isLeaf", false);
+                List<ClassicChapter> childList = childrenMap.getOrDefault(parent.getId(), List.of());
+                List<Map<String, Object>> childNodes = new ArrayList<>();
+                for (ClassicChapter child : childList) {
+                    Map<String, Object> childNode = new LinkedHashMap<>();
+                    childNode.put("id", String.valueOf(child.getId()));
+                    childNode.put("title", child.getTitle());
+                    childNode.put("level", 1);
+                    childNode.put("isLeaf", true);
+                    childNodes.add(childNode);
+                }
+                node.put("children", childNodes);
+                nodes.add(node);
+            }
         }
         return nodes;
     }
@@ -239,7 +272,8 @@ public class ClassicService {
             Map.entry(19L, "庄子"),
             Map.entry(20L, "韩非"),
             Map.entry(21L, "墨子"),
-            Map.entry(22L, "孙武")
+            Map.entry(22L, "孙武"),
+            Map.entry(33L, "刘义庆")
         );
         return knownAuthors.getOrDefault(classic.getId(), "佚名");
     }
