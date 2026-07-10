@@ -156,6 +156,9 @@ public class SourceData {
         private String icon;
         private String description;
         private String category;
+        private String structureType;
+        private String loadMode;
+        private String navMode;
     }
 
     // ---- 经典章节型数据（独立导入用） ----

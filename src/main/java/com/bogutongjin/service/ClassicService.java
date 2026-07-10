@@ -45,43 +45,73 @@ public class ClassicService {
             m.put("icon", c.getIcon());
             m.put("description", c.getDescription());
             m.put("category", c.getCategory());
+            m.put("loadMode", c.getLoadMode());
+            m.put("navMode", c.getNavMode());
             return m;
         }).collect(Collectors.toList());
     }
 
     /**
-     * 获取经典著作详情（含章节、段落、典故注释）
+     * 获取经典著作基本信息（轻量，不含全文内容）
      * @param classicId 经典著作ID
-     * @return 嵌套结构的完整经典数据
+     * @return 基本信息 + 目录树
      */
-    public Map<String, Object> getClassicDetail(Long classicId) {
+    public Map<String, Object> getClassicMeta(Long classicId) {
         Classic classic = classicMapper.selectById(classicId);
         if (classic == null) {
             throw new RuntimeException("经典不存在");
         }
 
-        // 查询章节
-        LambdaQueryWrapper<ClassicChapter> chapterQw = new LambdaQueryWrapper<ClassicChapter>()
-                .eq(ClassicChapter::getClassicId, classicId)
-                .orderByAsc(ClassicChapter::getSortOrder);
-        List<ClassicChapter> chapters = classicChapterMapper.selectList(chapterQw);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", classic.getId());
+        result.put("name", classic.getName());
+        result.put("author", resolveAuthor(classic));
+        result.put("era", classic.getEra());
+        result.put("category", classic.getCategory());
+        result.put("description", classic.getDescription());
+        result.put("structureType", classic.getStructureType());
+        result.put("loadMode", classic.getLoadMode());
+        result.put("navMode", classic.getNavMode());
 
-        // 查询所有段落
+        // 目录树（轻量，仅标题不含内容）
+        result.put("toc", buildToc(classicId, classic.getStructureType(), classic.getNavMode()));
+
+        // full 模式下顺带返回全文
+        if ("full".equals(classic.getLoadMode())) {
+            result.put("chapters", buildFullContent(classicId));
+        }
+
+        return result;
+    }
+
+    /**
+     * 获取内容块（按需加载的叶子节点）
+     * @param classicId 经典著作ID
+     * @param nodeId    目录树叶子节点 ID（章节/篇/卷 ID）
+     * @return 内容块（原文+译文+典故注释）
+     */
+    public Map<String, Object> getClassicContent(Long classicId, String nodeId) {
+        Classic classic = classicMapper.selectById(classicId);
+        if (classic == null) {
+            throw new RuntimeException("经典不存在");
+        }
+
+        Long chapterId = Long.parseLong(nodeId);
+
+        // 查询该章节的段落
         LambdaQueryWrapper<ClassicParagraph> paraQw = new LambdaQueryWrapper<ClassicParagraph>()
-                .in(ClassicParagraph::getChapterId,
-                    chapters.stream().map(ClassicChapter::getId).collect(Collectors.toList()))
+                .eq(ClassicParagraph::getChapterId, chapterId)
                 .orderByAsc(ClassicParagraph::getSortOrder);
-        List<ClassicParagraph> allParagraphs = classicParagraphMapper.selectList(paraQw);
+        List<ClassicParagraph> paragraphs = classicParagraphMapper.selectList(paraQw);
 
-        // 查询所有注释
-        LambdaQueryWrapper<ClassicGlossary> glossQw = new LambdaQueryWrapper<ClassicGlossary>()
-                .in(ClassicGlossary::getParagraphId,
-                    allParagraphs.stream().map(ClassicParagraph::getId).collect(Collectors.toList()))
-                .orderByAsc(ClassicGlossary::getSortOrder);
-        List<ClassicGlossary> allGlossaries = classicGlossaryMapper.selectList(glossQw);
-
-        // 按 paragraphId 分组注释
-        Map<Long, List<Map<String, String>>> glossaryMap = allGlossaries.stream()
+        // 查询该章节的段落的注释
+        List<Long> paraIds = paragraphs.stream().map(ClassicParagraph::getId).collect(Collectors.toList());
+        Map<Long, List<Map<String, String>>> glossaryMap = paraIds.isEmpty() ? Map.of()
+                : classicGlossaryMapper.selectList(
+                    new LambdaQueryWrapper<ClassicGlossary>()
+                        .in(ClassicGlossary::getParagraphId, paraIds)
+                        .orderByAsc(ClassicGlossary::getSortOrder))
+                .stream()
                 .collect(Collectors.groupingBy(
                     ClassicGlossary::getParagraphId,
                     Collectors.mapping(g -> {
@@ -92,20 +122,93 @@ public class ClassicService {
                     }, Collectors.toList())
                 ));
 
-        // 按 chapterId 分组段落
+        // 查询章节标题
+        ClassicChapter chapter = classicChapterMapper.selectById(chapterId);
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", String.valueOf(chapterId));
+        result.put("title", chapter != null ? chapter.getTitle() : "");
+
+        List<Map<String, Object>> paraList = paragraphs.stream().map(p -> {
+            Map<String, Object> pm = new LinkedHashMap<>();
+            pm.put("text", p.getText());
+            pm.put("translation", p.getTranslation());
+            pm.put("glossary", glossaryMap.getOrDefault(p.getId(), List.of()));
+            return pm;
+        }).collect(Collectors.toList());
+        result.put("paragraphs", paraList);
+
+        return result;
+    }
+
+    /**
+     * 构建目录树
+     */
+    private List<Map<String, Object>> buildToc(Long classicId, String structureType, String navMode) {
+        LambdaQueryWrapper<ClassicChapter> qw = new LambdaQueryWrapper<ClassicChapter>()
+                .eq(ClassicChapter::getClassicId, classicId)
+                .orderByAsc(ClassicChapter::getSortOrder);
+        List<ClassicChapter> chapters = classicChapterMapper.selectList(qw);
+
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        for (ClassicChapter ch : chapters) {
+            Map<String, Object> node = new LinkedHashMap<>();
+            node.put("id", String.valueOf(ch.getId()));
+            node.put("title", ch.getTitle());
+            node.put("level", 0);
+            node.put("isLeaf", true);
+            // 不设 children（当前所有经典均为一层平级）
+            nodes.add(node);
+        }
+        return nodes;
+    }
+
+    /**
+     * full 模式下一并返回全文
+     */
+    private List<Map<String, Object>> buildFullContent(Long classicId) {
+        LambdaQueryWrapper<ClassicChapter> chapterQw = new LambdaQueryWrapper<ClassicChapter>()
+                .eq(ClassicChapter::getClassicId, classicId)
+                .orderByAsc(ClassicChapter::getSortOrder);
+        List<ClassicChapter> chapters = classicChapterMapper.selectList(chapterQw);
+        if (chapters.isEmpty()) return List.of();
+
+        List<Long> chapterIds = chapters.stream().map(ClassicChapter::getId).collect(Collectors.toList());
+        if (chapterIds.isEmpty()) return List.of();
+
+        LambdaQueryWrapper<ClassicParagraph> paraQw = new LambdaQueryWrapper<ClassicParagraph>()
+                .in(ClassicParagraph::getChapterId, chapterIds)
+                .orderByAsc(ClassicParagraph::getSortOrder);
+        List<ClassicParagraph> allParagraphs = classicParagraphMapper.selectList(paraQw);
+        if (allParagraphs.isEmpty()) return chapters.stream().map(ch -> {
+            Map<String, Object> cm = new LinkedHashMap<>();
+            cm.put("id", ch.getId());
+            cm.put("title", ch.getTitle());
+            cm.put("paragraphs", List.of());
+            return cm;
+        }).collect(Collectors.toList());
+
+        List<Long> paraIds = allParagraphs.stream().map(ClassicParagraph::getId).collect(Collectors.toList());
+        Map<Long, List<Map<String, String>>> glossaryMap = paraIds.isEmpty() ? Map.of()
+                : classicGlossaryMapper.selectList(
+                    new LambdaQueryWrapper<ClassicGlossary>()
+                        .in(ClassicGlossary::getParagraphId, paraIds)
+                        .orderByAsc(ClassicGlossary::getSortOrder))
+                .stream()
+                .collect(Collectors.groupingBy(
+                    ClassicGlossary::getParagraphId,
+                    Collectors.mapping(g -> {
+                        Map<String, String> m = new LinkedHashMap<>();
+                        m.put("word", g.getWord());
+                        m.put("explanation", g.getExplanation());
+                        return m;
+                    }, Collectors.toList())
+                ));
+
         Map<Long, List<ClassicParagraph>> paraMap = allParagraphs.stream()
                 .collect(Collectors.groupingBy(ClassicParagraph::getChapterId));
 
-        // 组装嵌套结构
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("id", classic.getId());
-        result.put("name", classic.getName());
-        result.put("author", resolveAuthor(classic));
-        result.put("era", classic.getEra());
-        result.put("category", classic.getCategory());
-        result.put("description", classic.getDescription());
-
-        List<Map<String, Object>> chapterList = chapters.stream().map(ch -> {
+        return chapters.stream().map(ch -> {
             Map<String, Object> cm = new LinkedHashMap<>();
             cm.put("id", ch.getId());
             cm.put("title", ch.getTitle());
@@ -121,25 +224,22 @@ public class ClassicService {
             cm.put("paragraphs", paraList);
             return cm;
         }).collect(Collectors.toList());
-        result.put("chapters", chapterList);
-
-        return result;
     }
 
     /**
-     * 解析作者信息。部分经典在"经典著作"表中仅存书名，作者信息后续完善。
+     * 解析作者信息
      */
     private String resolveAuthor(Classic classic) {
-        // 目前 classic 表无 author 字段，暂根据 ID 返回已知作者
-        Map<Long, String> knownAuthors = Map.of(
-            1L, "孔子及其弟子",
-            2L, "孟子及其弟子",
-            17L, "荀子",
-            18L, "老子",
-            19L, "庄子",
-            20L, "韩非",
-            21L, "墨子",
-            22L, "孙武"
+        Map<Long, String> knownAuthors = Map.ofEntries(
+            Map.entry(1L, "孔子及其弟子"),
+            Map.entry(2L, "孟子及其弟子"),
+            Map.entry(13L, "孙膑"),
+            Map.entry(17L, "荀子"),
+            Map.entry(18L, "老子"),
+            Map.entry(19L, "庄子"),
+            Map.entry(20L, "韩非"),
+            Map.entry(21L, "墨子"),
+            Map.entry(22L, "孙武")
         );
         return knownAuthors.getOrDefault(classic.getId(), "佚名");
     }

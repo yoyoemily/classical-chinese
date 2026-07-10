@@ -132,7 +132,10 @@ public class DataImportService {
         // 1. 删除该词书已有数据（按外键依赖逆序）
         deleteWordBookData(wordBookId);
 
-        // 2. 插入词书
+        // 2. 插入词书元数据（独立导入默认标记为已开通）
+        book.setInitialized(true);
+        int wordCount = book.getWords() != null ? book.getWords().size() : 0;
+        book.setTotalWords(wordCount);
         insertWordBook(book);
 
         // 3. 插入字词
@@ -142,11 +145,12 @@ public class DataImportService {
             }
         }
 
-        log.info("词书独立导入完成: {} ({} 词)", book.getId(), book.getTotalWords());
+        log.info("词书独立导入完成: {} ({} 词, initialized=true)", book.getId(), wordCount);
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("wordBookId", wordBookId);
         result.put("name", book.getName());
-        result.put("wordCount", book.getWords() != null ? book.getWords().size() : 0);
+        result.put("wordCount", wordCount);
+        result.put("initialized", true);
         return result;
     }
 
@@ -189,10 +193,17 @@ public class DataImportService {
     private void importWordBooks(List<SourceWordBook> books) {
         if (CollUtil.isEmpty(books)) return;
         for (SourceWordBook book : books) {
-            insertWordBook(book);
-            if (CollUtil.isNotEmpty(book.getWords())) {
-                for (SourceWord w : book.getWords()) {
-                    insertWord(book.getId(), w);
+            // 幂等：已有词书用 upsert（不碰已有词条），新词书 insert + 有词条才导入
+            Integer existing = jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM word_book WHERE id = ?", Integer.class, book.getId());
+            if (existing != null && existing > 0) {
+                upsertWordBook(book);
+            } else {
+                insertWordBook(book);
+                if (CollUtil.isNotEmpty(book.getWords())) {
+                    for (SourceWord w : book.getWords()) {
+                        insertWord(book.getId(), w);
+                    }
                 }
             }
         }
@@ -206,6 +217,17 @@ public class DataImportService {
                 nvl(b.getStudyMode(), "standard"), b.getIdentifyPrompt(),
                 nvl(b.getExamLevel(), "zhongkao"), b.getInitialized() != null ? b.getInitialized() : false,
                 b.getTotalWords(), b.getSortOrder() != null ? b.getSortOrder() : 0);
+    }
+
+    /** 幂等更新：只更新元数据，不碰已存在的词条数据 */
+    private void upsertWordBook(SourceWordBook b) {
+        jdbc.update(
+                "UPDATE word_book SET name=?, description=?, category=?, cover_color=?, study_mode=?, identify_prompt=?, exam_level=?, sort_order=?, updated_at=NOW() WHERE id=?",
+                b.getName(), b.getDescription(), b.getCategory(), b.getCoverColor(),
+                nvl(b.getStudyMode(), "standard"), b.getIdentifyPrompt(),
+                nvl(b.getExamLevel(), "zhongkao"),
+                b.getSortOrder() != null ? b.getSortOrder() : 0,
+                b.getId());
     }
 
     private void insertWord(String bookId, SourceWord w) {
@@ -332,18 +354,30 @@ public class DataImportService {
 
     private void importClassics(List<SourceClassic> classics) {
         if (CollUtil.isEmpty(classics)) return;
-        String sql = "INSERT INTO classic (id, name, era, icon, description, category, sort_order) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        List<Object[]> batch = new ArrayList<>();
-        for (int i = 0; i < classics.size(); i++) {
-            SourceClassic c = classics.get(i);
-            batch.add(new Object[]{
-                    c.getId(), c.getName(), nvl(c.getEra()), nvl(c.getIcon()),
-                    nvl(c.getDescription()), nvl(c.getCategory()), i
-            });
+
+        // 幂等：已有经典只更新元数据，不碰章节内容；新经典正常插入
+        for (SourceClassic c : classics) {
+            Integer existing = jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM classic WHERE id = ?", Integer.class, c.getId());
+            if (existing != null && existing > 0) {
+                jdbc.update(
+                        "UPDATE classic SET name=?, era=?, icon=?, description=?, category=?, structure_type=?, load_mode=?, nav_mode=?, sort_order=?, updated_at=NOW() WHERE id=?",
+                        c.getName(), nvl(c.getEra()), nvl(c.getIcon()), nvl(c.getDescription()),
+                        nvl(c.getCategory()), nvl(c.getStructureType(), "chapter"),
+                        nvl(c.getLoadMode(), "chunked"), nvl(c.getNavMode(), "list"),
+                        0, c.getId());
+            } else {
+                jdbc.update(
+                        "INSERT INTO classic (id, name, era, icon, description, category, structure_type, load_mode, nav_mode, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        c.getId(), c.getName(), nvl(c.getEra()), nvl(c.getIcon()),
+                        nvl(c.getDescription()), nvl(c.getCategory()),
+                        nvl(c.getStructureType(), "chapter"),
+                        nvl(c.getLoadMode(), "chunked"),
+                        nvl(c.getNavMode(), "list"),
+                        0);
+            }
         }
-        jdbc.batchUpdate(sql, batch);
-        log.info("经典著作导入完成: {} 部", batch.size());
+        log.info("经典著作元数据导入完成: {} 部（幂等 upsert）", classics.size());
     }
 
     /**
@@ -417,17 +451,14 @@ public class DataImportService {
         String[] tables = {
                 "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
                 "article_sentence", "article",
-                "sentence_distractor", "sentence", "meaning",
-                "similar_homophone", "similar_shape",
-                "word", "word_book", "badge", "classic",
-                "classic_glossary", "classic_paragraph", "classic_chapter"
+                "badge"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {
             jdbc.execute("TRUNCATE TABLE " + t);
         }
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
-        log.info("已清空 {} 张业务表", tables.length);
+        log.info("已清空 {} 张业务表（不含词书和经典）", tables.length);
     }
 
     private void insertStrings(String sql, String parentId, List<String> values) {

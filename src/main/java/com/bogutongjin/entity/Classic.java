@@ -14,6 +14,9 @@ public class Classic {
     private String icon;
     private String description;
     private String category;
+    private String structureType;
+    private String loadMode;
+    private String navMode;
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)
