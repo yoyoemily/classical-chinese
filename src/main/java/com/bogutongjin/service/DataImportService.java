@@ -6,6 +6,8 @@ import com.bogutongjin.dto.GlossaryImportRequest;
 import com.bogutongjin.dto.GlossaryImportRequest.*;
 import com.bogutongjin.dto.SourceData;
 import com.bogutongjin.dto.SourceData.*;
+import com.bogutongjin.entity.Classic;
+import com.bogutongjin.mapper.ClassicMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 public class DataImportService {
 
     private final JdbcTemplate jdbc;
+    private final ClassicMapper classicMapper;
 
     @Value("${app.source-data-path:classpath:source.json}")
     private String sourceDataPath;
@@ -343,13 +346,81 @@ public class DataImportService {
         log.info("经典著作导入完成: {} 部", batch.size());
     }
 
+    /**
+     * 导入一部经典著作的章节内容（含章节、段落、注释）
+     * 幂等：先删除该经典下已有的所有章节/段落/注释数据，再重新插入
+     * @param classicId 经典著作 ID（classic 表主键）
+     * @param chapters  章节数组（来自 chapters.json）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void importClassicBook(Long classicId, List<SourceClassicChapter> chapters) {
+        // 1. 确认经典著作元数据存在
+        Classic classic = classicMapper.selectById(classicId);
+        String classicName = classic != null ? classic.getName() : "ID=" + classicId;
+
+        // 2. 删除该经典下已有的章节/段落/注释（幂等）
+        List<Long> existingChapterIds = jdbc.queryForList(
+                "SELECT id FROM classic_chapter WHERE classic_id = ?", Long.class, classicId);
+        if (!existingChapterIds.isEmpty()) {
+            String inClause = existingChapterIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+            List<Long> existingParaIds = jdbc.queryForList(
+                    "SELECT id FROM classic_paragraph WHERE chapter_id IN (" + inClause + ")", Long.class);
+            if (!existingParaIds.isEmpty()) {
+                String paraIn = existingParaIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+                jdbc.update("DELETE FROM classic_glossary WHERE paragraph_id IN (" + paraIn + ")");
+            }
+            jdbc.update("DELETE FROM classic_paragraph WHERE chapter_id IN (" + inClause + ")");
+        }
+        jdbc.update("DELETE FROM classic_chapter WHERE classic_id = ?", classicId);
+
+        // 3. 批量插入章节、段落、注释
+        if (CollUtil.isEmpty(chapters)) {
+            log.info("经典「{}」无章节数据，已清空旧数据", classicName);
+            return;
+        }
+
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, title, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        String paragraphSql = "INSERT INTO classic_paragraph (chapter_id, sort_order, text, translation, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        String glossarySql = "INSERT INTO classic_glossary (paragraph_id, word, explanation, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int ci = 0; ci < chapters.size(); ci++) {
+            SourceClassicChapter chapter = chapters.get(ci);
+            jdbc.update(chapterSql, classicId, chapter.getTitle(), ci, now, now);
+            Long chapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+
+            if (!CollUtil.isEmpty(chapter.getParagraphs())) {
+                for (int pi = 0; pi < chapter.getParagraphs().size(); pi++) {
+                    SourceClassicParagraph para = chapter.getParagraphs().get(pi);
+                    jdbc.update(paragraphSql, chapterId, pi, para.getText(),
+                            para.getTranslation() != null ? para.getTranslation() : "", now, now);
+                    Long paragraphId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+
+                    if (!CollUtil.isEmpty(para.getGlossary())) {
+                        for (int gi = 0; gi < para.getGlossary().size(); gi++) {
+                            SourceClassicGlossary gloss = para.getGlossary().get(gi);
+                            jdbc.update(glossarySql, paragraphId, gloss.getWord(), gloss.getExplanation(), gi, now, now);
+                        }
+                    }
+                }
+            }
+        }
+
+        log.info("经典著作「{}」章节导入完成: {} 章, 时间={}", classicName, chapters.size(), now);
+    }
+
     private void truncateAll() {
         String[] tables = {
                 "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
                 "article_sentence", "article",
                 "sentence_distractor", "sentence", "meaning",
                 "similar_homophone", "similar_shape",
-                "word", "word_book", "badge", "classic"
+                "word", "word_book", "badge", "classic",
+                "classic_glossary", "classic_paragraph", "classic_chapter"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {

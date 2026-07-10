@@ -408,3 +408,44 @@ CREATE TABLE classic (
   updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category)
 ) ENGINE=InnoDB COMMENT='经典著作';
+
+-- ============================================
+-- 24. 经典章节
+-- ============================================
+CREATE TABLE classic_chapter (
+  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  classic_id  BIGINT       NOT NULL COMMENT '所属经典著作ID',
+  title       VARCHAR(64)  NOT NULL COMMENT '章目标题，如"始计篇"',
+  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_classic_id (classic_id)
+) ENGINE=InnoDB COMMENT='经典章节';
+
+-- ============================================
+-- 25. 经典段落
+-- ============================================
+CREATE TABLE classic_paragraph (
+  id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  chapter_id   BIGINT       NOT NULL COMMENT '所属章节ID',
+  sort_order   INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  text         TEXT         NOT NULL COMMENT '原文',
+  translation  TEXT         NOT NULL COMMENT '现代文翻译',
+  created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_chapter_id (chapter_id)
+) ENGINE=InnoDB COMMENT='经典段落';
+
+-- ============================================
+-- 26. 经典典故注释
+-- ============================================
+CREATE TABLE classic_glossary (
+  id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  paragraph_id    BIGINT       NOT NULL COMMENT '所属段落ID',
+  word            VARCHAR(64)  NOT NULL COMMENT '标注词',
+  explanation     VARCHAR(512) NOT NULL COMMENT '典故/文化背景说明',
+  sort_order      INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_paragraph_id (paragraph_id)
+) ENGINE=InnoDB COMMENT='经典典故注释';

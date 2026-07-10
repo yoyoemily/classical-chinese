@@ -41582,8 +41582,11 @@
       "name": "孙子兵法",
       "era": "春秋",
       "icon": "🗡️",
-      "description": "孙武著，兵家圣典，“不战而屈人之兵，善之善者也”，十三篇影响遍及军事与商界。",
-      "category": "子"
+      “description”: “孙武著，兵家圣典，”不战而屈人之兵，善之善者也”，十三篇影响遍及军事与商界。”,
+      “category”: “子”,
+      “dataType”: “chapter”,
+      “author”: “孙武”,
+      “hasContent”: true
     },
     {
       "id": 23,

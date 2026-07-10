@@ -157,4 +157,36 @@ public class SourceData {
         private String description;
         private String category;
     }
+
+    // ---- 经典章节型数据（独立导入用） ----
+    @Data
+    public static class SourceClassicBook {
+        private Integer id;
+        private String name;
+        private String author;
+        private String era;
+        private String category;
+        private String description;
+        private List<SourceClassicChapter> chapters;
+    }
+
+    @Data
+    public static class SourceClassicChapter {
+        private Integer id;
+        private String title;
+        private List<SourceClassicParagraph> paragraphs;
+    }
+
+    @Data
+    public static class SourceClassicParagraph {
+        private String text;
+        private String translation;
+        private List<SourceClassicGlossary> glossary;
+    }
+
+    @Data
+    public static class SourceClassicGlossary {
+        private String word;
+        private String explanation;
+    }
 }

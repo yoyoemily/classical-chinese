@@ -7,6 +7,7 @@ import com.bogutongjin.service.DataImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,5 +56,17 @@ public class ImportController {
     @PostMapping("/import/wordbook")
     public Result<Map<String, Object>> importWordBook(@RequestBody SourceData.SourceWordBook book) {
         return Result.ok(importService.importWordBook(book.getId(), book));
+    }
+
+    /**
+     * 经典著作章节内容导入（幂等：先删后插）
+     * 接收纯 chapters 数组 JSON，classicId 从路径参数传入
+     */
+    @PostMapping("/import/classic/{classicId}")
+    public Result<Map<String, Object>> importClassicBook(
+            @PathVariable Long classicId,
+            @RequestBody List<SourceData.SourceClassicChapter> chapters) {
+        importService.importClassicBook(classicId, chapters);
+        return Result.ok(Map.of("success", true, "message", "经典 ID=" + classicId + " 导入完成"));
     }
 }

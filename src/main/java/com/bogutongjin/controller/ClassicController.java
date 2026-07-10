@@ -20,4 +20,9 @@ public class ClassicController {
             @RequestParam(required = false) String category) {
         return Result.ok(classicService.listClassics(category));
     }
+
+    @GetMapping("/{id}")
+    public Result<Map<String, Object>> getClassicDetail(@PathVariable Long id) {
+        return Result.ok(classicService.getClassicDetail(id));
+    }
 }
