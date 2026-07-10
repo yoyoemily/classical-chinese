@@ -153,6 +153,7 @@ public class SourceData {
         private Integer id;
         private String name;
         private String era;
+        private String author;
         private String icon;
         private String description;
         private String category;

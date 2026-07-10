@@ -361,16 +361,16 @@ public class DataImportService {
                     "SELECT COUNT(*) FROM classic WHERE id = ?", Integer.class, c.getId());
             if (existing != null && existing > 0) {
                 jdbc.update(
-                        "UPDATE classic SET name=?, era=?, icon=?, description=?, category=?, structure_type=?, load_mode=?, nav_mode=?, sort_order=?, updated_at=NOW() WHERE id=?",
-                        c.getName(), nvl(c.getEra()), nvl(c.getIcon()), nvl(c.getDescription()),
+                        "UPDATE classic SET name=?, era=?, author=?, icon=?, description=?, category=?, structure_type=?, load_mode=?, nav_mode=?, sort_order=?, updated_at=NOW() WHERE id=?",
+                        c.getName(), nvl(c.getEra()), nvl(c.getAuthor()), nvl(c.getIcon()), nvl(c.getDescription()),
                         nvl(c.getCategory()), nvl(c.getStructureType(), "chapter"),
                         nvl(c.getLoadMode(), "chunked"), nvl(c.getNavMode(), "list"),
                         0, c.getId());
             } else {
                 jdbc.update(
-                        "INSERT INTO classic (id, name, era, icon, description, category, structure_type, load_mode, nav_mode, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        c.getId(), c.getName(), nvl(c.getEra()), nvl(c.getIcon()),
-                        nvl(c.getDescription()), nvl(c.getCategory()),
+                        "INSERT INTO classic (id, name, era, author, icon, description, category, structure_type, load_mode, nav_mode, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        c.getId(), c.getName(), nvl(c.getEra()), nvl(c.getAuthor()),
+                        nvl(c.getIcon()), nvl(c.getDescription()), nvl(c.getCategory()),
                         nvl(c.getStructureType(), "chapter"),
                         nvl(c.getLoadMode(), "chunked"),
                         nvl(c.getNavMode(), "list"),

@@ -41418,7 +41418,8 @@
       "category": "经",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "孔子及其弟子"
     },
     {
       "id": 2,
@@ -41429,7 +41430,8 @@
       "category": "经",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "孟子及其弟子"
     },
     {
       "id": 3,
@@ -41440,7 +41442,8 @@
       "category": "经",
       "structureType": "chapter",
       "loadMode": "full",
-      "navMode": "strip"
+      "navMode": "strip",
+      "author": "曾子"
     },
     {
       "id": 4,
@@ -41451,7 +41454,8 @@
       "category": "经",
       "structureType": "chapter",
       "loadMode": "full",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "子思"
     },
     {
       "id": 5,
@@ -41462,7 +41466,8 @@
       "category": "经",
       "structureType": "volume",
       "loadMode": "full",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "佚名"
     },
     {
       "id": 6,
@@ -41473,7 +41478,8 @@
       "category": "经",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "佚名"
     },
     {
       "id": 7,
@@ -41484,7 +41490,8 @@
       "category": "经",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "佚名"
     },
     {
       "id": 8,
@@ -41495,7 +41502,8 @@
       "category": "经",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "戴圣"
     },
     {
       "id": 9,
@@ -41506,7 +41514,8 @@
       "category": "经",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "左丘明"
     },
     {
       "id": 10,
@@ -41517,7 +41526,8 @@
       "category": "经",
       "structureType": "volume",
       "loadMode": "full",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "孔子"
     },
     {
       "id": 11,
@@ -41528,7 +41538,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "刘向"
     },
     {
       "id": 12,
@@ -41539,7 +41550,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "司马迁"
     },
     {
       "id": 13,
@@ -41550,7 +41562,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "陈寿"
     },
     {
       "id": 14,
@@ -41561,7 +41574,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "班固"
     },
     {
       "id": 15,
@@ -41572,7 +41586,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "范晔"
     },
     {
       "id": 16,
@@ -41583,7 +41598,8 @@
       "category": "史",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "司马光"
     },
     {
       "id": 17,
@@ -41594,7 +41610,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "荀子"
     },
     {
       "id": 18,
@@ -41605,7 +41622,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "full",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "老子"
     },
     {
       "id": 19,
@@ -41616,7 +41634,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "庄子"
     },
     {
       "id": 20,
@@ -41627,7 +41646,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "韩非"
     },
     {
       "id": 21,
@@ -41638,7 +41658,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "墨子"
     },
     {
       "id": 22,
@@ -41649,7 +41670,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "full",
-      "navMode": "strip"
+      "navMode": "strip",
+      "author": "孙武"
     },
     {
       "id": 23,
@@ -41660,7 +41682,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "吕不韦"
     },
     {
       "id": 24,
@@ -41671,7 +41694,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "full",
-      "navMode": "strip"
+      "navMode": "strip",
+      "author": "鬼谷子"
     },
     {
       "id": 25,
@@ -41682,7 +41706,8 @@
       "category": "子",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "许慎"
     },
     {
       "id": 26,
@@ -41693,7 +41718,8 @@
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list"
+      "navMode": "list",
+      "author": "佚名"
     },
     {
       "id": 27,
@@ -41704,7 +41730,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "full",
-      "navMode": "strip"
+      "navMode": "strip",
+      "author": "屈原等"
     },
     {
       "id": 28,
@@ -41715,7 +41742,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "蘅塘退士"
     },
     {
       "id": 29,
@@ -41726,7 +41754,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "朱祖谋"
     },
     {
       "id": 30,
@@ -41737,7 +41766,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "郭茂倩"
     },
     {
       "id": 31,
@@ -41748,7 +41778,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "佚名"
     },
     {
       "id": 32,
@@ -41759,7 +41790,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "吴楚材、吴调侯"
     },
     {
       "id": 33,
@@ -41770,7 +41802,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "刘义庆"
     },
     {
       "id": 34,
@@ -41781,7 +41814,8 @@
       "category": "集",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "沈括"
     },
     {
       "id": 35,
@@ -41792,7 +41826,8 @@
       "category": "集",
       "structureType": "anthology",
       "loadMode": "chunked",
-      "navMode": "search"
+      "navMode": "search",
+      "author": "蒲松龄"
     },
     {
       "id": 36,
@@ -41803,7 +41838,8 @@
       "category": "集",
       "structureType": "volume",
       "loadMode": "chunked",
-      "navMode": "accordion"
+      "navMode": "accordion",
+      "author": "佚名"
     }
   ]
 }

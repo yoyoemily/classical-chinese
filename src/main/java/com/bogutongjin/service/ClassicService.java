@@ -65,7 +65,7 @@ public class ClassicService {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", classic.getId());
         result.put("name", classic.getName());
-        result.put("author", resolveAuthor(classic));
+        result.put("author", classic.getAuthor());
         result.put("era", classic.getEra());
         result.put("category", classic.getCategory());
         result.put("description", classic.getDescription());
@@ -257,25 +257,5 @@ public class ClassicService {
             cm.put("paragraphs", paraList);
             return cm;
         }).collect(Collectors.toList());
-    }
-
-    /**
-     * 解析作者信息
-     */
-    private String resolveAuthor(Classic classic) {
-        Map<Long, String> knownAuthors = Map.ofEntries(
-            Map.entry(1L, "孔子及其弟子"),
-            Map.entry(2L, "孟子及其弟子"),
-            Map.entry(13L, "孙膑"),
-            Map.entry(17L, "荀子"),
-            Map.entry(18L, "老子"),
-            Map.entry(19L, "庄子"),
-            Map.entry(20L, "韩非"),
-            Map.entry(21L, "墨子"),
-            Map.entry(22L, "孙武"),
-            Map.entry(33L, "刘义庆"),
-            Map.entry(36L, "佚名")
-        );
-        return knownAuthors.getOrDefault(classic.getId(), "佚名");
     }
 }

@@ -400,6 +400,7 @@ CREATE TABLE classic (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
   name        VARCHAR(32)  NOT NULL COMMENT '经典名称',
   era         VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '朝代',
+  author      VARCHAR(32)  NOT NULL DEFAULT '' COMMENT '作者',
   icon        VARCHAR(8)   NOT NULL DEFAULT '' COMMENT 'emoji图标',
   description VARCHAR(512) NOT NULL DEFAULT '' COMMENT '简介',
   category       VARCHAR(4)   NOT NULL COMMENT '四部分类: 经/史/子/集',
