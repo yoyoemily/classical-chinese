@@ -86,7 +86,6 @@ public class WordBookService {
                 sm.put("targetWord", s.getTargetWord());
                 sm.put("correctMeaningIndex", s.getCorrectMeaningIndex());
                 sm.put("difficulty", s.getDifficulty());
-                sm.put("fullText", s.getFullText());
                 sm.put("articleId", s.getArticleId());
                 sm.put("audioUrl", s.getAudioUrl());
                 // 干扰项

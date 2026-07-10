@@ -60,7 +60,6 @@ public class ContentService {
             sm.put("targetWord", s.getTargetWord());
             sm.put("correctMeaningIndex", s.getCorrectMeaningIndex());
             sm.put("difficulty", s.getDifficulty());
-            sm.put("fullText", s.getFullText());
             sm.put("articleId", s.getArticleId());
             sm.put("audioUrl", s.getAudioUrl());
             List<SentenceDistractor> distractors = sentenceDistractorMapper.selectList(
@@ -80,17 +79,6 @@ public class ContentService {
                 new LambdaQueryWrapper<SimilarShape>().eq(SimilarShape::getWordId, wordId).orderByAsc(SimilarShape::getSortOrder));
         result.put("similarShapes", shapes.stream().map(SimilarShape::getCharacter).collect(Collectors.toList()));
 
-        return result;
-    }
-
-    public Map<String, Object> getFullText(String sentenceId) {
-        Sentence sentence = sentenceMapper.selectById(sentenceId);
-        if (sentence == null || sentence.getFullText() == null) return null;
-
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("title", sentence.getSource());
-        result.put("author", "");
-        result.put("content", sentence.getFullText());
         return result;
     }
 

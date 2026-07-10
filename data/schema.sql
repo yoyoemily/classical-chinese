@@ -76,7 +76,6 @@ CREATE TABLE sentence (
   target_word           VARCHAR(8)   NOT NULL COMMENT '考查的目标字',
   correct_meaning_index TINYINT      NOT NULL DEFAULT 0 COMMENT '正确答案在distractors中的序号(0-based)',
   difficulty            VARCHAR(10)  NOT NULL DEFAULT 'basic' COMMENT '难度: basic/medium/hard',
-  full_text             TEXT         COMMENT '该句所在段落的全文',
   article_id            VARCHAR(32)  COMMENT '关联的名篇ID',
   audio_url             VARCHAR(256) COMMENT '预录音频URL',
   sort_order            INT          NOT NULL DEFAULT 0 COMMENT '排序序号',

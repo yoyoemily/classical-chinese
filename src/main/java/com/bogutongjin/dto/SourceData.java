@@ -80,7 +80,6 @@ public class SourceData {
         private Integer correctMeaningIndex;
         private String difficulty;
         private List<String> distractors;
-        private String fullText;
         private String articleId;
         private String audioUrl;
     }

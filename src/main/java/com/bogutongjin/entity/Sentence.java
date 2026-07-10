@@ -16,7 +16,6 @@ public class Sentence {
     private String targetWord;
     private Integer correctMeaningIndex;
     private String difficulty;
-    private String fullText;
     private String articleId;
     private String audioUrl;
     private Integer sortOrder;

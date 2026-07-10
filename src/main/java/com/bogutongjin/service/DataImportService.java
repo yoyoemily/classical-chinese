@@ -242,12 +242,12 @@ public class DataImportService {
 
     private void insertSentence(String wordId, SourceSentence s) {
         jdbc.update(
-                "INSERT INTO sentence (id, word_id, text, source, translation, target_word, correct_meaning_index, difficulty, full_text, article_id, audio_url, sort_order) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO sentence (id, word_id, text, source, translation, target_word, correct_meaning_index, difficulty, article_id, audio_url, sort_order) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 s.getId(), wordId, s.getText(), nvl(s.getSource()), nvl(s.getTranslation()), nvl(s.getTargetWord()),
                 s.getCorrectMeaningIndex() != null ? s.getCorrectMeaningIndex() : 0,
                 nvl(s.getDifficulty(), "basic"),
-                s.getFullText(), s.getArticleId(), s.getAudioUrl(), 0);
+                s.getArticleId(), s.getAudioUrl(), 0);
 
         if (CollUtil.isNotEmpty(s.getDistractors())) {
             insertStrings("INSERT INTO sentence_distractor (sentence_id, text, sort_order) VALUES (?, ?, ?)",
