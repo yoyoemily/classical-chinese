@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,10 @@ public class DataImportService {
     @Value("${app.source-data-path:classpath:source.json}")
     private String sourceDataPath;
 
+    /** 知识库选篇正文 JSON 文件路径 */
+    @Value("${app.articles-data-path:/Users/zhutx/Documents/knowledge_library/文言文/选篇/正文/articles.json}")
+    private String articlesDataPath;
+
     @Transactional(rollbackFor = Exception.class)
     public void importFromJson() {
         String json;
@@ -54,20 +59,55 @@ public class DataImportService {
             throw new RuntimeException("读取数据源文件失败: " + sourceDataPath, e);
         }
         SourceData source = JSONUtil.toBean(json, SourceData.class);
-        log.info("数据源解析完成: {} 本词书, {} 篇名篇, {} 枚勋章, {} 部经典",
+        log.info("数据源解析完成: {} 本词书, {} 枚勋章, {} 部经典",
                 source.getWordBooks().size(),
-                source.getArticles() != null ? source.getArticles().size() : 0,
                 source.getBadges() != null ? source.getBadges().size() : 0,
                 source.getClassics() != null ? source.getClassics().size() : 0);
 
         truncateAll();
         importBadges(source.getBadges());
         importWordBooks(source.getWordBooks());
-        importArticles(source.getArticles());
-        importArticleRelatedWords(source.getArticles());
         importClassics(source.getClassics());
 
         log.info("数据源导入完成");
+    }
+
+    /**
+     * 选篇正文全量导入（幂等：先清空后插入）
+     * 从知识库 articles.json 读取 55 篇选篇正文
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importArticlesFromJson() {
+        String json;
+        String path = articlesDataPath;
+        try {
+            json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Path.of(path)), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException("读取选篇正文文件失败: " + path, e);
+        }
+        List<SourceArticle> articles = JSONUtil.toList(json, SourceArticle.class);
+
+        // 清空文章相关表
+        String[] tables = {
+                "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
+                "article_sentence", "article"
+        };
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
+        for (String t : tables) {
+            jdbc.execute("TRUNCATE TABLE " + t);
+        }
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
+        log.info("已清空 {} 张文章相关表", tables.length);
+
+        // 导入
+        importArticles(articles);
+        importArticleRelatedWords(articles);
+
+        Map<String, Object> result = new java.util.LinkedHashMap<>();
+        result.put("success", true);
+        result.put("count", articles.size());
+        result.put("message", "选篇正文导入完成");
+        return result;
     }
 
     /**
@@ -512,17 +552,13 @@ public class DataImportService {
     }
 
     private void truncateAll() {
-        String[] tables = {
-                "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
-                "article_sentence", "article",
-                "badge"
-        };
+        String[] tables = { "badge" };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {
             jdbc.execute("TRUNCATE TABLE " + t);
         }
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
-        log.info("已清空 {} 张业务表（不含词书和经典）", tables.length);
+        log.info("已清空 {} 张业务表（不含词书、文章和经典）", tables.length);
     }
 
     private void insertStrings(String sql, String parentId, List<String> values) {

@@ -41,6 +41,18 @@ public class ImportController {
     }
 
     /**
+     * 选篇正文全量导入（幂等：先清空后插入）
+     * 从知识库 articles.json 读取 55 篇选篇正文
+     */
+    @PostMapping("/import/articles")
+    public Result<Map<String, Object>> importArticles() {
+        long start = System.currentTimeMillis();
+        Map<String, Object> result = importService.importArticlesFromJson();
+        result.put("elapsedMs", System.currentTimeMillis() - start);
+        return Result.ok(result);
+    }
+
+    /**
      * 单篇典故注释导入（幂等：先删后插）
      */
     @PostMapping("/import/glossary/{articleId}")

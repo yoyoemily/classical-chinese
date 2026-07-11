@@ -28,7 +28,11 @@ public class ArticleService {
             qw.eq(Article::getCategory, category);
         }
         if (textbook != null && !"undefined".equals(textbook) && !"all".equals(textbook)) {
-            qw.eq(Article::getTextbook, textbook);
+            if ("other".equals(textbook)) {
+                qw.isNull(Article::getTextbook);
+            } else {
+                qw.eq(Article::getTextbook, textbook);
+            }
         }
 
         List<Article> articles = articleMapper.selectList(qw);
