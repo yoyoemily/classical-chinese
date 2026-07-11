@@ -144,6 +144,7 @@ public class ClassicService {
     /**
      * 构建目录树
      * accordion 模式（如世说新语）构建二级树：parent chapters → children as leaf nodes
+     * volume + accordion 模式（如山海经）在平铺章上构建虚拟分组
      */
     private List<Map<String, Object>> buildToc(Long classicId, String structureType, String navMode) {
         LambdaQueryWrapper<ClassicChapter> qw = new LambdaQueryWrapper<ClassicChapter>()
@@ -162,6 +163,10 @@ public class ClassicService {
         List<Map<String, Object>> nodes = new ArrayList<>();
 
         if (childrenMap.isEmpty()) {
+            // 卷帙型手风琴：在平铺章上构建虚拟二级分组
+            if ("volume".equals(structureType) && "accordion".equals(navMode)) {
+                return buildVolumeAccordionToc(parentNodes);
+            }
             // 无二级结构：一级平铺（章节型）
             for (ClassicChapter ch : parentNodes) {
                 Map<String, Object> node = new LinkedHashMap<>();
@@ -193,6 +198,90 @@ public class ClassicService {
                 nodes.add(node);
             }
         }
+        return nodes;
+    }
+
+    /**
+     * 卷帙型手风琴目录：将平铺的卷级章节按标题模式分组，构建虚拟二级目录
+     *
+     * 分组规则按经典标题硬编码匹配，新加入的卷帙型经典需在此扩展分组。
+     * 未匹配的章节作为顶级叶子节点兜底。
+     */
+    private List<Map<String, Object>> buildVolumeAccordionToc(List<ClassicChapter> chapters) {
+        // 山海经分组规则：山经 / 海经 / 大荒经 / 海内经
+        record VolumeGroup(String groupId, String groupTitle, List<String> titles) {}
+        List<VolumeGroup> groups = List.of(
+            new VolumeGroup("vol_shanjing", "山经",
+                List.of("南山经", "西山经", "北山经", "东山经", "中山经")),
+            new VolumeGroup("vol_haijing", "海经",
+                List.of("海外南经", "海外西经", "海外北经", "海外东经",
+                        "海内南经", "海内西经", "海内北经", "海内东经")),
+            new VolumeGroup("vol_dahuangjing", "大荒经",
+                List.of("大荒东经", "大荒南经", "大荒西经", "大荒北经")),
+            new VolumeGroup("vol_haineijing", "海内经",
+                List.of("海内经"))
+        );
+
+        // 标题 → 分组索引
+        Map<String, Integer> titleToGroup = new HashMap<>();
+        for (int i = 0; i < groups.size(); i++) {
+            for (String title : groups.get(i).titles()) {
+                titleToGroup.put(title, i);
+            }
+        }
+
+        // 分组
+        List<List<ClassicChapter>> groupedChapters = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++) {
+            groupedChapters.add(new ArrayList<>());
+        }
+        List<ClassicChapter> unmatched = new ArrayList<>();
+
+        for (ClassicChapter ch : chapters) {
+            Integer idx = titleToGroup.get(ch.getTitle());
+            if (idx != null) {
+                groupedChapters.get(idx).add(ch);
+            } else {
+                unmatched.add(ch);
+            }
+        }
+
+        // 构建 TOC
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++) {
+            List<ClassicChapter> children = groupedChapters.get(i);
+            if (children.isEmpty()) continue;
+
+            VolumeGroup vg = groups.get(i);
+            Map<String, Object> groupNode = new LinkedHashMap<>();
+            groupNode.put("id", vg.groupId());
+            groupNode.put("title", vg.groupTitle());
+            groupNode.put("level", 0);
+            groupNode.put("isLeaf", false);
+
+            List<Map<String, Object>> childNodes = new ArrayList<>();
+            for (ClassicChapter child : children) {
+                Map<String, Object> childNode = new LinkedHashMap<>();
+                childNode.put("id", String.valueOf(child.getId()));
+                childNode.put("title", child.getTitle());
+                childNode.put("level", 1);
+                childNode.put("isLeaf", true);
+                childNodes.add(childNode);
+            }
+            groupNode.put("children", childNodes);
+            nodes.add(groupNode);
+        }
+
+        // 未匹配的章节兜底为顶级叶子
+        for (ClassicChapter ch : unmatched) {
+            Map<String, Object> node = new LinkedHashMap<>();
+            node.put("id", String.valueOf(ch.getId()));
+            node.put("title", ch.getTitle());
+            node.put("level", 0);
+            node.put("isLeaf", true);
+            nodes.add(node);
+        }
+
         return nodes;
     }
 
