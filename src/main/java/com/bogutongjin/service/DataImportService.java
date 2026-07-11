@@ -87,9 +87,9 @@ public class DataImportService {
         }
         List<SourceArticle> articles = JSONUtil.toList(json, SourceArticle.class);
 
-        // 清空文章相关表
+        // 清空文章相关表（article_glossary 由 importGlossaryForArticle 独立管理，不 TRUNCATE）
         String[] tables = {
-                "article_related_word", "article_glossary", "article_char_annotation", "article_keyword",
+                "article_related_word", "article_char_annotation", "article_keyword",
                 "article_sentence", "article"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
