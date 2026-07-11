@@ -26,4 +26,9 @@ public class ContentController {
     public Result<List<Map<String, Object>>> searchWords(@RequestParam String keyword) {
         return Result.ok(contentService.searchWords(keyword));
     }
+
+    @GetMapping("/words/types")
+    public Result<Map<String, List<Map<String, Object>>>> getWordsByType() {
+        return Result.ok(contentService.getWordsByType());
+    }
 }

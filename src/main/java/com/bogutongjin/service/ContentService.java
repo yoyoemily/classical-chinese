@@ -122,4 +122,51 @@ public class ContentService {
         }
         return result;
     }
+
+    /** 按词类分组返回所有已初始化词书中的字词（供快捷搜索使用） */
+    public Map<String, List<Map<String, Object>>> getWordsByType() {
+        // 1. 查出所有已初始化的词书
+        List<WordBook> initializedBooks = wordBookMapper.selectList(
+                new LambdaQueryWrapper<WordBook>().eq(WordBook::getInitialized, true));
+        if (initializedBooks.isEmpty()) return Map.of();
+
+        List<String> bookIds = initializedBooks.stream()
+                .map(WordBook::getId).collect(Collectors.toList());
+
+        // 2. 批量查出所有 word
+        List<Word> words = wordMapper.selectList(
+                new LambdaQueryWrapper<Word>().in(Word::getWordBookId, bookIds)
+                        .orderByAsc(Word::getSortOrder));
+
+        // 3. 按 wordType 分组，shi/xu 合并为 shixu
+        Map<String, List<Map<String, Object>>> result = new LinkedHashMap<>();
+        result.put("shixu", new ArrayList<>());
+        result.put("tongjia", new ArrayList<>());
+        result.put("huoyong", new ArrayList<>());
+        result.put("gujinyi", new ArrayList<>());
+
+        for (Word word : words) {
+            String key = resolveGroupKey(word.getWordType());
+            if (key == null) continue;
+
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("wordId", word.getId());
+            item.put("character", word.getCharacter());
+            item.put("pinyin", word.getPinyin());
+            result.get(key).add(item);
+        }
+
+        return result;
+    }
+
+    private String resolveGroupKey(String wordType) {
+        if (wordType == null) return null;
+        return switch (wordType) {
+            case "shi", "xu" -> "shixu";
+            case "tongjia" -> "tongjia";
+            case "huoyong" -> "huoyong";
+            case "gujinyi" -> "gujinyi";
+            default -> null;
+        };
+    }
 }
