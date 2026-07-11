@@ -12,6 +12,8 @@ public class ClassicChapter {
     private Long classicId;
     private Long parentId;
     private String title;
+    private String author;
+    private String era;
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)

@@ -186,6 +186,8 @@ public class SourceData {
     @Data
     public static class SourceAnthologyEntry {
         private String title;
+        private String author;
+        private String era;
         private List<SourceClassicParagraph> paragraphs;
     }
 

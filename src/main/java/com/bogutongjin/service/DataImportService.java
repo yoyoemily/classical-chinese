@@ -473,8 +473,8 @@ public class DataImportService {
 
     /** 选集型导入：门→条目 二级结构 */
     private void importAnthologyData(Long classicId, List<SourceClassicChapter> groups, String classicName) {
-        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, sort_order, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, author, era, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
         int groupCount = 0;
         int entryCount = 0;
@@ -482,8 +482,8 @@ public class DataImportService {
 
         for (int gi = 0; gi < groups.size(); gi++) {
             SourceClassicChapter group = groups.get(gi);
-            // 插入门类（parent_id = null）
-            jdbc.update(chapterSql, classicId, null, group.getTitle(), gi, now, now);
+            // 插入门类（parent_id = null，author/era 为 null）
+            jdbc.update(chapterSql, classicId, null, group.getTitle(), null, null, gi, now, now);
             Long parentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
             groupCount++;
 
@@ -491,8 +491,13 @@ public class DataImportService {
 
             for (int ei = 0; ei < group.getEntries().size(); ei++) {
                 SourceAnthologyEntry entry = group.getEntries().get(ei);
-                // 插入条目（parent_id = 门类 ID）
-                jdbc.update(chapterSql, classicId, parentId, entry.getTitle(), ei, now, now);
+                // 插入条目（parent_id = 门类 ID，author 继承父 group 标题，era 来自 entry JSON）
+                String entryAuthor = (entry.getAuthor() != null && !entry.getAuthor().isEmpty())
+                        ? entry.getAuthor() : group.getTitle();
+                String entryEra = (entry.getEra() != null && !entry.getEra().isEmpty())
+                        ? entry.getEra() : null;
+                jdbc.update(chapterSql, classicId, parentId, entry.getTitle(),
+                        entryAuthor, entryEra, ei, now, now);
                 Long entryChapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
                 entryCount++;
 

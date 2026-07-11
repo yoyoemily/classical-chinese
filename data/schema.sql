@@ -421,6 +421,8 @@ CREATE TABLE classic_chapter (
   classic_id  BIGINT       NOT NULL COMMENT '所属经典著作ID',
   parent_id   BIGINT       DEFAULT NULL COMMENT '父章节ID（选集型：门→条目，二级 TOC）',
   title       VARCHAR(64)  NOT NULL COMMENT '章目标题，如"始计篇"',
+  author      VARCHAR(32)  DEFAULT NULL COMMENT '篇章作者（选集型才填，章节型为 NULL）',
+  era         VARCHAR(16)  DEFAULT NULL COMMENT '篇章所属朝代（选集型才填）',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
