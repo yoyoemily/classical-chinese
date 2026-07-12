@@ -27,13 +27,28 @@ public final class PinyinUtils {
     private static final Set<Character> COMMON_CHARS = new HashSet<>();
 
     /**
-     * 文言文极高频字（在现代 3500 常用字之外，但在文言阅读中几乎每篇遇到，无需标音）。
-     * <p>
-     * 按需追加，每字用逗号分隔。最终合并到 COMMON_CHARS 中。
-     * </p>
+     * 手动扩充更多常用字
      */
     private static final String CLASSICAL_COMMON_CHARS =
-            "曰吾汝矣焉乎耶哉兮奚桂韭婴呵";
+            "曰吾汝矣焉乎耶哉兮奚桂韭婴呵猿仑鸳鸯馨溺乾昧祠敖媚颊渭杖邓郁湘犀匈聂奢" +
+                    "薰亥禹仞曼兑舜昊琴渊梧斋巫玄弘娲豹冀遂淮卒婿琵琶枫浔瑟轴抑嘈莺幽" +
+                    "涩乍吟敛妆啼唧鹃嘲凄泣郡铮浦穆曹悯沦憔悴恬帛阑瞑咆殷霹雳峦崩冥霓鸾悸恍岳赋涯晖淫霏啸谗讥萧澜鸥鳞芷皓璧怡宠翔";
+
+    /**
+     * pinyin4j 字库覆盖不到的冷僻字（如 Extension A/B 区的字），手动标注拼音。
+     * key: 字符, value: 带声调拼音（用 1-4 数字表示，如 "bei4" 对应 bèi）。
+     * 按需追加即可。
+     */
+    private static final Map<String, String> HARDCODED_RARE_PINYIN = new LinkedHashMap<>();
+
+    static {
+        // 手动补充pinyin4j库无法识别的非常用字
+        HARDCODED_RARE_PINYIN.put("䰽", "bèi");
+        HARDCODED_RARE_PINYIN.put("㔮", "nuó");
+        HARDCODED_RARE_PINYIN.put("㻬", "tú");
+        HARDCODED_RARE_PINYIN.put("䔄", "yáo");
+        HARDCODED_RARE_PINYIN.put("䟣", "chù");
+    }
 
     static {
         String chars = "一乙二十丁厂七卜人入八九几儿了力乃刀又三于干亏士工土才寸下大丈与万上"
@@ -157,6 +172,12 @@ public final class PinyinUtils {
                 String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c, PINYIN_FORMAT);
                 if (pinyins != null && pinyins.length > 0) {
                     result.put(String.valueOf(c), pinyins[0]);
+                } else {
+                    // pinyin4j 字库覆盖不到的字，回退到硬编码字典
+                    String fallback = HARDCODED_RARE_PINYIN.get(String.valueOf(c));
+                    if (fallback != null) {
+                        result.put(String.valueOf(c), fallback);
+                    }
                 }
             } catch (BadHanyuPinyinOutputFormatCombination ignored) {
                 // 不应发生
