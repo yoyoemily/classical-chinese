@@ -160,6 +160,7 @@ public class SourceData {
         private String structureType;
         private String loadMode;
         private String navMode;
+        private Integer sortOrder;
     }
 
     // ---- 经典章节型数据（独立导入用） ----

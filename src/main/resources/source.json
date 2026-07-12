@@ -20229,7 +20229,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "孔子及其弟子"
+      "author": "孔子及其弟子",
+      "sortOrder": 5
     },
     {
       "id": 2,
@@ -20241,7 +20242,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "孟子及其弟子"
+      "author": "孟子及其弟子",
+      "sortOrder": 6
     },
     {
       "id": 3,
@@ -20253,7 +20255,8 @@
       "structureType": "chapter",
       "loadMode": "full",
       "navMode": "strip",
-      "author": "曾子"
+      "author": "曾子",
+      "sortOrder": 7
     },
     {
       "id": 4,
@@ -20265,7 +20268,8 @@
       "structureType": "chapter",
       "loadMode": "full",
       "navMode": "list",
-      "author": "子思"
+      "author": "子思",
+      "sortOrder": 8
     },
     {
       "id": 5,
@@ -20277,7 +20281,8 @@
       "structureType": "volume",
       "loadMode": "full",
       "navMode": "list",
-      "author": "佚名"
+      "author": "佚名",
+      "sortOrder": 1
     },
     {
       "id": 6,
@@ -20289,19 +20294,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "佚名"
-    },
-    {
-      "id": 7,
-      "name": "尚书",
-      "era": "商周",
-      "icon": "📄",
-      "description": "上古历史文献汇编，记言体史书之祖，典、谟、训、诰、誓、命，文辞古奥。",
-      "category": "经",
-      "structureType": "volume",
-      "loadMode": "chunked",
-      "navMode": "list",
-      "author": "佚名"
+      "author": "佚名",
+      "sortOrder": 2
     },
     {
       "id": 8,
@@ -20313,7 +20307,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "戴圣"
+      "author": "戴圣",
+      "sortOrder": 3
     },
     {
       "id": 9,
@@ -20325,19 +20320,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "左丘明"
-    },
-    {
-      "id": 10,
-      "name": "春秋",
-      "era": "春秋",
-      "icon": "📋",
-      "description": "鲁国编年史，孔子笔削，微言大义。左氏、公羊、穀梁三传各阐幽微，影响深远。",
-      "category": "经",
-      "structureType": "volume",
-      "loadMode": "full",
-      "navMode": "list",
-      "author": "孔子"
+      "author": "左丘明",
+      "sortOrder": 4
     },
     {
       "id": 11,
@@ -20349,7 +20333,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "刘向"
+      "author": "刘向",
+      "sortOrder": 1
     },
     {
       "id": 12,
@@ -20361,7 +20346,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "司马迁"
+      "author": "司马迁",
+      "sortOrder": 3
     },
     {
       "id": 13,
@@ -20373,7 +20359,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "陈寿"
+      "author": "陈寿",
+      "sortOrder": 6
     },
     {
       "id": 14,
@@ -20385,7 +20372,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "班固"
+      "author": "班固",
+      "sortOrder": 4
     },
     {
       "id": 15,
@@ -20397,7 +20385,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "范晔"
+      "author": "范晔",
+      "sortOrder": 5
     },
     {
       "id": 16,
@@ -20409,7 +20398,8 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "司马光"
+      "author": "司马光",
+      "sortOrder": 8
     },
     {
       "id": 17,
@@ -20421,7 +20411,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "荀子"
+      "author": "荀子",
+      "sortOrder": 5
     },
     {
       "id": 18,
@@ -20433,7 +20424,8 @@
       "structureType": "chapter",
       "loadMode": "full",
       "navMode": "list",
-      "author": "老子"
+      "author": "老子",
+      "sortOrder": 1
     },
     {
       "id": 19,
@@ -20445,7 +20437,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "庄子"
+      "author": "庄子",
+      "sortOrder": 4
     },
     {
       "id": 20,
@@ -20457,7 +20450,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "韩非"
+      "author": "韩非",
+      "sortOrder": 6
     },
     {
       "id": 21,
@@ -20469,7 +20463,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "墨子"
+      "author": "墨子",
+      "sortOrder": 3
     },
     {
       "id": 22,
@@ -20481,43 +20476,34 @@
       "structureType": "chapter",
       "loadMode": "full",
       "navMode": "strip",
-      "author": "孙武"
+      "author": "孙武",
+      "sortOrder": 2
     },
     {
       "id": 23,
       "name": "吕氏春秋",
       "era": "秦",
       "icon": "📙",
-      "description": "吕不韦门客合著，杂家经典，一字千金典故出处，融汇诸子百家，先秦思想的集大成之作。",
+      "description": "吕不韦门客合著，杂家经典，一字千金典故出处。每篇短文独立，政论、伦理、养生、农事无所不包，碎片阅读友好。",
       "category": "子",
       "structureType": "chapter",
       "loadMode": "chunked",
-      "navMode": "list",
-      "author": "吕不韦"
+      "navMode": "accordion",
+      "author": "吕不韦（编）",
+      "sortOrder": 10
     },
     {
       "id": 24,
       "name": "鬼谷子",
       "era": "战国",
       "icon": "🎭",
-      "description": "纵横家经典，捭阖、反应、揣摩、权谋之术的源头，战国游说策士的理论利器。",
+      "description": "纵横家经典，捭阖、反应、揣摩、权谋之术的源头。社交识人、谈判沟通——社会人士的职场智慧宝典。",
       "category": "子",
       "structureType": "chapter",
       "loadMode": "full",
       "navMode": "strip",
-      "author": "鬼谷子"
-    },
-    {
-      "id": 25,
-      "name": "说文解字",
-      "era": "东汉",
-      "icon": "🔤",
-      "description": "许慎著，中国第一部系统分析汉字字形与来源的文字学巨著，学古文必备的工具书之祖。",
-      "category": "子",
-      "structureType": "volume",
-      "loadMode": "chunked",
-      "navMode": "search",
-      "author": "许慎"
+      "author": "鬼谷子",
+      "sortOrder": 7
     },
     {
       "id": 26,
@@ -20529,7 +20515,8 @@
       "structureType": "chapter",
       "loadMode": "chunked",
       "navMode": "list",
-      "author": "佚名"
+      "author": "佚名",
+      "sortOrder": 11
     },
     {
       "id": 27,
@@ -20541,7 +20528,8 @@
       "structureType": "anthology",
       "loadMode": "full",
       "navMode": "strip",
-      "author": "屈原等"
+      "author": "屈原等",
+      "sortOrder": 1
     },
     {
       "id": 28,
@@ -20553,7 +20541,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "author",
-      "author": "蘅塘退士"
+      "author": "蘅塘退士",
+      "sortOrder": 3
     },
     {
       "id": 29,
@@ -20565,7 +20554,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "search",
-      "author": "朱祖谋"
+      "author": "朱祖谋",
+      "sortOrder": 4
     },
     {
       "id": 30,
@@ -20577,19 +20567,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "郭茂倩"
-    },
-    {
-      "id": 31,
-      "name": "全唐诗",
-      "era": "唐",
-      "icon": "📚",
-      "description": "四万八千余首唐诗总汇，李白、杜甫、王维、白居易……盛唐气象，尽在其中。",
-      "category": "集",
-      "structureType": "anthology",
-      "loadMode": "chunked",
-      "navMode": "search",
-      "author": "佚名"
+      "author": "郭茂倩",
+      "sortOrder": 6
     },
     {
       "id": 32,
@@ -20601,7 +20580,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "search",
-      "author": "吴楚材、吴调侯"
+      "author": "吴楚材、吴调侯",
+      "sortOrder": 8
     },
     {
       "id": 33,
@@ -20613,19 +20593,21 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "刘义庆"
+      "author": "刘义庆",
+      "sortOrder": 7
     },
     {
       "id": 34,
       "name": "梦溪笔谈",
       "era": "北宋",
       "icon": "🔬",
-      "description": "沈括著，中国古代百科全书式的笔记，涵盖天文地理数学生物，科学精神与人文关怀兼具。",
+      "description": "沈括著，中国科学精神的巅峰。石油、活字印刷、指南针偏角——北宋已有人类最早的科技笔记，跨学科视野的绝佳读本。",
       "category": "集",
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "沈括"
+      "author": "沈括",
+      "sortOrder": 10
     },
     {
       "id": 35,
@@ -20637,7 +20619,8 @@
       "structureType": "anthology",
       "loadMode": "chunked",
       "navMode": "search",
-      "author": "蒲松龄"
+      "author": "蒲松龄",
+      "sortOrder": 13
     },
     {
       "id": 36,
@@ -20649,7 +20632,268 @@
       "structureType": "volume",
       "loadMode": "chunked",
       "navMode": "accordion",
-      "author": "佚名"
+      "author": "佚名",
+      "sortOrder": 9
+    },
+    {
+      "id": 37,
+      "name": "列子",
+      "era": "战国",
+      "icon": "🦅",
+      "description": "道家三经之一，名篇密度极高：愚公移山、杞人忧天、朝三暮四、夸父逐日——全是课本常客。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "列子",
+      "sortOrder": 8
+    },
+    {
+      "id": 38,
+      "name": "孝经",
+      "era": "春秋",
+      "icon": "📕",
+      "description": "十三经之一，专论孝道，仅十八章约一千八百字。\"夫孝，德之本也\"，儒家伦理的基石，与中学生德育高度契合。",
+      "category": "经",
+      "structureType": "chapter",
+      "loadMode": "full",
+      "navMode": "strip",
+      "author": "孔子（托名）",
+      "sortOrder": 9
+    },
+    {
+      "id": 39,
+      "name": "国语",
+      "era": "春秋",
+      "icon": "📖",
+      "description": "中国最早的国别史，与《左传》并称\"左国\"。召公谏厉王弭谤、叔向贺贫等名篇密集，叙事生动。",
+      "category": "史",
+      "structureType": "volume",
+      "loadMode": "chunked",
+      "navMode": "accordion",
+      "author": "左丘明",
+      "sortOrder": 2
+    },
+    {
+      "id": 40,
+      "name": "颜氏家训",
+      "era": "北齐",
+      "icon": "📝",
+      "description": "中国第一部系统家训，颜之推著。论学论教论处世，与\"帮助中学生掌握文言文\"的定位天然吻合。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "颜之推",
+      "sortOrder": 13
+    },
+    {
+      "id": 41,
+      "name": "文选",
+      "era": "南朝梁",
+      "icon": "📚",
+      "description": "中国现存最早的诗文总集，萧统编。收录一百三十位作家七百余篇，\"文选烂，秀才半\"，文学价值无可替代。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "author",
+      "author": "萧统 编",
+      "sortOrder": 2
+    },
+    {
+      "id": 42,
+      "name": "元曲三百首",
+      "era": "清",
+      "icon": "🎭",
+      "description": "补全\"唐诗→宋词→元曲\"诗歌演进链。关汉卿、马致远、白朴、郑光祖，散曲与杂剧精华尽收。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "author",
+      "author": "佚名 编",
+      "sortOrder": 5
+    },
+    {
+      "id": 43,
+      "name": "三字经",
+      "era": "南宋",
+      "icon": "📗",
+      "description": "传统蒙学第一书，三字一句、朗朗上口。\"人之初，性本善\"，中国学生人人会背的启蒙经典。",
+      "category": "经",
+      "structureType": "chapter",
+      "loadMode": "full",
+      "navMode": "strip",
+      "author": "王应麟",
+      "sortOrder": 10
+    },
+    {
+      "id": 44,
+      "name": "千字文",
+      "era": "南朝梁",
+      "icon": "📘",
+      "description": "一千个不重复的汉字编成二百五十句四言韵文，涵盖天文地理历史伦理，构思之精巧古今无双。",
+      "category": "经",
+      "structureType": "chapter",
+      "loadMode": "full",
+      "navMode": "strip",
+      "author": "周兴嗣",
+      "sortOrder": 11
+    },
+    {
+      "id": 45,
+      "name": "淮南子",
+      "era": "西汉",
+      "icon": "🌌",
+      "description": "西汉道家集大成，刘安编著。女娲补天、后羿射日、共工怒触不周山——神话寓言的宝库。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "刘安",
+      "sortOrder": 12
+    },
+    {
+      "id": 46,
+      "name": "晏子春秋",
+      "era": "春秋",
+      "icon": "💡",
+      "description": "晏婴故事集，\"橘逾淮为枳\"\"二桃杀三士\"等名篇，篇幅短小、机智幽默，适合中学生阅读。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "accordion",
+      "author": "晏婴（托名）",
+      "sortOrder": 9
+    },
+    {
+      "id": 47,
+      "name": "菜根谭",
+      "era": "明",
+      "icon": "🥬",
+      "description": "洪应明著格言体小品，一句话一条，极短极精。\"咬得菜根，百事可做\"，适合碎片化阅读。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "洪应明",
+      "sortOrder": 14
+    },
+    {
+      "id": 48,
+      "name": "西厢记",
+      "era": "元",
+      "icon": "💕",
+      "description": "王实甫著，元杂剧巅峰。张生与崔莺莺的爱情故事，\"愿天下有情人终成眷属\"，句句锦绣。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "accordion",
+      "author": "王实甫",
+      "sortOrder": 11
+    },
+    {
+      "id": 49,
+      "name": "牡丹亭",
+      "era": "明",
+      "icon": "🪷",
+      "description": "汤显祖著，明传奇最高成就。杜丽娘因情而死、因情而生，\"情不知所起，一往而深\"。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "accordion",
+      "author": "汤显祖",
+      "sortOrder": 12
+    },
+    {
+      "id": 53,
+      "name": "水经注",
+      "era": "北魏",
+      "icon": "🌊",
+      "description": "郦道元注《水经》，地理与文学交融的双经典。三峡等名篇已入教材，山水描写堪称古文典范。",
+      "category": "史",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "郦道元",
+      "sortOrder": 7
+    },
+    {
+      "id": 54,
+      "name": "徐霞客游记",
+      "era": "明",
+      "icon": "🏔️",
+      "description": "明代旅行文学巅峰，徐霞客三十四年足迹遍神州的考察实录。语言鲜活，比正史更贴近生活。",
+      "category": "史",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "徐霞客",
+      "sortOrder": 9
+    },
+    {
+      "id": 55,
+      "name": "浮生六记",
+      "era": "清",
+      "icon": "🌸",
+      "description": "沈复自传体散文，记闺房之乐、闲情之趣、坎坷之愁、浪游之快。语言洗练真挚，古文过渡阅读的绝佳之选。",
+      "category": "集",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "沈复",
+      "sortOrder": 14
+    },
+    {
+      "id": 56,
+      "name": "曾国藩家书",
+      "era": "清",
+      "icon": "✉️",
+      "description": "曾国藩写给家人的二百余封书信，谈做人做事治学养生。切口极小、格局极大——清代最成功的普通人逆袭指南。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "曾国藩",
+      "sortOrder": 15
+    },
+    {
+      "id": 57,
+      "name": "陶渊明集",
+      "era": "东晋",
+      "icon": "🌾",
+      "description": "\"归去来兮，田园将芜胡不归\"——中国隐逸诗人之宗。读陶渊明，读的是每个人心中\"我想回去\"的最早版本。语言平实，门槛极低。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "陶渊明",
+      "sortOrder": 16
+    },
+    {
+      "id": 58,
+      "name": "围炉夜话",
+      "era": "清",
+      "icon": "🔥",
+      "description": "与《菜根谭》并称\"处世奇书\"。王永彬著，184则冬夜围炉闲聊式的短论，每则两三句话，温润如老友对谈。",
+      "category": "子",
+      "structureType": "chapter",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "王永彬",
+      "sortOrder": 15
+    },
+    {
+      "id": 59,
+      "name": "韩愈文集",
+      "era": "唐",
+      "icon": "✍️",
+      "description": "古文运动旗帜。《师说》《马说》《进学解》——\"世有伯乐，然后有千里马\"，社会人士读来和学生时代的感触截然不同。",
+      "category": "集",
+      "structureType": "anthology",
+      "loadMode": "chunked",
+      "navMode": "list",
+      "author": "韩愈",
+      "sortOrder": 17
     }
   ]
 }
