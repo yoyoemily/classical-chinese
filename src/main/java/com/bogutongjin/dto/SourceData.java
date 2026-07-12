@@ -188,6 +188,7 @@ public class SourceData {
         private String title;
         private String author;
         private String era;
+        private String background;
         private List<SourceClassicParagraph> paragraphs;
     }
 

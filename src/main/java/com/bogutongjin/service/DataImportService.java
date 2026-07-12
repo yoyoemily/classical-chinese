@@ -473,8 +473,8 @@ public class DataImportService {
 
     /** 选集型导入：门→条目 二级结构 */
     private void importAnthologyData(Long classicId, List<SourceClassicChapter> groups, String classicName) {
-        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, author, era, sort_order, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, author, era, background, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
         int groupCount = 0;
         int entryCount = 0;
@@ -483,7 +483,7 @@ public class DataImportService {
         for (int gi = 0; gi < groups.size(); gi++) {
             SourceClassicChapter group = groups.get(gi);
             // 插入门类（parent_id = null，author/era 为 null）
-            jdbc.update(chapterSql, classicId, null, group.getTitle(), null, null, gi, now, now);
+            jdbc.update(chapterSql, classicId, null, group.getTitle(), null, null, null, gi, now, now);
             Long parentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
             groupCount++;
 
@@ -497,7 +497,7 @@ public class DataImportService {
                 String entryEra = (entry.getEra() != null && !entry.getEra().isEmpty())
                         ? entry.getEra() : null;
                 jdbc.update(chapterSql, classicId, parentId, entry.getTitle(),
-                        entryAuthor, entryEra, ei, now, now);
+                        entryAuthor, entryEra, entry.getBackground(), ei, now, now);
                 Long entryChapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
                 entryCount++;
 
@@ -513,14 +513,14 @@ public class DataImportService {
 
     /** 章节型导入：一级 chapter 结构（旧格式兼容） */
     private void importChapterData(Long classicId, List<SourceClassicChapter> chapters, String classicName) {
-        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, sort_order, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, author, era, background, sort_order, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime now = LocalDateTime.now();
         int totalParagraphs = 0;
 
         for (int ci = 0; ci < chapters.size(); ci++) {
             SourceClassicChapter chapter = chapters.get(ci);
-            jdbc.update(chapterSql, classicId, null, chapter.getTitle(), ci, now, now);
+            jdbc.update(chapterSql, classicId, null, chapter.getTitle(), null, null, null, ci, now, now);
             Long chapterId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
 
             if (!CollUtil.isEmpty(chapter.getParagraphs())) {

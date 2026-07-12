@@ -131,6 +131,7 @@ public class ClassicService {
         result.put("title", chapter != null ? chapter.getTitle() : "");
         if (chapter != null && chapter.getAuthor() != null) result.put("author", chapter.getAuthor());
         if (chapter != null && chapter.getEra() != null) result.put("era", chapter.getEra());
+        if (chapter != null && chapter.getBackground() != null) result.put("background", chapter.getBackground());
 
         List<Map<String, Object>> paraList = paragraphs.stream().map(p -> {
             Map<String, Object> pm = new LinkedHashMap<>();
@@ -342,6 +343,9 @@ public class ClassicService {
             Map<String, Object> cm = new LinkedHashMap<>();
             cm.put("id", ch.getId());
             cm.put("title", ch.getTitle());
+            if (ch.getAuthor() != null) cm.put("author", ch.getAuthor());
+            if (ch.getEra() != null) cm.put("era", ch.getEra());
+            if (ch.getBackground() != null) cm.put("background", ch.getBackground());
 
             List<ClassicParagraph> paras = paraMap.getOrDefault(ch.getId(), List.of());
             List<Map<String, Object>> paraList = paras.stream().map(p -> {

@@ -129,6 +129,8 @@ public class StudyService {
             sm.put("targetWord", s.getTargetWord());
             sm.put("correctMeaningIndex", s.getCorrectMeaningIndex());
             sm.put("difficulty", s.getDifficulty());
+            sm.put("articleId", s.getArticleId());
+            sm.put("audioUrl", s.getAudioUrl());
             // 干扰项
             List<SentenceDistractor> distractors = sentenceDistractorMapper.selectList(
                     new LambdaQueryWrapper<SentenceDistractor>().eq(SentenceDistractor::getSentenceId, s.getId())
