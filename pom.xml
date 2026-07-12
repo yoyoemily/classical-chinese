@@ -82,6 +82,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- 拼音转换（pinyin4j，生僻字注音用，带声调） -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

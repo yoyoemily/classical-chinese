@@ -9,6 +9,7 @@ import com.bogutongjin.mapper.ClassicMapper;
 import com.bogutongjin.mapper.ClassicChapterMapper;
 import com.bogutongjin.mapper.ClassicParagraphMapper;
 import com.bogutongjin.mapper.ClassicGlossaryMapper;
+import com.bogutongjin.util.PinyinUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -136,6 +137,7 @@ public class ClassicService {
             pm.put("text", p.getText());
             pm.put("translation", p.getTranslation());
             pm.put("glossary", glossaryMap.getOrDefault(p.getId(), List.of()));
+            pm.put("rareCharPinyin", PinyinUtils.buildRareCharPinyin(p.getText()));
             return pm;
         }).collect(Collectors.toList());
         result.put("paragraphs", paraList);
@@ -347,6 +349,7 @@ public class ClassicService {
                 pm.put("text", p.getText());
                 pm.put("translation", p.getTranslation());
                 pm.put("glossary", glossaryMap.getOrDefault(p.getId(), List.of()));
+                pm.put("rareCharPinyin", PinyinUtils.buildRareCharPinyin(p.getText()));
                 return pm;
             }).collect(Collectors.toList());
             cm.put("paragraphs", paraList);

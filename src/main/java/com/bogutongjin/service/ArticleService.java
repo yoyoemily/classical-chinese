@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bogutongjin.common.ResourceNotFoundException;
 import com.bogutongjin.entity.*;
 import com.bogutongjin.mapper.*;
+import com.bogutongjin.util.PinyinUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -95,6 +96,9 @@ public class ArticleService {
                 gm.put("definition", g.getDefinition());
                 return gm;
             }).collect(Collectors.toList()));
+
+            // 生僻字拼音
+            sm.put("rareCharPinyin", PinyinUtils.buildRareCharPinyin(s.getText()));
 
             return sm;
         }).collect(Collectors.toList());
