@@ -32,7 +32,12 @@ public final class PinyinUtils {
     private static final String CLASSICAL_COMMON_CHARS =
             "曰吾汝矣焉乎耶哉兮奚桂韭婴呵猿仑鸳鸯馨溺乾昧祠敖媚颊渭杖邓郁湘犀匈聂奢" +
                     "薰亥禹仞曼兑舜昊琴渊梧斋巫玄弘娲豹冀遂淮卒婿琵琶枫浔瑟轴抑嘈莺幽" +
-                    "涩乍吟敛妆啼唧鹃嘲凄泣郡铮浦穆曹悯沦憔悴恬帛阑瞑咆殷霹雳峦崩冥霓鸾悸恍岳赋涯晖淫霏啸谗讥萧澜鸥鳞芷皓璧怡宠翔弗辙滕琅琊僧谓寓瞑晦明";
+                    "涩乍吟敛妆啼唧鹃嘲凄泣郡铮浦穆曹悯沦憔悴恬帛阑瞑咆殷霹雳峦崩冥霓" +
+                    "鸾悸恍岳赋涯晖淫霏啸谗讥萧澜鸥鳞芷皓璧怡宠翔弗辙滕琅琊僧谓寓瞑晦" +
+                    "明伦褒贬荀逊诛坠戈秦莽魏蜀鼎魏隋禅戎靖兹惟昔仲仕蒲锥萤辍卓尔莹蔡" +
+                    "姬琢紊闰吕虞拱罔羔履卑睦恻沛逸爵邑泾侠卿禄铭伊佐孰秉诫寂寥逍凋蚤" +
+                    "凌霄攸烹豫嫡祭祀惶颦徘徊瞻陋寡甫溢稷侯兢夙懈赫妾朕揽骋粹窘踵遁渚" +
+                    "袅荔夷冯抒崔瑶圃潭畔滞惆怅";
 
     /**
      * pinyin4j 字库覆盖不到的冷僻字（如 Extension A/B 区的字），手动标注拼音。
@@ -48,6 +53,19 @@ public final class PinyinUtils {
         HARDCODED_RARE_PINYIN.put("㻬", "tú");
         HARDCODED_RARE_PINYIN.put("䔄", "yáo");
         HARDCODED_RARE_PINYIN.put("䟣", "chù");
+    }
+
+    /**
+     * 文言多音字覆盖表——pinyin4j 能识别但在文言文语境下默认读音（数组第一项）不正确。
+     * 此表的优先级高于 pinyin4j，命中后直接使用，不再查询 pinyin4j。
+     * key: 字符, value: 正确的带声调拼音。
+     * 按需追加即可。
+     */
+    private static final Map<String, String> CLASSICAL_POLYPHONE_OVERRIDE = new LinkedHashMap<>();
+
+    static {
+        // 山海经·南山经："狌狌"（异兽名），pinyin4j 默认 shēng，文言中应读 xīng
+        CLASSICAL_POLYPHONE_OVERRIDE.put("狌", "xīng");
     }
 
     static {
@@ -168,15 +186,25 @@ public final class PinyinUtils {
             char c = text.charAt(i);
             if (isNonChinese(c)) continue;
             if (COMMON_CHARS.contains(c)) continue;
+
+            String charStr = String.valueOf(c);
+
+            // 1. 优先检查文言多音字覆盖表（pinyin4j 能识别但默认读音在文言语境下不正确）
+            String override = CLASSICAL_POLYPHONE_OVERRIDE.get(charStr);
+            if (override != null) {
+                result.put(charStr, override);
+                continue;
+            }
+
             try {
                 String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c, PINYIN_FORMAT);
                 if (pinyins != null && pinyins.length > 0) {
-                    result.put(String.valueOf(c), pinyins[0]);
+                    result.put(charStr, pinyins[0]);
                 } else {
                     // pinyin4j 字库覆盖不到的字，回退到硬编码字典
-                    String fallback = HARDCODED_RARE_PINYIN.get(String.valueOf(c));
+                    String fallback = HARDCODED_RARE_PINYIN.get(charStr);
                     if (fallback != null) {
-                        result.put(String.valueOf(c), fallback);
+                        result.put(charStr, fallback);
                     }
                 }
             } catch (BadHanyuPinyinOutputFormatCombination ignored) {
