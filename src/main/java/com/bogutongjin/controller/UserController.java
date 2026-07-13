@@ -40,4 +40,11 @@ public class UserController {
         userService.saveUserInfo(userId, req.getAvatarUrl(), req.getNickName(), req.getGrade());
         return Result.ok();
     }
+
+    /** 记录用户分享 */
+    @PostMapping("/share")
+    public Result<Map<String, Object>> recordShare(@CurrentUser Long userId) {
+        userService.recordShare(userId);
+        return Result.ok(Map.of("hasShared", true));
+    }
 }

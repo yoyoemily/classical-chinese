@@ -30,6 +30,7 @@ public class UserService {
         result.put("title", level < TITLES.length ? TITLES[level] : "翰林");
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
+        result.put("hasShared", user.getHasShared() != null && user.getHasShared());
         return result;
     }
 
@@ -41,6 +42,7 @@ public class UserService {
         result.put("avatarUrl", user.getAvatarUrl());
         result.put("nickName", user.getNickName());
         result.put("grade", user.getGrade());
+        result.put("hasShared", user.getHasShared() != null && user.getHasShared());
         return result;
     }
 
@@ -51,6 +53,14 @@ public class UserService {
         if (avatarUrl != null && !avatarUrl.isEmpty()) user.setAvatarUrl(avatarUrl);
         if (nickName != null && !nickName.isEmpty()) user.setNickName(nickName);
         if (grade != null) user.setGrade(grade);  // grade 允许设为空字符串（"不设置"）
+        userMapper.updateById(user);
+    }
+
+    /** 记录用户已分享 */
+    public void recordShare(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) return;
+        user.setHasShared(true);
         userMapper.updateById(user);
     }
 

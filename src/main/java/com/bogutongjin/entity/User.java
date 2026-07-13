@@ -17,6 +17,7 @@ public class User {
     private Integer totalXp;
     private Integer currentStreak;
     private Integer longestStreak;
+    private Boolean hasShared;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
