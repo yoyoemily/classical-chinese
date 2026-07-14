@@ -251,6 +251,15 @@ public class DataImportService {
     }
 
     private void insertWordBook(SourceWordBook b) {
+        // 防御：从 words 数组推算元数据，不盲信 JSON 字段值
+        int wordCount = b.getWords() != null ? b.getWords().size() : 0;
+        boolean init = b.getInitialized() != null ? b.getInitialized() : wordCount > 0;
+        if (b.getTotalWords() == null || b.getTotalWords() == 0) {
+            b.setTotalWords(wordCount);
+        }
+        if (wordCount > 0 && !init) {
+            b.setInitialized(true);
+        }
         jdbc.update(
                 "INSERT INTO word_book (id, name, description, category, cover_color, study_mode, identify_prompt, exam_level, initialized, total_words, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 b.getId(), b.getName(), b.getDescription(), b.getCategory(), b.getCoverColor(),

@@ -18676,7 +18676,7 @@
       "studyMode": "identify_first",
       "identifyPrompt": "请从句子中找出词类活用字词",
       "coverColor": "#8B7D6B",
-      "totalWords": 0,
+      "totalWords": 26,
       "words": [
         {
           "id": "wb_c_204",
@@ -20069,7 +20069,7 @@
       ],
       "sortOrder": 3,
       "examLevel": "zhongkao",
-      "initialized": false
+      "initialized": true
     },
     {
       "id": "wb_gaokao_shixu",
