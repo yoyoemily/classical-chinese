@@ -231,6 +231,7 @@ CREATE TABLE `user` (
   current_streak INT          NOT NULL DEFAULT 0 COMMENT '当前连续学习天数',
   longest_streak INT          NOT NULL DEFAULT 0 COMMENT '历史最长连续天数',
   has_shared     TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已分享',
+  member_level   TINYINT      NOT NULL DEFAULT 0 COMMENT '会员级别：0=非会员，1=普通会员',
   created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_open_id (open_id),

@@ -18,6 +18,7 @@ public class User {
     private Integer currentStreak;
     private Integer longestStreak;
     private Boolean hasShared;
+    private Integer memberLevel;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

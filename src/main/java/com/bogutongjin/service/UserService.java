@@ -31,6 +31,8 @@ public class UserService {
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
         result.put("hasShared", user.getHasShared() != null && user.getHasShared());
+        result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
+        result.put("nickName", user.getNickName() != null ? user.getNickName() : "");
         return result;
     }
 
@@ -43,6 +45,7 @@ public class UserService {
         result.put("nickName", user.getNickName());
         result.put("grade", user.getGrade());
         result.put("hasShared", user.getHasShared() != null && user.getHasShared());
+        result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         return result;
     }
 
@@ -61,6 +64,7 @@ public class UserService {
         User user = userMapper.selectById(userId);
         if (user == null) return;
         user.setHasShared(true);
+        user.setMemberLevel(1);
         userMapper.updateById(user);
     }
 
