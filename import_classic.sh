@@ -15,11 +15,17 @@ echo "   知识库路径: $CLASSICS_DIR"
 echo "   API: POST $BASE_URL/api/admin/import/classic/{classicId}"
 echo ""
 echo "已知经典 ID → 文件映射:"
+echo "   ID=3  → 大学       $CLASSICS_DIR/大学/chapters.json"
+echo "   ID=4  → 中庸       $CLASSICS_DIR/中庸/chapters.json"
 echo "   ID=18 → 老子       $CLASSICS_DIR/老子/chapters.json"
 echo "   ID=22 → 孙子兵法   $CLASSICS_DIR/孙子兵法/chapters.json"
-echo "   ID=36 → 山海经     $CLASSICS_DIR/山海经/chapters.json"
-echo "   ID=33 → 世说新语   $CLASSICS_DIR/世说新语/entries.json"
+echo "   ID=27 → 楚辞       $CLASSICS_DIR/楚辞/chapters.json"
 echo "   ID=28 → 唐诗三百首 $CLASSICS_DIR/唐诗三百首/entries.json"
+echo "   ID=33 → 世说新语   $CLASSICS_DIR/世说新语/entries.json"
+echo "   ID=36 → 山海经     $CLASSICS_DIR/山海经/chapters.json"
+echo "   ID=38 → 孝经       $CLASSICS_DIR/孝经/chapters.json"
+echo "   ID=43 → 三字经     $CLASSICS_DIR/三字经/chapters.json"
+echo "   ID=44 → 千字文     $CLASSICS_DIR/千字文/chapters.json"
 echo ""
 echo "（其他 ID 需手动输入文件路径）"
 echo ""
@@ -39,11 +45,17 @@ fi
 # 自动映射已知 ID → 文件
 FILE=""
 case "$CLASSIC_ID" in
+    3) FILE="$CLASSICS_DIR/大学/chapters.json" ;;
+    4) FILE="$CLASSICS_DIR/中庸/chapters.json" ;;
     18) FILE="$CLASSICS_DIR/老子/chapters.json" ;;
     22) FILE="$CLASSICS_DIR/孙子兵法/chapters.json" ;;
-    36) FILE="$CLASSICS_DIR/山海经/chapters.json" ;;
-    33) FILE="$CLASSICS_DIR/世说新语/entries.json" ;;
+    27) FILE="$CLASSICS_DIR/楚辞/chapters.json" ;;
     28) FILE="$CLASSICS_DIR/唐诗三百首/entries.json" ;;
+    33) FILE="$CLASSICS_DIR/世说新语/entries.json" ;;
+    36) FILE="$CLASSICS_DIR/山海经/chapters.json" ;;
+    38) FILE="$CLASSICS_DIR/孝经/chapters.json" ;;
+    43) FILE="$CLASSICS_DIR/三字经/chapters.json" ;;
+    44) FILE="$CLASSICS_DIR/千字文/chapters.json" ;;
 esac
 
 if [[ -z "$FILE" ]]; then

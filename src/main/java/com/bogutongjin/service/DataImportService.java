@@ -557,13 +557,35 @@ public class DataImportService {
     }
 
     private void truncateAll() {
-        String[] tables = { "badge" };
+        // 按外键依赖逆序清空（child table → parent table）
+        String[] tables = {
+                "sentence_distractor",
+                "sentence",
+                "meaning",
+                "similar_homophone",
+                "similar_shape",
+                "word",
+                "word_book",
+                "badge",
+                "user_word_progress",
+                "user_answer_history",
+                "user_checkin",
+                "user_badge",
+                "study_mistake_sentence",
+                "study_mistake",
+                "daily_task",
+                "feedback",
+                "classic_glossary",
+                "classic_paragraph",
+                "classic_chapter",
+                "classic"
+        };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {
             jdbc.execute("TRUNCATE TABLE " + t);
         }
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
-        log.info("已清空 {} 张业务表（不含词书、文章和经典）", tables.length);
+        log.info("已清空 {} 张业务表", tables.length);
     }
 
     private void insertStrings(String sql, String parentId, List<String> values) {
