@@ -1,7 +1,7 @@
 {
   "version": "4.0.0",
   "description": "文言雀小程序冷启动数据源——上海中考150实词+例句+出处，统编版七至九年级文言文名篇20篇，8枚学习勋章",
-  "generatedAt": "2026-07-03",
+  "generatedAt": "2026-07-14T11:06:57",
   "wordBooks": [
     {
       "id": "wb_zhongkao_shixu",
@@ -20126,6 +20126,2235 @@
       "totalWords": 0,
       "sortOrder": 7,
       "words": []
+    },
+    {
+      "id": "wb_function_words",
+      "name": "文言文虚词深度解析",
+      "description": "覆盖54个核心文言虚词，逐一拆解虚实、结构、语气等不同用法，配以经典例句，深入理解句子结构。适合已掌握考纲词汇、想要真正通读典籍的学习者。",
+      "category": "function",
+      "studyMode": "readonly",
+      "coverColor": "#5b6d8a",
+      "totalWords": 54,
+      "sortOrder": 8,
+      "examLevel": "all",
+      "initialized": true,
+      "words": [
+        {
+          "id": "wb_fw_001",
+          "character": "之",
+          "pinyin": "zhī",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "结构助词：用在定语和中心语之间，相当于现代汉语的“的”",
+              "pinyin": "",
+              "example": "关关雎鸠，在河之洲。",
+              "translation": "关关鸣叫的雎鸠鸟，在河中的沙洲上。",
+              "source": "《诗经·周南·关雎》"
+            },
+            {
+              "definition": "结构助词：用在主语和谓语之间，取消句子独立性，使主谓结构成为短语",
+              "pinyin": "",
+              "example": "臣之壮也，犹不如人。",
+              "translation": "我年轻力壮的时候，尚且不如别人。",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "结构助词：宾语前置的标志",
+              "pinyin": "",
+              "example": "何厌之有？",
+              "translation": "有什么满足的呢？",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "结构助词：定语后置的标志",
+              "pinyin": "",
+              "example": "蚓无爪牙之利，筋骨之强。",
+              "translation": "蚯蚓没有锋利的爪牙，没有强健的筋骨。",
+              "source": "《荀子·劝学》"
+            },
+            {
+              "definition": "音节助词：用在形容词/副词/时间名词之后，起调节音节作用，无实义",
+              "pinyin": "",
+              "example": "久之，目似瞑，意暇甚。",
+              "translation": "过了很久，它的眼睛好像闭上了，神情悠闲得很。",
+              "source": "《聊斋志异·狼》"
+            },
+            {
+              "definition": "代词：指代人、事、物，相当于“他/她/它(们)”",
+              "pinyin": "",
+              "example": "学而时习之，不亦说乎？",
+              "translation": "学了知识然后按时复习它，不也很愉快吗？",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "代词：指代第一人称，相当于“我”",
+              "pinyin": "",
+              "example": "君将哀而生之乎？",
+              "translation": "您是哀怜我，想让我活下去吗？",
+              "source": "《捕蛇者说》"
+            },
+            {
+              "definition": "动词：到、往",
+              "pinyin": "",
+              "example": "辍耕之垄上。",
+              "translation": "停止耕作走到田埂上。",
+              "source": "《史记·陈涉世家》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_002",
+          "character": "其",
+          "pinyin": "qí",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "代词：第三人称领属，相当于“他的/她的/它的/他们的”",
+              "pinyin": "",
+              "example": "其妻献疑曰。",
+              "translation": "他的妻子提出疑问说。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "代词：指示代词，相当于“那/那个/那些”",
+              "pinyin": "",
+              "example": "其人视端容寂。",
+              "translation": "那个人目光端正、神情专注。",
+              "source": "《核舟记》"
+            },
+            {
+              "definition": "代词：其中的（用在数词前）",
+              "pinyin": "",
+              "example": "其一犬坐于前。",
+              "translation": "其中一只像狗一样蹲坐在前面。",
+              "source": "《聊斋志异·狼》"
+            },
+            {
+              "definition": "语气副词：表推测、估计，相当于“大概/或许”",
+              "pinyin": "",
+              "example": "其真无马邪？",
+              "translation": "大概是真的没有千里马吧？",
+              "source": "《马说》"
+            },
+            {
+              "definition": "语气副词：表反问、加强语气，相当于“难道”",
+              "pinyin": "",
+              "example": "其真不知马也！",
+              "translation": "难道是真的不认识千里马吗！",
+              "source": "《马说》"
+            },
+            {
+              "definition": "语气副词：表祈使、希望，相当于“还是/可要”",
+              "pinyin": "",
+              "example": "吾其还也。",
+              "translation": "我们还是回去吧。",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "连词：表假设，相当于“如果”",
+              "pinyin": "",
+              "example": "其业有不精，德有不成者。",
+              "translation": "如果学业还有不精通的，品德还有没养成的。",
+              "source": "《送东阳马生序》"
+            },
+            {
+              "definition": "连词：表选择，相当于“是……还是……”",
+              "pinyin": "",
+              "example": "其信然邪？其梦邪？",
+              "translation": "是真的如此呢？还是做梦呢？",
+              "source": "《祭十二郎文》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_003",
+          "character": "而",
+          "pinyin": "ér",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词：表并列关系，相当于“和/又”，或不译",
+              "pinyin": "",
+              "example": "永州之野产异蛇，黑质而白章。",
+              "translation": "永州的野外出产一种奇异的蛇，黑色的身子、白色的花纹。",
+              "source": "《捕蛇者说》"
+            },
+            {
+              "definition": "连词：表承接关系，相当于“就/然后”，或不译",
+              "pinyin": "",
+              "example": "学而时习之。",
+              "translation": "学了知识然后按时复习它。",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "连词：表递进关系，相当于“而且/并且”",
+              "pinyin": "",
+              "example": "君子博学而日参省乎己。",
+              "translation": "君子广泛地学习而且每天多次反省自己。",
+              "source": "《荀子·劝学》"
+            },
+            {
+              "definition": "连词：表转折关系，相当于“却/但是/然而”",
+              "pinyin": "",
+              "example": "千里马常有，而伯乐不常有。",
+              "translation": "千里马经常有，但是伯乐不经常有。",
+              "source": "《马说》"
+            },
+            {
+              "definition": "连词：表假设关系，相当于“如果”",
+              "pinyin": "",
+              "example": "人而无信，不知其可也。",
+              "translation": "人如果没有信用，不知道那怎么可以。",
+              "source": "《论语·为政》"
+            },
+            {
+              "definition": "连词：表修饰关系（连接状语和谓语），常用于“X而Y”，X描述Y的方式、状态",
+              "pinyin": "",
+              "example": "朝而往，暮而归。",
+              "translation": "早晨前往，傍晚回来。",
+              "source": "《醉翁亭记》"
+            },
+            {
+              "definition": "连词：表因果关系，相当于“因而/所以”",
+              "pinyin": "",
+              "example": "四时之景不同，而乐亦无穷也。",
+              "translation": "四季的景色不同，所以乐趣也是无穷的。",
+              "source": "《醉翁亭记》"
+            },
+            {
+              "definition": "代词：通“尔”，相当于“你/你的”",
+              "pinyin": "",
+              "example": "而翁归，自与汝复算耳。",
+              "translation": "你的父亲回来，自然会和你算账的。",
+              "source": "《促织》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_004",
+          "character": "以",
+          "pinyin": "yǐ",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "介词：表工具/方式，相当于“用/拿/凭借”",
+              "pinyin": "",
+              "example": "以刀劈狼首。",
+              "translation": "用刀劈狼的头。",
+              "source": "《聊斋志异·狼》"
+            },
+            {
+              "definition": "介词：表凭借/依据，相当于“按照/根据”",
+              "pinyin": "",
+              "example": "小大之狱，虽不能察，必以情。",
+              "translation": "大大小小的案件，虽然不能一一明察，但一定按照实情处理。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "介词：表原因，相当于“因为/由于”",
+              "pinyin": "",
+              "example": "不以物喜，不以己悲。",
+              "translation": "不因为外物的好坏而欢喜或悲伤，不因为自己的得失而欢喜或悲伤。",
+              "source": "《岳阳楼记》"
+            },
+            {
+              "definition": "介词：表目的，相当于“来/以便”",
+              "pinyin": "",
+              "example": "属予作文以记之。",
+              "translation": "嘱托我写一篇文章来记述它。",
+              "source": "《岳阳楼记》"
+            },
+            {
+              "definition": "介词：表时间/处所，相当于“在/于”",
+              "pinyin": "",
+              "example": "余以乾隆三十九年十二月，自京师……至于泰安。",
+              "translation": "我在乾隆三十九年十二月，从京城……到达泰安。",
+              "source": "《登泰山记》"
+            },
+            {
+              "definition": "连词：表结果，相当于“以致/因而”",
+              "pinyin": "",
+              "example": "不宜妄自菲薄，引喻失义，以塞忠谏之路也。",
+              "translation": "不应该随便看轻自己，说话不恰当，以致堵塞了忠臣进谏的道路。",
+              "source": "《出师表》"
+            },
+            {
+              "definition": "连词：表并列或承接，相当于“而”",
+              "pinyin": "",
+              "example": "策之不以其道。",
+              "translation": "鞭策它不按照正确的方法。",
+              "source": "《马说》"
+            },
+            {
+              "definition": "动词：认为、以为",
+              "pinyin": "",
+              "example": "皆以美于徐公。",
+              "translation": "都认为比徐公美。",
+              "source": "《战国策·邹忌讽齐王纳谏》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_005",
+          "character": "于",
+          "pinyin": "yú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "介词：表处所，相当于“在/从/到”",
+              "pinyin": "",
+              "example": "公与之乘，战于长勺。",
+              "translation": "鲁庄公和曹刿同坐一辆战车，在长勺作战。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "介词：表对象，相当于“对/向/给”",
+              "pinyin": "",
+              "example": "告之于帝。",
+              "translation": "把这件事报告给天帝。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "介词：表比较，用在形容词后，相当于“比”",
+              "pinyin": "",
+              "example": "皆以美于徐公。",
+              "translation": "都认为比徐公美。",
+              "source": "《战国策·邹忌讽齐王纳谏》"
+            },
+            {
+              "definition": "介词：表被动，相当于“被”",
+              "pinyin": "",
+              "example": "吾不能举全吴之地，十万之众，受制于人。",
+              "translation": "我不能拿整个东吴的土地、十万的将士，去被别人控制。",
+              "source": "《赤壁之战》"
+            },
+            {
+              "definition": "介词：表原因，相当于“由于/因为”",
+              "pinyin": "",
+              "example": "业精于勤，荒于嬉。",
+              "translation": "学业由于勤奋而精进，由于玩乐而荒废。",
+              "source": "《进学解》"
+            },
+            {
+              "definition": "介词：表范围，相当于“在……方面”",
+              "pinyin": "",
+              "example": "君子博学而日参省乎己。",
+              "translation": "君子广泛地学习而且每天多次反省自己。",
+              "source": "《荀子·劝学》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_006",
+          "character": "为",
+          "pinyin": "wèi/wéi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "介词（wèi）：表对象，相当于“替/给/为了”",
+              "pinyin": "wèi",
+              "example": "为人谋而不忠乎？",
+              "translation": "替别人谋划事情，是不是不够尽心呢？",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "介词（wèi）：表原因，相当于“因为”",
+              "pinyin": "wèi",
+              "example": "为有源头活水来。",
+              "translation": "因为有源头的活水不断流来。",
+              "source": "《观书有感》"
+            },
+            {
+              "definition": "介词（wéi）：表被动，相当于“被”",
+              "pinyin": "wéi",
+              "example": "为天下笑者，何也？",
+              "translation": "被天下人耻笑的原因，是什么呢？",
+              "source": "《过秦论》"
+            },
+            {
+              "definition": "语气助词（wéi）：用于句末，表疑问/反问，相当于“呢”",
+              "pinyin": "wéi",
+              "example": "何以伐为？",
+              "translation": "为什么要讨伐它呢？",
+              "source": "《论语·季氏》"
+            },
+            {
+              "definition": "动词（wéi）：充当、作为、成为（兼属实词用法）",
+              "pinyin": "wéi",
+              "example": "温故而知新，可以为师矣。",
+              "translation": "温习旧知识而能悟出新道理，就可以做老师了。",
+              "source": "《论语·为政》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_007",
+          "character": "者",
+          "pinyin": "zhě",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "代词：用在动词/形容词/数词后面，组成名词性短语，相当于“……的人/……的事物”",
+              "pinyin": "",
+              "example": "遂率子孙荷担者三夫。",
+              "translation": "于是带领能挑担子的子孙三个成年男子。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "代词：用在名词后面，起提顿作用，相当于“这个人/这个事物”",
+              "pinyin": "",
+              "example": "陈胜者，阳城人也。",
+              "translation": "陈胜是阳城人。",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "代词：用在时间词后面，起音节调节作用，表“……的时候”",
+              "pinyin": "",
+              "example": "今者有小人之言，令将军与臣有郤。",
+              "translation": "现在有小人进谗言，使将军和我有了隔阂。",
+              "source": "《史记·项羽本纪》"
+            },
+            {
+              "definition": "语气助词：用在因果复句前一分句末尾，提顿引出原因",
+              "pinyin": "",
+              "example": "不以木为之者，文理有疏密。",
+              "translation": "之所以不用木头做它，是因为木纹有疏有密。",
+              "source": "《活板》"
+            },
+            {
+              "definition": "结构助词：定语后置的标志",
+              "pinyin": "",
+              "example": "马之千里者，一食或尽粟一石。",
+              "translation": "日行千里的马，吃一顿有时能吃光一石粮食。",
+              "source": "《马说》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_008",
+          "character": "所",
+          "pinyin": "suǒ",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "代词：用在动词前，构成名词性“所”字结构，相当于“……的人/……的事物/……的地方”",
+              "pinyin": "",
+              "example": "财物无所取，妇女无所幸。",
+              "translation": "财物没有什么被拿走的，妇女没有什么被宠幸的。",
+              "source": "《史记·项羽本纪》"
+            },
+            {
+              "definition": "固定结构“所以”：表原因，相当于“……的原因”",
+              "pinyin": "",
+              "example": "此先汉所以兴隆也。",
+              "translation": "这是前汉兴隆的原因。",
+              "source": "《出师表》"
+            },
+            {
+              "definition": "固定结构“所以”：表凭借/方式，相当于“用来……的”",
+              "pinyin": "",
+              "example": "师者，所以传道受业解惑也。",
+              "translation": "老师，是用来传授道理、教授学业、解答疑惑的人。",
+              "source": "《师说》"
+            },
+            {
+              "definition": "固定结构“为……所”：表被动",
+              "pinyin": "",
+              "example": "为仲卿母所遣。",
+              "translation": "被焦仲卿的母亲休弃了。",
+              "source": "《孔雀东南飞》"
+            },
+            {
+              "definition": "名词：处所、地方",
+              "pinyin": "",
+              "example": "乐土乐土，爰得我所。",
+              "translation": "乐土啊乐土，这才得到了我的安身之处。",
+              "source": "《诗经·魏风·硕鼠》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_009",
+          "character": "何",
+          "pinyin": "hé",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "疑问代词：什么",
+              "pinyin": "",
+              "example": "何以战？",
+              "translation": "靠什么去作战？",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "疑问代词：怎么、为什么（反问）",
+              "pinyin": "",
+              "example": "肉食者谋之，又何间焉？",
+              "translation": "当权者会谋划这件事，你又何必参与呢？",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "疑问代词：哪里（反问）",
+              "pinyin": "",
+              "example": "何夜无月？何处无竹柏？",
+              "translation": "哪个夜晚没有月亮？什么地���没有竹子和松柏？",
+              "source": "《记承天寺夜游》"
+            },
+            {
+              "definition": "副词：多么（用在形容词前，表感叹）",
+              "pinyin": "",
+              "example": "水何澹澹，山岛竦峙。",
+              "translation": "海水多么浩瀚，山岛高高耸立。",
+              "source": "《观沧海》"
+            },
+            {
+              "definition": "固定结构“何如”：怎么样",
+              "pinyin": "",
+              "example": "吾欲之南海，何如？",
+              "translation": "我想要去南海，怎么样？",
+              "source": "《为学》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_010",
+          "character": "也",
+          "pinyin": "yě",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：用于句末，表判断",
+              "pinyin": "",
+              "example": "陈胜者，阳城人也。",
+              "translation": "陈胜是阳城人。",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "语气助词：用于句末，表陈述/肯定",
+              "pinyin": "",
+              "example": "小惠未遍，民弗从也。",
+              "translation": "小的恩惠没有遍及百姓，人民是不会听从的。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "语气助词：用于句末，表疑问/反问",
+              "pinyin": "",
+              "example": "安求其能千里也？",
+              "translation": "怎么能要求它日行千里呢？",
+              "source": "《马说》"
+            },
+            {
+              "definition": "语气助词：用于句末，表感叹",
+              "pinyin": "",
+              "example": "虎视之，庞然大物也！",
+              "translation": "老虎看着它，是个多么庞大的家伙啊！",
+              "source": "《黔之驴》"
+            },
+            {
+              "definition": "语气助词：用于句中，表停顿",
+              "pinyin": "",
+              "example": "是鸟也，海运则将徙于南冥。",
+              "translation": "这只鸟啊，海动风起就将迁徙到南海。",
+              "source": "《庄子·逍遥游》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_011",
+          "character": "矣",
+          "pinyin": "yǐ",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：表陈述，相当于“了”，表示已经发生或必将发生",
+              "pinyin": "",
+              "example": "温故而知新，可以为师矣。",
+              "translation": "温习旧知识而能悟出新道理，就可以做老师了。",
+              "source": "《论语·为政》"
+            },
+            {
+              "definition": "语气助词：表感叹，相当于“啊”",
+              "pinyin": "",
+              "example": "甚矣，汝之不惠！",
+              "translation": "你真是太不聪明了啊！",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "语气助词：表命令/祈使，相当于“吧”",
+              "pinyin": "",
+              "example": "若皆罢去归矣。",
+              "translation": "你们都解散回去吧。",
+              "source": "《史记·滑稽列传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_012",
+          "character": "乎",
+          "pinyin": "hū",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：用于句末，表疑问，相当于“吗”",
+              "pinyin": "",
+              "example": "学而时习之，不亦说乎？",
+              "translation": "学了知识然后按时复习它，不也很愉快吗？",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "语气助词：用于句末，表反问，相当于“呢”",
+              "pinyin": "",
+              "example": "王侯将相宁有种乎？",
+              "translation": "王侯将相难道是天生的贵种吗？",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "语气助词：用于句末，表推测，相当于“吧”",
+              "pinyin": "",
+              "example": "其皆出于此乎？",
+              "translation": "大概都是出于这个原因吧？",
+              "source": "《师说》"
+            },
+            {
+              "definition": "语气助词：用于句末，表感叹，相当于“啊/呀”",
+              "pinyin": "",
+              "example": "嗟乎！燕雀安知鸿鹄之志哉！",
+              "translation": "唉！燕雀怎么能知道鸿鹄的志向呢！",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "介词：相当于“于”，引进处所/比较对象等",
+              "pinyin": "",
+              "example": "生乎吾前，其闻道也固先乎吾。",
+              "translation": "出生在我之前的人，他懂得道理本来就比我早。",
+              "source": "《师说》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_013",
+          "character": "哉",
+          "pinyin": "zāi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：用于句末，表感叹，相当于“啊”",
+              "pinyin": "",
+              "example": "善哉！吾请无攻宋矣。",
+              "translation": "好啊！我不攻打宋国了。",
+              "source": "《墨子·公输》"
+            },
+            {
+              "definition": "语气助词：用于句末，表反问，相当于“呢”",
+              "pinyin": "",
+              "example": "燕雀安知鸿鹄之志哉？",
+              "translation": "燕雀怎么能知道鸿鹄的志向呢？",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "语气助词：用于句末，表疑问，相当于“吗”",
+              "pinyin": "",
+              "example": "予尝求古仁人之心，或异二者之为，何哉？",
+              "translation": "我曾经探求古代品德高尚的人的思想感情，或许不同于以上两种表现，为什么呢？",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_014",
+          "character": "焉",
+          "pinyin": "yān",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "兼词：相当于“于之”（在这里/在那里/对此）",
+              "pinyin": "",
+              "example": "三人行，必有我师焉。",
+              "translation": "几个人一起走路，其中一定有可以做我老师的人在里面。",
+              "source": "《论语·述而》"
+            },
+            {
+              "definition": "疑问代词：相当于“哪里/怎么”",
+              "pinyin": "",
+              "example": "且焉置土石？",
+              "translation": "况且把土石放到哪里去呢？",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "语气助词：用于句末，相当于“了/呢”",
+              "pinyin": "",
+              "example": "宅边有五柳树，因以为号焉。",
+              "translation": "住宅旁边有五棵柳树，于是用它做了别号。",
+              "source": "《五柳先生传》"
+            },
+            {
+              "definition": "形容词词尾：相当于“……的样子”",
+              "pinyin": "",
+              "example": "忽焉自有，怳尔而无。",
+              "translation": "忽然间有了，恍惚间又没了。",
+              "source": "《文心雕龙》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_015",
+          "character": "则",
+          "pinyin": "zé",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词：表承接关系，相当于“就/便”",
+              "pinyin": "",
+              "example": "学而不思则罔，思而不学则殆。",
+              "translation": "只学习不思考就会迷惑，只思考不学习就会疑惑。",
+              "source": "《论语·为政》"
+            },
+            {
+              "definition": "连词：表对比关系，相当于“却”（前后对比）",
+              "pinyin": "",
+              "example": "橘生淮南则为橘，生于淮北则为枳。",
+              "translation": "橘树生长在淮河以南就是橘树，生长在淮河以北就变成枳树。",
+              "source": "《晏子春秋》"
+            },
+            {
+              "definition": "连词：表假设关系，相当于“如果”",
+              "pinyin": "",
+              "example": "入则无法家拂士，出则无敌国外患者，国恒亡。",
+              "translation": "内部如果没有坚持法度的大臣和辅佐的贤士，外部如果没有敌对国家和外患，国家往往会灭亡。",
+              "source": "《孟子·告子下》"
+            },
+            {
+              "definition": "副词：加强判断，相当于“是/就是”",
+              "pinyin": "",
+              "example": "此则岳阳楼之大观也。",
+              "translation": "这就是岳阳楼的雄伟景象了。",
+              "source": "《岳阳楼记》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_016",
+          "character": "且",
+          "pinyin": "qiě",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词：表并列，相当于“又/而且/一边……一边……”",
+              "pinyin": "",
+              "example": "先生且喜且愕。",
+              "translation": "先生又高兴又惊讶。",
+              "source": "《中山狼传》"
+            },
+            {
+              "definition": "连词：表递进，相当于“况且/再说”",
+              "pinyin": "",
+              "example": "且壮士不死即已，死即举大名耳。",
+              "translation": "况且壮士不死就罢了，要死就要成就大名。",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "副词：表时间，相当于“将要/将近”",
+              "pinyin": "",
+              "example": "北山愚公者，年且九十。",
+              "translation": "北山的愚公，年纪将近九十岁了。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "副词：表让步/暂时，相当于“暂且/姑且”",
+              "pinyin": "",
+              "example": "存者且偷生，死者长已矣。",
+              "translation": "活着的人暂且苟且活着，死去的人就永远结束了。",
+              "source": "《石壕吏》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_017",
+          "character": "与",
+          "pinyin": "yǔ/yú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词（yǔ）：表并列，相当于“和/跟”",
+              "pinyin": "yǔ",
+              "example": "吾与汝毕力平险。",
+              "translation": "我和你们尽全力铲除险阻。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "介词（yǔ）：表对象，相当于“跟/同”",
+              "pinyin": "yǔ",
+              "example": "与朋友交而不信乎？",
+              "translation": "跟朋友交往是不是不够诚信呢？",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "语气助词（yú）：用于句末，表疑问/反问，相当于“吗”（通“欤”）",
+              "pinyin": "yú",
+              "example": "而今安在哉？",
+              "translation": "而如今在哪里呢？",
+              "source": "《赤壁赋》"
+            },
+            {
+              "definition": "动词（yǔ）：给予、授予",
+              "pinyin": "yǔ",
+              "example": "则与斗卮酒。",
+              "translation": "就给了他一大杯酒。",
+              "source": "《史记·项羽本纪》"
+            },
+            {
+              "definition": "动词（yù）：参与",
+              "pinyin": "yù",
+              "example": "蹇叔之子与师。",
+              "translation": "蹇叔的儿子参加了军队。",
+              "source": "《左传·崤之战》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_018",
+          "character": "若",
+          "pinyin": "ruò",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词：表假设，相当于“如果”",
+              "pinyin": "",
+              "example": "若夫日出而林霏开。",
+              "translation": "如果说到太阳出来而树林里的雾气散开。",
+              "source": "《醉翁亭记》"
+            },
+            {
+              "definition": "连词：表选择，相当于“或/或者”",
+              "pinyin": "",
+              "example": "时有军役若水旱，民不困乏。",
+              "translation": "当时有军事劳役或者水旱灾害，百姓却不困乏。",
+              "source": "《汉书》"
+            },
+            {
+              "definition": "代词：相当于“你/你的”",
+              "pinyin": "",
+              "example": "若为佣耕，何富贵也？",
+              "translation": "你是个被雇佣耕作的人，哪里来的富贵呢？",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "动词：像、如（引导比喻）",
+              "pinyin": "",
+              "example": "海内存知己，天涯若比邻。",
+              "translation": "四海之内有知心朋友，即使远在天涯也像近邻一样。",
+              "source": "《送杜少府之任蜀州》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_019",
+          "character": "虽",
+          "pinyin": "suī",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "连词：表转折，相当于“虽然”（承认事实）",
+              "pinyin": "",
+              "example": "虽乘奔御风，不以疾也。",
+              "translation": "即使骑着快马、驾着疾风，也不如它快。",
+              "source": "《三峡》"
+            },
+            {
+              "definition": "连词：表假设让步，相当于“即使/纵然”（假设情况）",
+              "pinyin": "",
+              "example": "虽我之死，有子存焉。",
+              "translation": "即使我死了，还有儿子在。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "固定结构“虽然”：虽然如此",
+              "pinyin": "",
+              "example": "虽然，公输盘为我为云梯，必取宋。",
+              "translation": "虽然如此，公输盘给我造了云梯，一定要攻取宋国。",
+              "source": "《墨子·公输》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_020",
+          "character": "乃",
+          "pinyin": "nǎi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间承接，相当于“于是/就/才”",
+              "pinyin": "",
+              "example": "乃重修岳阳楼。",
+              "translation": "于是就重新修建岳阳楼。",
+              "source": "《岳阳楼记》"
+            },
+            {
+              "definition": "副词：表出乎意料，相当于“竟然/却”",
+              "pinyin": "",
+              "example": "问今是何世，乃不知有汉。",
+              "translation": "问现在是什么朝代，竟然不知道有汉朝。",
+              "source": "《桃花源记》"
+            },
+            {
+              "definition": "副词：加强判断，相当于“就是/是”",
+              "pinyin": "",
+              "example": "吾乃常山赵子龙也。",
+              "translation": "我就是常山赵子龙。",
+              "source": "《三国演义》"
+            },
+            {
+              "definition": "代词：相当于“你的/你们的”",
+              "pinyin": "",
+              "example": "王师北定中原日，家祭无忘告乃翁。",
+              "translation": "朝廷军队收复中原的那一天，祭祖时不要忘记告诉你的父亲。",
+              "source": "《示儿》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_023",
+          "character": "或",
+          "pinyin": "huò",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "代词：相当于“有人/有的人”",
+              "pinyin": "",
+              "example": "或以为死，或以为亡。",
+              "translation": "有人认为他死了，有人认为他逃跑了。",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "副词：表推测，相当于“或许/也许”",
+              "pinyin": "",
+              "example": "予尝求古仁人之心，或异二者之为。",
+              "translation": "我曾经探求古代品德高尚的人的思想感情，或许不同于以上两种表现。",
+              "source": "《岳阳楼记》"
+            },
+            {
+              "definition": "连词：表选择，相当于“或者”",
+              "pinyin": "",
+              "example": "或命巾车，或棹孤舟。",
+              "translation": "或者驾着布篷车，或者划着小船。",
+              "source": "《归去来兮辞》"
+            },
+            {
+              "definition": "副词：表偶然/间或，相当于“有时”",
+              "pinyin": "",
+              "example": "马之千里者，一食或尽粟一石。",
+              "translation": "日行千里的马，吃一顿有时能吃光一石粮食。",
+              "source": "《马说》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_024",
+          "character": "莫",
+          "pinyin": "mò",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "否定副词：相当于“不/不要”",
+              "pinyin": "",
+              "example": "莫愁前路无知己。",
+              "translation": "不要担心前面的路上没有知己。",
+              "source": "《别董大》"
+            },
+            {
+              "definition": "代词：相当于“没有谁/没有什么”",
+              "pinyin": "",
+              "example": "莫不有君，莫不有臣。",
+              "translation": "没有什么地方没有君主，没有什么地方没有臣子。",
+              "source": "《庄子》"
+            },
+            {
+              "definition": "否定副词：相当于“没有”（动词前）",
+              "pinyin": "",
+              "example": "莫之能御也。",
+              "translation": "没有谁能抵挡它。",
+              "source": "《孟子·梁惠王上》"
+            },
+            {
+              "definition": "副词：表禁止，相当于“别、不要”",
+              "pinyin": "",
+              "example": "莫等闲、白了少年头，空悲切。",
+              "translation": "不要随便地虚度光阴，等少年头发白了才空自悲切。",
+              "source": "《满江红》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_025",
+          "character": "惟",
+          "pinyin": "wéi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：相当于“只/只有/只是”",
+              "pinyin": "",
+              "example": "不闻机杼声，惟闻女叹息。",
+              "translation": "听不到织布机的声音，只听到女儿在叹息。",
+              "source": "《木兰诗》"
+            },
+            {
+              "definition": "语气助词：用于句首，表希望/祈使",
+              "pinyin": "",
+              "example": "惟先生速图。",
+              "translation": "希望先生赶快想办法。",
+              "source": "《中山狼传》"
+            },
+            {
+              "definition": "介词：表原因，相当于“因为”（多用于“惟……故……”结构）",
+              "pinyin": "",
+              "example": "惟其不移，故能成其大。",
+              "translation": "正因为它不移动，所以能成就它的宏大。",
+              "source": "《进学解》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_026",
+          "character": "夫",
+          "pinyin": "fú/fū",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词（fú）：用于句首，引出议论，无实义",
+              "pinyin": "fú",
+              "example": "夫战，勇气也。",
+              "translation": "作战，靠的是勇气啊。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "语气助词（fú）：用于句中，起舒缓语气作用",
+              "pinyin": "fú",
+              "example": "予观夫巴陵胜状。",
+              "translation": "我看那巴陵郡的壮丽景色。",
+              "source": "《岳阳楼记》"
+            },
+            {
+              "definition": "指示代词（fú）：相当于“那/那个/那些”",
+              "pinyin": "fú",
+              "example": "微夫人之力不及此。",
+              "translation": "没有那个人的力量，到不了今天。",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "名词（fū）：成年男子；丈夫",
+              "pinyin": "fū",
+              "example": "遂率子孙荷担者三夫。",
+              "translation": "于是带领能挑担子的子孙三个成年男子。",
+              "source": "《列子·愚公移山》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_027",
+          "character": "盖",
+          "pinyin": "gài",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：用于句首，引出议论/说明，相当于“大概/原来是”",
+              "pinyin": "",
+              "example": "盖追先帝之殊遇，欲报之于陛下也。",
+              "translation": "原来是追念先帝对他们的特殊待遇，想要报答给陛下啊。",
+              "source": "《出师表》"
+            },
+            {
+              "definition": "副词：表推测，相当于“大概/大约”",
+              "pinyin": "",
+              "example": "盖余之勤且艰若此。",
+              "translation": "大概我求学时的勤奋和艰苦就是这样。",
+              "source": "《送东阳马生序》"
+            },
+            {
+              "definition": "连词：表原因，相当于“因为”",
+              "pinyin": "",
+              "example": "屈平之作《离骚》，盖自怨生也。",
+              "translation": "屈原写《离骚》，是因为从怨恨中产生的。",
+              "source": "《史记·屈原贾生列传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_028",
+          "character": "诸",
+          "pinyin": "zhū",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "兼词：相当于“之于”（代词+介词）",
+              "pinyin": "",
+              "example": "投诸渤海之尾。",
+              "translation": "把它投到渤海的边上。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "兼词：相当于“之乎”（代词+语气词）",
+              "pinyin": "",
+              "example": "王尝语庄子以好乐，有诸？",
+              "translation": "大王曾经对庄子说喜欢音乐，有这件事吗？",
+              "source": "《孟子·梁惠王下》"
+            },
+            {
+              "definition": "代词：相当于“各/众”，用在名词前",
+              "pinyin": "",
+              "example": "诸君并荷国恩，当共戮力王室。",
+              "translation": "各位都蒙受国家的恩典，应当一起为朝廷效力。",
+              "source": "《世说新语》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_029",
+          "character": "孰",
+          "pinyin": "shú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "疑问代词：相当于“谁”",
+              "pinyin": "",
+              "example": "百姓孰敢不箪食壶浆以迎将军者乎？",
+              "translation": "老百姓谁敢不用竹篮盛着饭、用壶装着酒来迎接将军呢？",
+              "source": "《隆中对》"
+            },
+            {
+              "definition": "疑问代词：相当于“哪个/哪一种”（用于比较）",
+              "pinyin": "",
+              "example": "礼与食孰重？",
+              "translation": "礼和食物哪个更重要？",
+              "source": "《孟子·告子下》"
+            },
+            {
+              "definition": "固定结构“孰与/孰若”：与……相比怎么样/哪如",
+              "pinyin": "",
+              "example": "我孰与城北徐公美？",
+              "translation": "我和城北的徐公相比谁更美？",
+              "source": "《战国策·邹忌讽齐王纳谏》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_030",
+          "character": "安",
+          "pinyin": "ān",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "疑问代词：相当于“怎么/哪里”（反问）",
+              "pinyin": "",
+              "example": "燕雀安知鸿鹄之志哉？",
+              "translation": "燕雀怎么能知道鸿鹄的志向呢？",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "疑问代词：表处所，相当于“哪里”",
+              "pinyin": "",
+              "example": "沛公安在？",
+              "translation": "沛公在哪里？",
+              "source": "《史记·项羽本纪》"
+            },
+            {
+              "definition": "形容词：安定、安稳（兼属实词）",
+              "pinyin": "",
+              "example": "风雨不动安如山。",
+              "translation": "风吹雨打也不动摇，安稳如山。",
+              "source": "《茅屋为秋风所破歌》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_031",
+          "character": "因",
+          "pinyin": "yīn",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "介词：表凭借，相当于“依靠/凭借”",
+              "pinyin": "",
+              "example": "因人之力而敝之，不仁。",
+              "translation": "依靠别人的力量反过来损害他，这是不仁德的。",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "介词：表经由，相当于“通过”",
+              "pinyin": "",
+              "example": "因宾客至蔺相如门谢罪。",
+              "translation": "通过宾客引荐到蔺相如门前谢罪。",
+              "source": "《史记·廉颇蔺相如列传》"
+            },
+            {
+              "definition": "连词：表承接，相当于“于是/就”",
+              "pinyin": "",
+              "example": "因释其耒而守株。",
+              "translation": "于是放下他的农具守在树桩旁。",
+              "source": "《韩非子·守株待兔》"
+            },
+            {
+              "definition": "连词：表因果，相当于“因为”",
+              "pinyin": "",
+              "example": "因爱鼠，不畜猫犬。",
+              "translation": "因为喜欢老鼠，不养猫狗。",
+              "source": "《柳宗元集》"
+            },
+            {
+              "definition": "动词：沿袭、承袭（兼属实词）",
+              "pinyin": "",
+              "example": "殷因于夏礼，所损益可知也。",
+              "translation": "殷朝沿袭夏朝的礼仪制度，增减的内容是可以知道的。",
+              "source": "《论语·为政》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_032",
+          "character": "耳",
+          "pinyin": "ěr",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "语气助词：用于句末，表限止语气，相当于“罢了”",
+              "pinyin": "",
+              "example": "技止此耳。",
+              "translation": "本领不过如此罢了。",
+              "source": "《黔之驴》"
+            },
+            {
+              "definition": "语气助词：用于句末，表肯定语气，相当于“啊/了”",
+              "pinyin": "",
+              "example": "此教我先威众耳。",
+              "translation": "这是教我们先在众人面前树立威信啊。",
+              "source": "《史记·陈涉世家》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_033",
+          "character": "即",
+          "pinyin": "jí",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间承接，相当于“就/立即/马上”",
+              "pinyin": "",
+              "example": "即从巴峡穿巫峡。",
+              "translation": "立即从巴峡穿过巫峡。",
+              "source": "《闻官军收河南河北》"
+            },
+            {
+              "definition": "副词：加强判断，相当于“就是”",
+              "pinyin": "",
+              "example": "即公大兄无奕女。",
+              "translation": "就是谢安的大哥谢无奕的女儿。",
+              "source": "《世说新语·咏雪》"
+            },
+            {
+              "definition": "连词：表假设让步，相当于“即使/即便”",
+              "pinyin": "",
+              "example": "即不为河伯娶妇，水来漂没，溺其人民。",
+              "translation": "即使不给河伯娶媳妇，大水冲来淹没，也会淹死百姓。",
+              "source": "《史记·滑稽列传》"
+            },
+            {
+              "definition": "介词：表时间/处所，相当于“就在/靠近”",
+              "pinyin": "",
+              "example": "即其庐之西南为亭。",
+              "translation": "就在他茅屋的西南面建了亭子。",
+              "source": "《黄州快哉亭记》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_034",
+          "character": "曾",
+          "pinyin": "céng/zēng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词（céng）：表时间，相当于“曾经”",
+              "pinyin": "céng",
+              "example": "曾不若孀妻弱子。",
+              "translation": "曾经还不如寡妇和小孩子。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "副词（zēng）：表出乎意料，相当于“竟然/简直”",
+              "pinyin": "zēng",
+              "example": "曾不若孀妻弱子。",
+              "translation": "竟然还不如寡妇和小孩子。",
+              "source": "《列子·愚公移山》"
+            },
+            {
+              "definition": "副词（zēng）：加强否定语气，相当于“连……都”",
+              "pinyin": "zēng",
+              "example": "曾不能毁山之一毛。",
+              "translation": "连山的一根草都不能毁掉。",
+              "source": "《列子·愚公移山》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_035",
+          "character": "岂",
+          "pinyin": "qǐ",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表反问，相当于“难道/怎么”",
+              "pinyin": "",
+              "example": "岂不罹凝寒？",
+              "translation": "难道不会遭受严寒的侵袭吗？",
+              "source": "《赠从弟》"
+            },
+            {
+              "definition": "副词：表揣测/商量，相当于“是不是/或许”",
+              "pinyin": "",
+              "example": "将军岂有意乎？",
+              "translation": "将军是不是有这个意思呢？",
+              "source": "《隆中对》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_036",
+          "character": "弗",
+          "pinyin": "fú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "否定副词：相当于“不”，但通常用在及物动词前，隐含“不……之”的意思（宾语省略）",
+              "pinyin": "",
+              "example": "衣食所安，弗敢专也。",
+              "translation": "衣食这类安身的东西，不敢独自享用。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "否定副词：用在形容词前，相当于“不”",
+              "pinyin": "",
+              "example": "天弗振，终为天下笑。",
+              "translation": "上天不救助，最终被天下人耻笑。",
+              "source": "《吕氏春秋》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_037",
+          "character": "勿",
+          "pinyin": "wù",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "否定副词：表禁止/劝诫，相当于“不要/别”",
+              "pinyin": "",
+              "example": "己所不欲，勿施于人。",
+              "translation": "自己所不想要的，不要施加到别人身上。",
+              "source": "《论语·卫灵公》"
+            },
+            {
+              "definition": "否定副词：相当于“不”，隐含“不……之”的意思",
+              "pinyin": "",
+              "example": "齐人勿附于秦。",
+              "translation": "齐国人不会依附秦国。",
+              "source": "《六国论》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_038",
+          "character": "非",
+          "pinyin": "fēi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "否定副词：用在判断句中，否定谓语，相当于“不是”",
+              "pinyin": "",
+              "example": "人非生而知之者，孰能无惑？",
+              "translation": "人不是生来就懂得一切的，谁能没有疑惑呢？",
+              "source": "《师说》"
+            },
+            {
+              "definition": "否定副词：用在动词/形容词前，相当于“不”",
+              "pinyin": "",
+              "example": "非惟天时，抑亦人谋也。",
+              "translation": "不只是天时有利，也是人的谋划得当。",
+              "source": "《隆中对》"
+            },
+            {
+              "definition": "否定副词：表否定条件，相当于“除非/没有”",
+              "pinyin": "",
+              "example": "非蛇鳝之穴无可寄托者。",
+              "translation": "除非蛇和鳝鱼的洞穴，没有可以藏身的地方。",
+              "source": "《荀子·劝学》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_039",
+          "character": "微",
+          "pinyin": "wēi",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表否定假设，相当于“如果没有/如果不是”",
+              "pinyin": "",
+              "example": "微夫人之力不及此。",
+              "translation": "如果没有那个人的力量，到不了今天。",
+              "source": "《左传·烛之武退秦师》"
+            },
+            {
+              "definition": "副词：表轻微程度，相当于“稍微/暗暗地”",
+              "pinyin": "",
+              "example": "微闻有鼠作作索索。",
+              "translation": "隐隐约约听到有老鼠窸窸窣窣的声音。",
+              "source": "《口技》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_040",
+          "character": "既",
+          "pinyin": "jì",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间，相当于“已经/……之后”",
+              "pinyin": "",
+              "example": "既克，公问其故。",
+              "translation": "已经战胜了之后，鲁庄公问其中的原因。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "固定结构“既而”：不久、随即",
+              "pinyin": "",
+              "example": "既而敌行益迩。",
+              "translation": "不久敌人走得更近了。",
+              "source": "《冯婉贞》"
+            },
+            {
+              "definition": "连词：表并列，“既……且/又……”",
+              "pinyin": "",
+              "example": "既安且固，又极轩敞。",
+              "translation": "既安稳又坚固，又极其宽敞明亮。",
+              "source": "《苏州园林》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_041",
+          "character": "将",
+          "pinyin": "jiāng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表将来，相当于“将要/快要”",
+              "pinyin": "",
+              "example": "公将战。",
+              "translation": "鲁庄公将要作战。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "副词：表推测，相当于“大概/恐怕”",
+              "pinyin": "",
+              "example": "季氏将伐颛臾。",
+              "translation": "季氏恐怕要攻打颛臾了。",
+              "source": "《论语·季氏》"
+            },
+            {
+              "definition": "连词：表选择，相当于“还是”（多用于“将A，抑B”句式）",
+              "pinyin": "",
+              "example": "将以为师邪？抑以为利邪？",
+              "translation": "是把它当作老师呢？还是把它当作利益呢？",
+              "source": "《庄子》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_042",
+          "character": "尝",
+          "pinyin": "cháng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间，相当于“曾经”",
+              "pinyin": "",
+              "example": "尝贻余核舟一。",
+              "translation": "曾经送给我一枚核桃雕刻的小船。",
+              "source": "《核舟记》"
+            },
+            {
+              "definition": "副词：表尝试，相当于“试着”",
+              "pinyin": "",
+              "example": "臣请尝之。",
+              "translation": "请让我试着做一下。",
+              "source": "《庄子》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_043",
+          "character": "方",
+          "pinyin": "fāng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间，相当于“正在/刚要”",
+              "pinyin": "",
+              "example": "方欲行，转视积薪后。",
+              "translation": "正要走，回头看到柴堆后面。",
+              "source": "《聊斋志异·狼》"
+            },
+            {
+              "definition": "副词：表时间，相当于“才/刚”",
+              "pinyin": "",
+              "example": "有朋自远方来。",
+              "translation": "有志同道合的人从远方来。",
+              "source": "《论语·学而》"
+            },
+            {
+              "definition": "介词：表时间，相当于“当/在”",
+              "pinyin": "",
+              "example": "方其破荆州，下江陵。",
+              "translation": "当他攻破荆州、占领江陵的时候。",
+              "source": "《赤壁赋》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_044",
+          "character": "遂",
+          "pinyin": "suì",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表时间承接，相当于“就/于是/终于”",
+              "pinyin": "",
+              "example": "遂逐齐师。",
+              "translation": "于是追击齐国的军队。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "副词：表结果，相当于“竟然/最终”",
+              "pinyin": "",
+              "example": "遂不得履。",
+              "translation": "最终没能买到鞋子。",
+              "source": "《韩非子·郑人买履》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_045",
+          "character": "固",
+          "pinyin": "gù",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表肯定，相当于“本来/确实/当然”",
+              "pinyin": "",
+              "example": "臣固知王之不忍也。",
+              "translation": "我本来就知道大王是不忍心啊。",
+              "source": "《孟子·梁惠王上》"
+            },
+            {
+              "definition": "副词：表坚持/固执，相当于“坚决地”",
+              "pinyin": "",
+              "example": "蔺相如固止之。",
+              "translation": "蔺相如坚决地阻止他们。",
+              "source": "《史记·廉颇蔺相如列传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_046",
+          "character": "诚",
+          "pinyin": "chéng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表肯定确认，相当于“确实/的确”",
+              "pinyin": "",
+              "example": "此诚危急存亡之秋也。",
+              "translation": "这确实是危险紧急、存亡攸关的时刻。",
+              "source": "《出师表》"
+            },
+            {
+              "definition": "连词：表假设，相当于“如果/果真”",
+              "pinyin": "",
+              "example": "诚如是，则霸业可成，汉室可兴矣。",
+              "translation": "如果真是这样，那么霸业可以成功，汉室可以复兴了。",
+              "source": "《隆中对》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_047",
+          "character": "犹",
+          "pinyin": "yóu",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表延续，相当于“还/仍然”",
+              "pinyin": "",
+              "example": "犹抱琵琶半遮面。",
+              "translation": "还抱着琵琶半遮着脸。",
+              "source": "《琵琶行》"
+            },
+            {
+              "definition": "副词：表类同，相当于“如同/好像”",
+              "pinyin": "",
+              "example": "吾今日见老子，其犹龙邪！",
+              "translation": "我今天见到老子，他大概就像龙一样吧！",
+              "source": "《史记·老子列传》"
+            },
+            {
+              "definition": "连词：表让步，相当于“尚且”",
+              "pinyin": "",
+              "example": "蔓草犹不可除，况君之宠弟乎？",
+              "translation": "蔓延的野草尚且不能除掉，何况您受宠的弟弟呢？",
+              "source": "《左传·郑伯克段于鄢》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_048",
+          "character": "独",
+          "pinyin": "dú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表范围，相当于“只/仅仅”",
+              "pinyin": "",
+              "example": "非独书为然，天下物皆然。",
+              "translation": "不只是书是这样，天下的事物都是这样。",
+              "source": "《黄生借书说》"
+            },
+            {
+              "definition": "副词：表反问，相当于“难道”",
+              "pinyin": "",
+              "example": "相如虽驽，独畏廉将军哉？",
+              "translation": "我蔺相如虽然愚钝，难道会怕廉将军吗？",
+              "source": "《史记·廉颇蔺相如列传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_049",
+          "character": "果",
+          "pinyin": "guǒ",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表结果，相当于“果然/最终”",
+              "pinyin": "",
+              "example": "尉果笞广。",
+              "translation": "军官果然用鞭子打了吴广。",
+              "source": "《史记·陈涉世家》"
+            },
+            {
+              "definition": "副词：表假设/疑问，相当于“果真”",
+              "pinyin": "",
+              "example": "果能此道矣，虽愚必明。",
+              "translation": "果真能够践行这条道路，即使愚钝也一定能聪明起来。",
+              "source": "《中庸》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_050",
+          "character": "但",
+          "pinyin": "dàn",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表范围限制，相当于“只/只是/仅仅”",
+              "pinyin": "",
+              "example": "但少闲人如吾两人者耳。",
+              "translation": "只是缺少像我们两个这样的闲人罢了。",
+              "source": "《记承天寺夜游》"
+            },
+            {
+              "definition": "连词：表转折（中古以后），相当于“但是”",
+              "pinyin": "",
+              "example": "但欲求死，不复顾利害。",
+              "translation": "只想求死，不再管利害得失了。",
+              "source": "《指南录后序》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_051",
+          "character": "徒",
+          "pinyin": "tú",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表范围限制，相当于“只/仅仅/白白地”",
+              "pinyin": "",
+              "example": "徒慕君之高义也。",
+              "translation": "只是仰慕您高尚的品德啊。",
+              "source": "《史记·廉颇蔺相如列传》"
+            },
+            {
+              "definition": "副词：表徒劳，相当于“白白地/徒然”",
+              "pinyin": "",
+              "example": "老大徒伤悲。",
+              "translation": "年老时只能白白地悲伤。",
+              "source": "《长歌行》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_052",
+          "character": "相",
+          "pinyin": "xiāng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表交互，相当于“互相/彼此”",
+              "pinyin": "",
+              "example": "鸡犬相闻。",
+              "translation": "鸡鸣犬吠的声音互相都能听到。",
+              "source": "《桃花源记》"
+            },
+            {
+              "definition": "副词：表递相，相当于“一个接一个地/相继”",
+              "pinyin": "",
+              "example": "父子相传。",
+              "translation": "父子一代一代地相传。",
+              "source": "《史记》"
+            },
+            {
+              "definition": "副词：表单方面动作，偏指一方（用在动词前，代替宾语）",
+              "pinyin": "",
+              "example": "杂然相许。",
+              "translation": "纷纷地赞同他。",
+              "source": "《列子·愚公移山》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_053",
+          "character": "凡",
+          "pinyin": "fán",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表概括，相当于“凡是/大凡”",
+              "pinyin": "",
+              "example": "凡所应有，无所不有。",
+              "translation": "凡是应该有的，没有什么没有的。",
+              "source": "《口技》"
+            },
+            {
+              "definition": "副词：表总计，相当于“总共/一共”",
+              "pinyin": "",
+              "example": "凡六百一十六言。",
+              "translation": "总共六百一十六个字。",
+              "source": "《琵琶行》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_054",
+          "character": "窃",
+          "pinyin": "qiè",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表谦敬，相当于“私下里/私自”（用于自己的行为前，表谦虚）",
+              "pinyin": "",
+              "example": "臣窃以为其人勇士。",
+              "translation": "我私下里认为这个人是勇士。",
+              "source": "《史记·廉颇蔺相如列传》"
+            },
+            {
+              "definition": "副词：表情态，相当于“偷偷地/暗地里”",
+              "pinyin": "",
+              "example": "窃计欲亡走燕。",
+              "translation": "私下里打算逃跑到燕国去。",
+              "source": "《史记·廉颇蔺相如列传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_055",
+          "character": "敢",
+          "pinyin": "gǎn",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表谦敬，相当于“冒昧地”（用于请对方允许自己做某事）",
+              "pinyin": "",
+              "example": "敢问何为浩然之气？",
+              "translation": "冒昧地问一下，什么叫做浩然之气？",
+              "source": "《孟子·公孙丑上》"
+            },
+            {
+              "definition": "副词：表反问，相当于“岂敢/怎敢”",
+              "pinyin": "",
+              "example": "敢不唯命是听？",
+              "translation": "怎敢不听从您的命令呢？",
+              "source": "《左传》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        },
+        {
+          "id": "wb_fw_056",
+          "character": "请",
+          "pinyin": "qǐng",
+          "characterType": "",
+          "explanation": "",
+          "examFrequency": "",
+          "oracleForm": "",
+          "mnemonic": "",
+          "wordType": "xu",
+          "meanings": [
+            {
+              "definition": "副词：表谦敬，相当于“请允许我”（用于请对方允许自己做某事）",
+              "pinyin": "",
+              "example": "战则请从。",
+              "translation": "如果作战的话，请允许我跟从您。",
+              "source": "《左传·曹刿论战》"
+            },
+            {
+              "definition": "副词：表祈使，相当于“请（您）”（用于请对方做某事）",
+              "pinyin": "",
+              "example": "请以剑舞。",
+              "translation": "请允许我用剑来跳舞助兴。",
+              "source": "《史记·项羽本纪》"
+            }
+          ],
+          "similarHomophones": [],
+          "similarShapes": [],
+          "sentences": []
+        }
+      ]
     }
   ],
   "badges": [
