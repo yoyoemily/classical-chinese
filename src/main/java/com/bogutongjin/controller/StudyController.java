@@ -4,6 +4,7 @@ import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.CompleteStudyRequest;
 import com.bogutongjin.dto.SubmitAnswerRequest;
+import com.bogutongjin.dto.WordCompleteRequest;
 import com.bogutongjin.service.StudyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,14 @@ public class StudyController {
                 userId, req.getWordBookId(), req.getWordId(), req.getSentenceId(),
                 req.getSelectedOption(), req.getCorrect(),
                 req.getCorrectAnswer(), req.getWrongAnswer()));
+    }
+
+    /** 完成单个字词学习（所有句子答完后，进入字总结页时调用） */
+    @PostMapping("/word-complete")
+    public Result<Map<String, Object>> completeWord(
+            @Valid @RequestBody WordCompleteRequest req,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.completeWord(userId, req.getWordBookId(), req.getWordId()));
     }
 
     /** 完成今日学习 */

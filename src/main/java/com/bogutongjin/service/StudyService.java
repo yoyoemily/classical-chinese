@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -166,14 +167,6 @@ public class StudyService {
             incrementConsecutiveCorrect(userId, wordId, sentenceId);
         }
 
-        // 判断是否新学词（尚无进度记录 → isNewWord=true）
-        // 必须在查询 progress 之前做，用于确定本次是否给 XP
-        boolean isNewWord = userWordProgressMapper.selectCount(
-                new LambdaQueryWrapper<UserWordProgress>()
-                        .eq(UserWordProgress::getUserId, userId)
-                        .eq(UserWordProgress::getWordBookId, wordBookId)
-                        .eq(UserWordProgress::getWordId, wordId)) == 0;
-
         // 更新进度
         UserWordProgress progress = userWordProgressMapper.selectOne(
                 new LambdaQueryWrapper<UserWordProgress>()
@@ -230,8 +223,43 @@ public class StudyService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("updatedProgress", updated);
-        // 仅新学词 + 答对才给 XP
-        result.put("xpGained", (correct && isNewWord) ? 10 : 0);
+        // XP 不在答题时发放，改为 completeWord 中逐词发放
+        result.put("xpGained", 0);
+        return result;
+    }
+
+    // -------------------- 完成单个字词（写入 XP） --------------------
+
+    /**
+     * 单个字词全部句子答完后调用（进入字总结页时）。
+     * 仅新学词（今天之前无 UserWordProgress 记录）才写入 XP，复习词不给 XP。
+     */
+    @Transactional
+    public Map<String, Object> completeWord(Long userId, String wordBookId, String wordId) {
+        // 判断是否为新学词：今天之前是否已有该词的 progress 记录
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayStart = today.atStartOfDay();
+
+        boolean hasExisting = userWordProgressMapper.selectCount(
+                new LambdaQueryWrapper<UserWordProgress>()
+                        .eq(UserWordProgress::getUserId, userId)
+                        .eq(UserWordProgress::getWordBookId, wordBookId)
+                        .eq(UserWordProgress::getWordId, wordId)
+                        .lt(UserWordProgress::getCreatedAt, todayStart)) > 0;
+
+        int xpGained = 0;
+        if (!hasExisting) {
+            // 新学词完成后即时写入 XP
+            User user = userMapper.selectById(userId);
+            if (user != null) {
+                user.setTotalXp(user.getTotalXp() + 10);
+                userMapper.updateById(user);
+                xpGained = 10;
+            }
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("xpGained", xpGained);
         return result;
     }
 
@@ -256,15 +284,13 @@ public class StudyService {
         // 计算连续天数
         int streak = calcStreak(userId, today);
 
-        // 更新用户
-        int effectiveXp = xpGained != null ? xpGained : 0;
+        // 更新用户（XP 已在 completeWord 中逐词即时写入，此处仅更新连续打卡天数）
         User user = userMapper.selectById(userId);
         if (user != null) {
             user.setCurrentStreak(streak);
             if (streak > user.getLongestStreak()) {
                 user.setLongestStreak(streak);
             }
-            user.setTotalXp(user.getTotalXp() + effectiveXp);
             userMapper.updateById(user);
         }
 
@@ -289,7 +315,7 @@ public class StudyService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("newBadges", newBadges);
-        result.put("xpGained", effectiveXp);
+        result.put("xpGained", xpGained != null ? xpGained : 0);
         return result;
     }
 
