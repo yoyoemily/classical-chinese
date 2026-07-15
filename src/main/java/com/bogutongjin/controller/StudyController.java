@@ -44,7 +44,7 @@ public class StudyController {
     public Result<Map<String, Object>> completeStudy(
             @Valid @RequestBody CompleteStudyRequest req,
             @CurrentUser Long userId) {
-        return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount()));
+        return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount(), req.getXpGained()));
     }
 
     /** 获取错题本 */

@@ -19,6 +19,11 @@ public class UserService {
         "童生", "秀才", "举人", "贡士", "进士", "探花", "榜眼", "状元", "翰林"
     };
 
+    /** 每级最低 XP 门槛（与 TITLES 一一对应） */
+    private static final int[] LEVEL_THRESHOLDS = {
+        0, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000
+    };
+
     public Map<String, Object> getUserProfile(Long userId) {
         User user = userMapper.selectById(userId);
         if (user == null) return null;
@@ -27,7 +32,7 @@ public class UserService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("level", level);
-        result.put("title", level < TITLES.length ? TITLES[level] : "翰林");
+        result.put("title", level <= TITLES.length ? TITLES[level - 1] : "翰林");
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
@@ -66,8 +71,11 @@ public class UserService {
         userMapper.updateById(user);
     }
 
-    /** 经验值 → 等级 (每 100 XP 升一级) */
+    /** 经验值 → 等级（查阈值表，从高往低匹配） */
     private int calcLevel(int totalXp) {
-        return Math.min(totalXp / 100, TITLES.length);
+        for (int i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+            if (totalXp >= LEVEL_THRESHOLDS[i]) return i + 1;
+        }
+        return 1;
     }
 }

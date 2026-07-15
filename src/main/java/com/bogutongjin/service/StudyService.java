@@ -158,13 +158,21 @@ public class StudyService {
         history.setTimestampMs(System.currentTimeMillis());
         userAnswerHistoryMapper.insert(history);
 
-        // 答错：记录/更新错题本
+        // 答对：增加当前句子的连续答对次数
         if (!correct) {
             recordMistake(userId, wordBookId, wordId, sentenceId, correctAnswerText, wrongAnswerText);
         } else {
             // 答对：增加当前句子的连续答对次数
             incrementConsecutiveCorrect(userId, wordId, sentenceId);
         }
+
+        // 判断是否新学词（尚无进度记录 → isNewWord=true）
+        // 必须在查询 progress 之前做，用于确定本次是否给 XP
+        boolean isNewWord = userWordProgressMapper.selectCount(
+                new LambdaQueryWrapper<UserWordProgress>()
+                        .eq(UserWordProgress::getUserId, userId)
+                        .eq(UserWordProgress::getWordBookId, wordBookId)
+                        .eq(UserWordProgress::getWordId, wordId)) == 0;
 
         // 更新进度
         UserWordProgress progress = userWordProgressMapper.selectOne(
@@ -222,13 +230,15 @@ public class StudyService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("updatedProgress", updated);
+        // 仅新学词 + 答对才给 XP
+        result.put("xpGained", (correct && isNewWord) ? 10 : 0);
         return result;
     }
 
     // -------------------- 完成学习 --------------------
 
     @Transactional
-    public Map<String, Object> completeStudy(Long userId, String wordBookId, Integer correctCount, Integer wrongCount) {
+    public Map<String, Object> completeStudy(Long userId, String wordBookId, Integer correctCount, Integer wrongCount, Integer xpGained) {
         LocalDate today = LocalDate.now();
 
         // 打卡
@@ -247,14 +257,14 @@ public class StudyService {
         int streak = calcStreak(userId, today);
 
         // 更新用户
+        int effectiveXp = xpGained != null ? xpGained : 0;
         User user = userMapper.selectById(userId);
         if (user != null) {
             user.setCurrentStreak(streak);
             if (streak > user.getLongestStreak()) {
                 user.setLongestStreak(streak);
             }
-            int xp = correctCount * 10;
-            user.setTotalXp(user.getTotalXp() + xp);
+            user.setTotalXp(user.getTotalXp() + effectiveXp);
             userMapper.updateById(user);
         }
 
@@ -279,7 +289,7 @@ public class StudyService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("newBadges", newBadges);
-        result.put("xpGained", correctCount * 10);
+        result.put("xpGained", effectiveXp);
         return result;
     }
 
