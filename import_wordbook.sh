@@ -27,7 +27,8 @@ echo "   wb_zhongkao_cileihuoyong — 中考词类活用一本通"
 echo "   wb_gaokao_shixu        — 高考实词虚词一本通"
 echo "   wb_gaokao_tongjia      — 高考通假字一本通"
 echo "   wb_gaokao_gujinyi      — 高考古今异义一本通"
-echo "   wb_gaokao_cileihuoyong — 高考词类活用一本通"
+echo "   wb_gaokao_cileihuoyong — 高考词类活用一本通
+   wb_function_words       — 文言文虚词深度解析"
 echo ""
 
 read -r -p "请输入词书 ID（如 wb_zhongkao_shixu，或输入 q 退出）: " BOOK_ID
