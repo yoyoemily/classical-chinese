@@ -41,10 +41,10 @@ public class UserController {
         return Result.ok();
     }
 
-    /** 记录用户分享 */
-    @PostMapping("/share")
-    public Result<Map<String, Object>> recordShare(@CurrentUser Long userId) {
-        userService.recordShare(userId);
+    /** 签订金石契约 */
+    @PostMapping("/pact")
+    public Result<Map<String, Object>> signPact(@CurrentUser Long userId) {
+        userService.signPact(userId);
         return Result.ok(Map.of("memberLevel", 1));
     }
 }

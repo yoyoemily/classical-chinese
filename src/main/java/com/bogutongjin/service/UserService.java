@@ -58,8 +58,8 @@ public class UserService {
         userMapper.updateById(user);
     }
 
-    /** 记录用户已分享 */
-    public void recordShare(Long userId) {
+    /** 签订金石契约 */
+    public void signPact(Long userId) {
         User user = userMapper.selectById(userId);
         if (user == null) return;
         user.setMemberLevel(1);
