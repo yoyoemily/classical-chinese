@@ -30,9 +30,9 @@ public class UserService {
         result.put("title", level < TITLES.length ? TITLES[level] : "翰林");
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
-        result.put("hasShared", user.getHasShared() != null && user.getHasShared());
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         result.put("nickName", user.getNickName() != null ? user.getNickName() : "");
+        result.put("avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");
         return result;
     }
 
@@ -44,7 +44,6 @@ public class UserService {
         result.put("avatarUrl", user.getAvatarUrl());
         result.put("nickName", user.getNickName());
         result.put("grade", user.getGrade());
-        result.put("hasShared", user.getHasShared() != null && user.getHasShared());
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         return result;
     }
@@ -63,7 +62,6 @@ public class UserService {
     public void recordShare(Long userId) {
         User user = userMapper.selectById(userId);
         if (user == null) return;
-        user.setHasShared(true);
         user.setMemberLevel(1);
         userMapper.updateById(user);
     }

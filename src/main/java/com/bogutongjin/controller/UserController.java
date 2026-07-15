@@ -45,6 +45,6 @@ public class UserController {
     @PostMapping("/share")
     public Result<Map<String, Object>> recordShare(@CurrentUser Long userId) {
         userService.recordShare(userId);
-        return Result.ok(Map.of("hasShared", true, "memberLevel", 1));
+        return Result.ok(Map.of("memberLevel", 1));
     }
 }
