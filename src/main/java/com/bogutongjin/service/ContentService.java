@@ -91,6 +91,10 @@ public class ContentService {
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (Word word : words) {
+            // 跳过只读类词书（虚词深度解析等）
+            WordBook book = wordBookMapper.selectById(word.getWordBookId());
+            if (book == null || "readonly".equals(book.getStudyMode())) continue;
+
             // 获取所有义项
             List<Meaning> meanings = meaningMapper.selectList(
                     new LambdaQueryWrapper<Meaning>().eq(Meaning::getWordId, word.getId())
@@ -106,17 +110,12 @@ public class ContentService {
                 meaningList.add(mm);
             }
 
-            // 获取词书名称
-            String wordBookName = "";
-            WordBook book = wordBookMapper.selectById(word.getWordBookId());
-            if (book != null) wordBookName = book.getName();
-
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("wordId", word.getId());
             item.put("character", word.getCharacter());
             item.put("pinyin", word.getPinyin());
             item.put("meanings", meaningList);
-            item.put("wordBookName", wordBookName);
+            item.put("wordBookName", book.getName());
             item.put("wordBookId", word.getWordBookId());
             result.add(item);
         }
@@ -125,9 +124,11 @@ public class ContentService {
 
     /** 按词类分组返回所有已初始化词书中的字词（供快捷搜索使用） */
     public Map<String, List<Map<String, Object>>> getWordsByType() {
-        // 1. 查出所有已初始化的词书
+        // 1. 查出所有已初始化的词书（排除只读类词书）
         List<WordBook> initializedBooks = wordBookMapper.selectList(
-                new LambdaQueryWrapper<WordBook>().eq(WordBook::getInitialized, true));
+                new LambdaQueryWrapper<WordBook>()
+                        .eq(WordBook::getInitialized, true)
+                        .ne(WordBook::getStudyMode, "readonly"));
         if (initializedBooks.isEmpty()) return Map.of();
 
         List<String> bookIds = initializedBooks.stream()
