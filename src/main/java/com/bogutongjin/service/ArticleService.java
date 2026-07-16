@@ -72,6 +72,9 @@ public class ArticleService {
                 if (kw.getMatchWord() != null) {
                     km.put("matchWord", kw.getMatchWord());
                 }
+                if (kw.getWordType() != null) {
+                    km.put("wordType", kw.getWordType());
+                }
                 return km;
             }).collect(Collectors.toList()));
 

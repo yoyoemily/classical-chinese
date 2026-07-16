@@ -117,6 +117,8 @@ public class SourceData {
         private String masteryLevel;
         /** 消歧用：多字上下文片段，用于定位句中具体出现位置 */
         private String matchWord;
+        /** 生词类型：shi/xu/tongjia/gujinyi/huoyong */
+        private String wordType;
     }
 
     @Data
