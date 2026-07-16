@@ -178,8 +178,9 @@ public class DataImportService {
 
         // 3. 插入字词条目
         if (CollUtil.isNotEmpty(book.getWordEntries())) {
+            int idx = 0;
             for (SourceWordEntry entry : book.getWordEntries()) {
-                insertWordBookEntry(book.getId(), entry);
+                insertWordBookEntry(book.getId(), entry, idx++);
             }
         }
 
@@ -273,8 +274,9 @@ public class DataImportService {
             } else {
                 insertWordBook(book);
                 if (CollUtil.isNotEmpty(book.getWordEntries())) {
+                    int idx = 0;
                     for (SourceWordEntry entry : book.getWordEntries()) {
-                        insertWordBookEntry(book.getId(), entry);
+                        insertWordBookEntry(book.getId(), entry, idx++);
                     }
                 }
             }
@@ -313,7 +315,7 @@ public class DataImportService {
 
     // ======================== 字词条目导入 ========================
 
-    private void insertWordBookEntry(String bookId, SourceWordEntry entry) {
+    private void insertWordBookEntry(String bookId, SourceWordEntry entry, int sortOrder) {
         // 序列化同音字/形近字列表为 JSON 字符串
         String similarHomophonesJson = CollUtil.isNotEmpty(entry.getSimilarHomophones())
                 ? JSONUtil.toJsonStr(entry.getSimilarHomophones()) : null;
@@ -327,7 +329,7 @@ public class DataImportService {
                 nvl(entry.getCharacterType()), nvl(entry.getExplanation()),
                 nvl(entry.getOracleForm()), nvl(entry.getExamFrequency()),
                 nvl(entry.getMnemonic()), nvl(entry.getWordType()),
-                similarHomophonesJson, similarShapesJson, 0);
+                similarHomophonesJson, similarShapesJson, sortOrder);
 
         // 插入关键词引用
         insertKeyWordRefs(entry.getId(), entry.getKeyWordRefs());
@@ -355,10 +357,11 @@ public class DataImportService {
 
     private void insertQuizItem(String entryId, SourceQuizItem qi, int sortOrder) {
         jdbc.update(
-                "INSERT INTO quiz_item (id, entry_id, kid_ref, difficulty, target_word, definition, sort_order) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO quiz_item (id, entry_id, kid_ref, difficulty, target_word, definition, sort_order, sentence_text, sentence_translation, sentence_source) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 qi.getId(), entryId, qi.getKidRef(), nvl(qi.getDifficulty(), "basic"),
-                qi.getTargetWord(), qi.getDefinition(), sortOrder);
+                qi.getTargetWord(), qi.getDefinition(), sortOrder,
+                nvl(qi.getSentenceText()), nvl(qi.getSentenceTranslation()), nvl(qi.getSentenceSource()));
 
         // 批量插入干扰项
         if (CollUtil.isNotEmpty(qi.getDistractors())) {

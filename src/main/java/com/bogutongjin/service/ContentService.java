@@ -18,6 +18,9 @@ public class ContentService {
     private final QuizItemMapper quizItemMapper;
     private final QuizDistractorMapper quizDistractorMapper;
     private final WordBookMapper wordBookMapper;
+    private final ArticleKeywordMapper articleKeywordMapper;
+    private final ArticleSentenceMapper articleSentenceMapper;
+    private final ArticleMapper articleMapper;
 
     public Map<String, Object> getWordDetail(String entryId) {
         WordBookEntry entry = wordBookEntryMapper.selectById(entryId);
@@ -39,6 +42,27 @@ public class ContentService {
         result.put("keyWordRefs", keyWordRefs.stream().map(r -> {
             Map<String, Object> rm = new LinkedHashMap<>();
             rm.put("kid", r.getKid());
+            // 通过 kid → article_keyword → article_sentence / article 联查补全
+            if (r.getKid() != null && !r.getKid().isEmpty()) {
+                ArticleKeyword ak = articleKeywordMapper.selectOne(
+                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, r.getKid()));
+                if (ak != null) {
+                    rm.put("word", ak.getWordText());
+                    rm.put("definition", ak.getDefinition());
+                    ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+                    if (as != null) {
+                        rm.put("sentenceText", as.getText());
+                        rm.put("sentenceTranslation", as.getTranslation());
+                        rm.put("articleId", as.getArticleId() != null ? as.getArticleId() : "");
+                        if (as.getArticleId() != null) {
+                            Article article = articleMapper.selectById(as.getArticleId());
+                            if (article != null) {
+                                rm.put("articleTitle", article.getTitle());
+                            }
+                        }
+                    }
+                }
+            }
             return rm;
         }).collect(Collectors.toList()));
 

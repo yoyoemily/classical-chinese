@@ -68,15 +68,13 @@ public class StudyService {
         List<Map<String, Object>> reviewWords = new ArrayList<>();
         List<Map<String, Object>> newWords = new ArrayList<>();
 
-        // 复习词：nextReviewDate <= today 且未完成
-        for (UserWordProgress up : allProgress) {
-            if ("done".equals(up.getStage())) continue;
+        // 复习词：nextReviewDate <= today 且未完成（按词书 sortOrder 排列，保证顺序稳定）
+        for (WordBookEntry e : allEntries) {
+            UserWordProgress up = progressMap.get(e.getId());
+            if (up == null || "done".equals(up.getStage())) continue;
             if (up.getNextReviewDate() != null && !up.getNextReviewDate().isAfter(today)) {
-                WordBookEntry e = findEntry(allEntries, up.getEntryId());
-                if (e != null) {
-                    Map<String, Object> item = buildTodayEntry(e, up, true, wordBookId);
-                    if (item != null) reviewWords.add(item);
-                }
+                Map<String, Object> item = buildTodayEntry(e, up, true, wordBookId);
+                if (item != null) reviewWords.add(item);
             }
         }
 
@@ -106,10 +104,6 @@ public class StudyService {
         return result;
     }
 
-    private WordBookEntry findEntry(List<WordBookEntry> entries, String entryId) {
-        return entries.stream().filter(e -> e.getId().equals(entryId)).findFirst().orElse(null);
-    }
-
     private Map<String, Object> buildTodayEntry(WordBookEntry entry, UserWordProgress up, boolean isReview, String wordBookId) {
         List<QuizItem> quizItems = quizItemMapper.selectList(
                 new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entry.getId()).orderByAsc(QuizItem::getSortOrder));
@@ -134,21 +128,45 @@ public class StudyService {
                             .orderByAsc(QuizDistractor::getSortOrder));
             qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
             qm.put("kidRef", q.getKidRef());
-            // 句子上下文：优先取 quiz_item 自身存储的句子
-            qm.put("sentenceText", q.getSentenceText() != null ? q.getSentenceText() : "");
-            qm.put("sentenceTranslation", q.getSentenceTranslation() != null ? q.getSentenceTranslation() : "");
-            qm.put("sentenceSource", q.getSentenceSource() != null ? q.getSentenceSource() : "");
-            // 通过 kid 查 articleId
+            // 句子上下文：优先取 quiz_item 自身存储，无则通过 kidRef 从选篇联查
+            String sentenceText = q.getSentenceText();
+            String sentenceTranslation = q.getSentenceTranslation();
+            String sentenceSource = q.getSentenceSource();
+            String articleId = "";
             if (q.getKidRef() != null && !q.getKidRef().isEmpty()) {
-                ArticleKeyword ak = articleKeywordMapper.selectOne(
-                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
-                if (ak != null) {
-                    ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
-                    if (as != null) {
-                        qm.put("articleId", as.getArticleId() != null ? as.getArticleId() : "");
+                if (sentenceText == null || sentenceText.isEmpty()
+                    || sentenceTranslation == null || sentenceTranslation.isEmpty()
+                    || sentenceSource == null || sentenceSource.isEmpty()) {
+                    ArticleKeyword ak = articleKeywordMapper.selectOne(
+                            new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
+                    if (ak != null) {
+                        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+                        if (as != null) {
+                            if (sentenceText == null || sentenceText.isEmpty()) sentenceText = as.getText();
+                            if (sentenceTranslation == null || sentenceTranslation.isEmpty()) sentenceTranslation = as.getTranslation();
+                            if (as.getArticleId() != null) {
+                                articleId = as.getArticleId();
+                                if (sentenceSource == null || sentenceSource.isEmpty()) {
+                                    Article article = articleMapper.selectById(as.getArticleId());
+                                    if (article != null) sentenceSource = article.getTitle();
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // 已有完整句子数据，kidRef 仅用于取 articleId
+                    ArticleKeyword ak = articleKeywordMapper.selectOne(
+                            new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
+                    if (ak != null) {
+                        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+                        if (as != null && as.getArticleId() != null) articleId = as.getArticleId();
                     }
                 }
             }
+            qm.put("sentenceText", sentenceText != null ? sentenceText : "");
+            qm.put("sentenceTranslation", sentenceTranslation != null ? sentenceTranslation : "");
+            qm.put("sentenceSource", sentenceSource != null ? sentenceSource : "");
+            qm.put("articleId", articleId);
             return qm;
         }).collect(Collectors.toList()));
         return item;

@@ -75,6 +75,9 @@ public class SourceData {
         private String difficulty;
         private String definition;
         private List<String> distractors;
+        private String sentenceText;
+        private String sentenceTranslation;
+        private String sentenceSource;
     }
 
     // ---- 字词用法 ----
