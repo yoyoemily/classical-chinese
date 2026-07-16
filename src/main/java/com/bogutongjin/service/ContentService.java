@@ -20,7 +20,6 @@ public class ContentService {
     private final WordBookMapper wordBookMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleSentenceMapper articleSentenceMapper;
-    private final ArticleMapper articleMapper;
 
     public Map<String, Object> getWordDetail(String entryId) {
         WordBookEntry entry = wordBookEntryMapper.selectById(entryId);
@@ -36,39 +35,33 @@ public class ContentService {
         result.put("mnemonic", entry.getMnemonic());
         result.put("wordType", entry.getWordType());
 
-        // 关键词引用
-        List<WordEntryKeywordRef> keyWordRefs = wordEntryKeywordRefMapper.selectList(
-                new LambdaQueryWrapper<WordEntryKeywordRef>().eq(WordEntryKeywordRef::getEntryId, entryId).orderByAsc(WordEntryKeywordRef::getSortOrder));
-        result.put("keyWordRefs", keyWordRefs.stream().map(r -> {
+        // 义项列表以 quizItem 驱动：每个 quizItem 即一个义项，keyWordRef 只补 word / articleId
+        List<QuizItem> quizItems = quizItemMapper.selectList(
+                new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entryId).orderByAsc(QuizItem::getSortOrder));
+        result.put("keyWordRefs", quizItems.stream().map(qi -> {
             Map<String, Object> rm = new LinkedHashMap<>();
-            rm.put("kid", r.getKid());
-            // 通过 kid → article_keyword → article_sentence / article 联查补全
-            if (r.getKid() != null && !r.getKid().isEmpty()) {
+            rm.put("kid", qi.getKidRef() != null ? qi.getKidRef() : "");
+            rm.put("definition", qi.getDefinition() != null ? qi.getDefinition() : "");
+            rm.put("sentenceText", qi.getSentenceText() != null ? qi.getSentenceText() : "");
+            rm.put("sentenceTranslation", qi.getSentenceTranslation() != null ? qi.getSentenceTranslation() : "");
+            rm.put("articleTitle", qi.getSentenceSource() != null ? qi.getSentenceSource() : "");
+
+            // 从 article_keyword 补 word 和 articleId
+            if (qi.getKidRef() != null && !qi.getKidRef().isEmpty()) {
                 ArticleKeyword ak = articleKeywordMapper.selectOne(
-                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, r.getKid()));
+                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, qi.getKidRef()));
                 if (ak != null) {
-                    rm.put("word", ak.getWordText());
-                    rm.put("definition", ak.getDefinition());
+                    rm.put("word", ak.getWordText() != null ? ak.getWordText() : "");
                     ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
                     if (as != null) {
-                        rm.put("sentenceText", as.getText());
-                        rm.put("sentenceTranslation", as.getTranslation());
                         rm.put("articleId", as.getArticleId() != null ? as.getArticleId() : "");
-                        if (as.getArticleId() != null) {
-                            Article article = articleMapper.selectById(as.getArticleId());
-                            if (article != null) {
-                                rm.put("articleTitle", article.getTitle());
-                            }
-                        }
                     }
                 }
             }
             return rm;
         }).collect(Collectors.toList()));
 
-        // Quiz 题目（含干扰项）
-        List<QuizItem> quizItems = quizItemMapper.selectList(
-                new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entryId).orderByAsc(QuizItem::getSortOrder));
+        // Quiz 题目（含干扰项），直接复用上文的 quizItems 列表
         result.put("quizItems", quizItems.stream().map(q -> {
             Map<String, Object> qm = new LinkedHashMap<>();
             qm.put("id", q.getId());
