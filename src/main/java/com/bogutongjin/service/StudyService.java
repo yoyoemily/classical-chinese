@@ -164,7 +164,7 @@ public class StudyService {
             recordMistake(userId, wordBookId, wordId, sentenceId, correctAnswerText, wrongAnswerText);
         } else {
             // 答对：增加当前句子的连续答对次数
-            incrementConsecutiveCorrect(userId, wordId, sentenceId);
+            incrementConsecutiveCorrect(userId, wordId, wordBookId, sentenceId);
         }
 
         // 更新进度
@@ -383,11 +383,12 @@ public class StudyService {
     /** 答错时记录到错题本 */
     private void recordMistake(Long userId, String wordBookId, String wordId, String sentenceId,
                                 String correctAnswerText, String wrongAnswerText) {
-        // 查找或创建该字的错题记录
+        // 查找或创建该字的错题记录（按 user_id + word_id + word_book_id 唯一）
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId));
+                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getWordBookId, wordBookId));
 
         if (mistake == null) {
             mistake = new StudyMistake();
@@ -439,11 +440,12 @@ public class StudyService {
     }
 
     /** 答对时增加该句子的连续答对计数，达到阈值则移出该句子 */
-    private void incrementConsecutiveCorrect(Long userId, String wordId, String sentenceId) {
+    private void incrementConsecutiveCorrect(Long userId, String wordId, String wordBookId, String sentenceId) {
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId));
+                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getWordBookId, wordBookId));
         if (mistake == null) return;
 
         // 精确查找答对的那个句子
@@ -515,17 +517,20 @@ public class StudyService {
             item.put("totalErrors", m.getTotalErrors() != null ? m.getTotalErrors() : 0);
             item.put("lastErrorTime", m.getLastMistakeTime() != null ? m.getLastMistakeTime().toString().substring(0, 10) : "");
             item.put("sentences", sentList);
+            WordBook book = wordBookMapper.selectById(m.getWordBookId());
+            item.put("wordBookName", book != null ? book.getName() : "");
             result.add(item);
         }
         return result;
     }
 
     /** 移除错题 */
-    public void removeMistake(Long userId, String wordId) {
+    public void removeMistake(Long userId, String wordBookId, String wordId) {
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId));
+                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getWordBookId, wordBookId));
         if (mistake != null) {
             // 先删子表句子记录
             studyMistakeSentenceMapper.delete(

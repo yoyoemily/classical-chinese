@@ -68,8 +68,9 @@ public class StudyController {
     @DeleteMapping("/mistakes/{wordId}")
     public Result<Void> removeMistake(
             @PathVariable String wordId,
+            @RequestParam String wordBookId,
             @CurrentUser Long userId) {
-        studyService.removeMistake(userId, wordId);
+        studyService.removeMistake(userId, wordBookId, wordId);
         return Result.ok();
     }
 }

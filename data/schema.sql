@@ -371,7 +371,7 @@ CREATE TABLE study_mistake (
   last_mistake_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次答错时间',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_user_word (user_id, word_id),
+  UNIQUE KEY uk_user_word_book (user_id, word_book_id, word_id),
   INDEX idx_user_id (user_id),
   INDEX idx_word_book_id (word_book_id)
 ) ENGINE=InnoDB COMMENT='错题本——一条记录一个字';
