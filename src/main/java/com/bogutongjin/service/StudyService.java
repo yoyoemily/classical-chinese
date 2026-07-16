@@ -311,10 +311,10 @@ public class StudyService {
         }
 
         // 检查新勋章
-        List<Map<String, Object>> newBadges = checkNewBadges(userId, streak);
+        Map<String, Object> newBadge = checkNewBadge(userId, streak);
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("newBadges", newBadges);
+        result.put("newBadge", newBadge);
         result.put("xpGained", xpGained != null ? xpGained : 0);
         return result;
     }
@@ -337,17 +337,17 @@ public class StudyService {
         return streak;
     }
 
-    private List<Map<String, Object>> checkNewBadges(Long userId, int streak) {
+    private Map<String, Object> checkNewBadge(Long userId, int streak) {
         // 获取用户已有勋章
         List<UserBadge> userBadges = userBadgeMapper.selectList(
                 new LambdaQueryWrapper<UserBadge>().eq(UserBadge::getUserId, userId));
         Set<String> earnedIds = userBadges.stream().map(UserBadge::getBadgeId).collect(Collectors.toSet());
 
-        // 获取所有 streak 勋章
+        // 获取所有 streak 勋章，按 conditionValue 升序
         List<Badge> allBadges = badgeMapper.selectList(
                 new LambdaQueryWrapper<Badge>().eq(Badge::getConditionType, "streak").orderByAsc(Badge::getConditionValue));
 
-        List<Map<String, Object>> newBadges = new ArrayList<>();
+        // 找到第一个 streak 达标且未获得的勋章（每天最多跨一个阈值）
         for (Badge badge : allBadges) {
             if (!earnedIds.contains(badge.getId()) && streak >= badge.getConditionValue()) {
                 UserBadge ub = new UserBadge();
@@ -367,10 +367,10 @@ public class StudyService {
                 cond.put("type", badge.getConditionType());
                 cond.put("value", badge.getConditionValue());
                 bm.put("condition", cond);
-                newBadges.add(bm);
+                return bm;
             }
         }
-        return newBadges;
+        return null;
     }
 
     private int parseStage(String stage) {
