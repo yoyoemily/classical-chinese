@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class ContentService {
 
     private final WordBookEntryMapper wordBookEntryMapper;
-    private final WordEntryKeywordRefMapper wordEntryKeywordRefMapper;
     private final QuizItemMapper quizItemMapper;
     private final QuizDistractorMapper quizDistractorMapper;
     private final WordBookMapper wordBookMapper;
