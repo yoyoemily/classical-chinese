@@ -56,6 +56,14 @@ public class StudyController {
         return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount(), req.getXpGained()));
     }
 
+    /** 获取错题数量（仅 count，供首页等只需要数量的场景） */
+    @GetMapping("/mistakes/count")
+    public Result<Map<String, Object>> getMistakeCount(
+            @RequestParam(required = false) String wordBookId,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.getMistakeCount(userId, wordBookId));
+    }
+
     /** 获取错题本 */
     @GetMapping("/mistakes")
     public Result<Object> getMistakes(

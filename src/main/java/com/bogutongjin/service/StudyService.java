@@ -47,7 +47,6 @@ public class StudyService {
         WordBook book = wordBookMapper.selectById(wordBookId);
         if (book == null) throw new ResourceNotFoundException("词书不存在");
 
-        // 未传则使用默认值
         int newLimit = dailyNew != null ? dailyNew : 20;
         int reviewLimit = dailyReview != null ? dailyReview : Integer.MAX_VALUE;
 
@@ -65,33 +64,91 @@ public class StudyService {
                 new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, wordBookId).orderByAsc(WordBookEntry::getSortOrder));
 
         LocalDate today = LocalDate.now();
-        List<Map<String, Object>> reviewWords = new ArrayList<>();
-        List<Map<String, Object>> newWords = new ArrayList<>();
 
-        // 复习词：nextReviewDate <= today 且未完成（按词书 sortOrder 排列，保证顺序稳定）
+        // --- 分类：复习词 vs 新学词（先分类，再批量预载） ---
+        Set<String> inProgress = progressMap.keySet();
+        List<WordBookEntry> reviewEntries = new ArrayList<>();
+        List<WordBookEntry> newEntries = new ArrayList<>();
+
         for (WordBookEntry e : allEntries) {
             UserWordProgress up = progressMap.get(e.getId());
-            if (up == null || "done".equals(up.getStage())) continue;
+            if (up == null || "done".equals(up.getStage())) {
+                if (!inProgress.contains(e.getId())) newEntries.add(e);
+                continue;
+            }
             if (up.getNextReviewDate() != null && !up.getNextReviewDate().isAfter(today)) {
-                Map<String, Object> item = buildTodayEntry(e, up, true, wordBookId);
-                if (item != null) reviewWords.add(item);
+                reviewEntries.add(e);
             }
         }
+        // 截断后再批量预载（只加载实际要返回的 entry）
+        if (reviewEntries.size() > reviewLimit) reviewEntries = new ArrayList<>(reviewEntries.subList(0, reviewLimit));
+        if (newEntries.size() > newLimit) newEntries = new ArrayList<>(newEntries.subList(0, newLimit));
 
-        // 新学词：没有进度的词
-        Set<String> inProgress = progressMap.keySet();
-        List<WordBookEntry> newOnes = allEntries.stream()
-                .filter(e -> !inProgress.contains(e.getId()))
-                .collect(Collectors.toList());
+        // --- 批量预载所有子数据（替代 N+1） ---
+        Set<String> relevantEntryIds = new LinkedHashSet<>();
+        reviewEntries.forEach(e -> relevantEntryIds.add(e.getId()));
+        newEntries.forEach(e -> relevantEntryIds.add(e.getId()));
 
-        for (WordBookEntry e : newOnes) {
-            Map<String, Object> item = buildTodayEntry(e, null, false, wordBookId);
-            if (item != null) newWords.add(item);
+        // 1. 批量 quizItems（按 entryId IN）
+        Map<String, List<QuizItem>> qiByEntry = new LinkedHashMap<>();
+        if (!relevantEntryIds.isEmpty()) {
+            quizItemMapper.selectList(
+                    new LambdaQueryWrapper<QuizItem>().in(QuizItem::getEntryId, relevantEntryIds)
+                            .orderByAsc(QuizItem::getSortOrder))
+                    .forEach(qi -> qiByEntry.computeIfAbsent(qi.getEntryId(), k -> new ArrayList<>()).add(qi));
         }
 
-        // 按参数截断
-        if (reviewWords.size() > reviewLimit) reviewWords = reviewWords.subList(0, reviewLimit);
-        if (newWords.size() > newLimit) newWords = newWords.subList(0, newLimit);
+        // 2. 批量 distractors（按 quizItemId IN）
+        Set<String> qiIds = qiByEntry.values().stream().flatMap(List::stream)
+                .map(QuizItem::getId).collect(Collectors.toSet());
+        Map<String, List<String>> distByQi = new LinkedHashMap<>();
+        if (!qiIds.isEmpty()) {
+            quizDistractorMapper.selectList(
+                    new LambdaQueryWrapper<QuizDistractor>().in(QuizDistractor::getQuizItemId, qiIds)
+                            .orderByAsc(QuizDistractor::getSortOrder))
+                    .forEach(d -> distByQi.computeIfAbsent(d.getQuizItemId(), k -> new ArrayList<>()).add(d.getText()));
+        }
+
+        // 3. 批量 articleKeywords（按 kid IN）
+        Set<String> kidRefs = qiByEntry.values().stream().flatMap(List::stream)
+                .map(QuizItem::getKidRef).filter(k -> k != null && !k.isEmpty()).collect(Collectors.toSet());
+        Map<String, ArticleKeyword> akByKid = new LinkedHashMap<>();
+        if (!kidRefs.isEmpty()) {
+            articleKeywordMapper.selectList(
+                    new LambdaQueryWrapper<ArticleKeyword>().in(ArticleKeyword::getKid, kidRefs))
+                    .forEach(ak -> akByKid.put(ak.getKid(), ak));
+        }
+
+        // 4. 批量 articleSentences（按 ID IN）
+        Set<Long> sentenceIds = akByKid.values().stream()
+                .map(ArticleKeyword::getArticleSentenceId).filter(Objects::nonNull).collect(Collectors.toSet());
+        Map<Long, ArticleSentence> sentMap = new LinkedHashMap<>();
+        if (!sentenceIds.isEmpty()) {
+            articleSentenceMapper.selectBatchIds(sentenceIds).forEach(s -> sentMap.put(s.getId(), s));
+        }
+
+        // 5. 批量 articles（按 ID IN）
+        Set<String> articleIds = sentMap.values().stream()
+                .map(ArticleSentence::getArticleId).filter(Objects::nonNull).collect(Collectors.toSet());
+        Map<String, Article> articleMap = new LinkedHashMap<>();
+        if (!articleIds.isEmpty()) {
+            articleMapper.selectBatchIds(articleIds).forEach(a -> articleMap.put(a.getId(), a));
+        }
+
+        // --- 内存组装 ---
+        List<Map<String, Object>> reviewWords = new ArrayList<>();
+        for (WordBookEntry e : reviewEntries) {
+            Map<String, Object> item = assembleTodayEntry(e, progressMap.get(e.getId()), true,
+                    qiByEntry, distByQi, akByKid, sentMap, articleMap);
+            if (item != null) reviewWords.add(item);
+        }
+
+        List<Map<String, Object>> newWords = new ArrayList<>();
+        for (WordBookEntry e : newEntries) {
+            Map<String, Object> item = assembleTodayEntry(e, null, false,
+                    qiByEntry, distByQi, akByKid, sentMap, articleMap);
+            if (item != null) newWords.add(item);
+        }
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("date", today.toString());
@@ -104,9 +161,12 @@ public class StudyService {
         return result;
     }
 
-    private Map<String, Object> buildTodayEntry(WordBookEntry entry, UserWordProgress up, boolean isReview, String wordBookId) {
-        List<QuizItem> quizItems = quizItemMapper.selectList(
-                new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entry.getId()).orderByAsc(QuizItem::getSortOrder));
+    /** 从批量预载的 Map 中组装单个 todayEntry（纯内存操作，零 SQL） */
+    private Map<String, Object> assembleTodayEntry(WordBookEntry entry, UserWordProgress up, boolean isReview,
+            Map<String, List<QuizItem>> qiByEntry, Map<String, List<String>> distByQi,
+            Map<String, ArticleKeyword> akByKid, Map<Long, ArticleSentence> sentMap,
+            Map<String, Article> articleMap) {
+        List<QuizItem> quizItems = qiByEntry.getOrDefault(entry.getId(), List.of());
         if (quizItems.isEmpty()) return null;
 
         Map<String, Object> item = new LinkedHashMap<>();
@@ -122,47 +182,37 @@ public class StudyService {
             qm.put("definition", q.getDefinition());
             qm.put("difficulty", q.getDifficulty());
             qm.put("targetWord", q.getTargetWord());
-            // 干扰项
-            List<QuizDistractor> distractors = quizDistractorMapper.selectList(
-                    new LambdaQueryWrapper<QuizDistractor>().eq(QuizDistractor::getQuizItemId, q.getId())
-                            .orderByAsc(QuizDistractor::getSortOrder));
-            qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
+            qm.put("distractors", distByQi.getOrDefault(q.getId(), List.of()));
             qm.put("kidRef", q.getKidRef());
-            // 句子上下文：优先取 quiz_item 自身存储，无则通过 kidRef 从选篇联查
+
             String sentenceText = q.getSentenceText();
             String sentenceTranslation = q.getSentenceTranslation();
             String sentenceSource = q.getSentenceSource();
             String articleId = "";
+
             if (q.getKidRef() != null && !q.getKidRef().isEmpty()) {
-                if (sentenceText == null || sentenceText.isEmpty()
-                    || sentenceTranslation == null || sentenceTranslation.isEmpty()
-                    || sentenceSource == null || sentenceSource.isEmpty()) {
-                    ArticleKeyword ak = articleKeywordMapper.selectOne(
-                            new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
-                    if (ak != null) {
-                        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
-                        if (as != null) {
-                            if (sentenceText == null || sentenceText.isEmpty()) sentenceText = as.getText();
-                            if (sentenceTranslation == null || sentenceTranslation.isEmpty()) sentenceTranslation = as.getTranslation();
-                            if (as.getArticleId() != null) {
-                                articleId = as.getArticleId();
-                                if (sentenceSource == null || sentenceSource.isEmpty()) {
-                                    Article article = articleMapper.selectById(as.getArticleId());
-                                    if (article != null) sentenceSource = article.getTitle();
-                                }
+                ArticleKeyword ak = akByKid.get(q.getKidRef());
+                ArticleSentence as = ak != null ? sentMap.get(ak.getArticleSentenceId()) : null;
+                boolean needFallback = sentenceText == null || sentenceText.isEmpty()
+                        || sentenceTranslation == null || sentenceTranslation.isEmpty()
+                        || sentenceSource == null || sentenceSource.isEmpty();
+                if (needFallback) {
+                    if (as != null) {
+                        if (sentenceText == null || sentenceText.isEmpty()) sentenceText = as.getText();
+                        if (sentenceTranslation == null || sentenceTranslation.isEmpty()) sentenceTranslation = as.getTranslation();
+                        if (as.getArticleId() != null) {
+                            articleId = as.getArticleId();
+                            if (sentenceSource == null || sentenceSource.isEmpty()) {
+                                Article article = articleMap.get(as.getArticleId());
+                                if (article != null) sentenceSource = article.getTitle();
                             }
                         }
                     }
                 } else {
-                    // 已有完整句子数据，kidRef 仅用于取 articleId
-                    ArticleKeyword ak = articleKeywordMapper.selectOne(
-                            new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
-                    if (ak != null) {
-                        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
-                        if (as != null && as.getArticleId() != null) articleId = as.getArticleId();
-                    }
+                    if (as != null && as.getArticleId() != null) articleId = as.getArticleId();
                 }
             }
+
             qm.put("sentenceText", sentenceText != null ? sentenceText : "");
             qm.put("sentenceTranslation", sentenceTranslation != null ? sentenceTranslation : "");
             qm.put("sentenceSource", sentenceSource != null ? sentenceSource : "");
@@ -515,6 +565,19 @@ public class StudyService {
         }
     }
 
+    /** 获取错题数量（仅 COUNT，供首页等只需要数量的场景） */
+    public Map<String, Object> getMistakeCount(Long userId, String wordBookId) {
+        LambdaQueryWrapper<StudyMistake> wrapper = new LambdaQueryWrapper<StudyMistake>()
+                .eq(StudyMistake::getUserId, userId);
+        if (wordBookId != null && !wordBookId.isEmpty()) {
+            wrapper.eq(StudyMistake::getWordBookId, wordBookId);
+        }
+        long count = studyMistakeMapper.selectCount(wrapper);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("count", count);
+        return result;
+    }
+
     /** 获取错题列表 */
     public List<Map<String, Object>> getMistakes(Long userId, String wordBookId) {
         LambdaQueryWrapper<StudyMistake> wrapper = new LambdaQueryWrapper<StudyMistake>()
@@ -525,15 +588,46 @@ public class StudyService {
         }
 
         List<StudyMistake> mistakes = studyMistakeMapper.selectList(wrapper);
+        if (mistakes.isEmpty()) return List.of();
+
+        // --- 批量预载，替代循环内 N+1 ---
+        // entryIds + bookIds
+        Set<String> entryIds = new LinkedHashSet<>();
+        Set<String> bookIds = new LinkedHashSet<>();
+        for (StudyMistake m : mistakes) {
+            entryIds.add(m.getEntryId());
+            bookIds.add(m.getWordBookId());
+        }
+
+        Map<String, WordBookEntry> entryMap = new LinkedHashMap<>();
+        if (!entryIds.isEmpty()) {
+            wordBookEntryMapper.selectBatchIds(entryIds)
+                    .forEach(e -> entryMap.put(e.getId(), e));
+        }
+
+        Map<String, WordBook> bookMap = new LinkedHashMap<>();
+        if (!bookIds.isEmpty()) {
+            wordBookMapper.selectBatchIds(bookIds)
+                    .forEach(b -> bookMap.put(b.getId(), b));
+        }
+
+        // 批量 sentences（按 mistakeId IN）
+        Set<Long> mistakeIds = mistakes.stream().map(StudyMistake::getId).collect(Collectors.toSet());
+        Map<Long, List<StudyMistakeSentence>> sentByMistake = new LinkedHashMap<>();
+        if (!mistakeIds.isEmpty()) {
+            studyMistakeSentenceMapper.selectList(
+                    new LambdaQueryWrapper<StudyMistakeSentence>()
+                            .in(StudyMistakeSentence::getMistakeId, mistakeIds)
+                            .orderByDesc(StudyMistakeSentence::getMistakeCount))
+                    .forEach(s -> sentByMistake.computeIfAbsent(s.getMistakeId(), k -> new ArrayList<>()).add(s));
+        }
+
+        // --- 内存组装 ---
         List<Map<String, Object>> result = new ArrayList<>();
         for (StudyMistake m : mistakes) {
-            WordBookEntry entry = wordBookEntryMapper.selectById(m.getEntryId());
-
-            // 获取该字的所有题目记录
-            List<StudyMistakeSentence> sentences = studyMistakeSentenceMapper.selectList(
-                    new LambdaQueryWrapper<StudyMistakeSentence>()
-                            .eq(StudyMistakeSentence::getMistakeId, m.getId())
-                            .orderByDesc(StudyMistakeSentence::getMistakeCount));
+            WordBookEntry entry = entryMap.get(m.getEntryId());
+            WordBook book = bookMap.get(m.getWordBookId());
+            List<StudyMistakeSentence> sentences = sentByMistake.getOrDefault(m.getId(), List.of());
 
             List<Map<String, Object>> sentList = sentences.stream().map(s -> {
                 Map<String, Object> sm = new LinkedHashMap<>();
@@ -553,7 +647,6 @@ public class StudyService {
             item.put("totalErrors", m.getTotalErrors() != null ? m.getTotalErrors() : 0);
             item.put("lastErrorTime", m.getLastMistakeTime() != null ? m.getLastMistakeTime().toString().substring(0, 10) : "");
             item.put("sentences", sentList);
-            WordBook book = wordBookMapper.selectById(m.getWordBookId());
             item.put("wordBookName", book != null ? book.getName() : "");
             result.add(item);
         }
