@@ -2,11 +2,12 @@ package com.bogutongjin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("word")
-public class Word {
+@TableName("word_book_entry")
+public class WordBookEntry implements Serializable {
     @TableId
     private String id;
     private String wordBookId;
@@ -19,6 +20,8 @@ public class Word {
     private String examFrequency;
     private String mnemonic;
     private String wordType;
+    private String similarHomophones;
+    private String similarShapes;
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)

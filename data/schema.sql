@@ -29,98 +29,84 @@ CREATE TABLE word_book (
 ) ENGINE=InnoDB COMMENT='词书';
 
 -- ============================================
--- 2. 字词
+-- 2. 字词条目（原 word 表，新增 similar_homophones/similar_shapes JSON 列，替代原 similar_homophone/similar_shape 多对一表）
 -- ============================================
-CREATE TABLE word (
-  id                VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '字词ID，如 wb_c_001',
-  word_book_id      VARCHAR(32)  NOT NULL COMMENT '所属词书ID',
-  `character`         VARCHAR(8)   NOT NULL COMMENT '汉字',
-  pinyin            VARCHAR(32)  NOT NULL DEFAULT '' COMMENT '拼音',
-  character_type    VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '字型: 象形字/指事字/会意字/形声字',
-  explanation       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '字形解释',
-  oracle_form       VARCHAR(256) NOT NULL DEFAULT '' COMMENT '甲骨文图片URL',
-  exam_frequency    VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '考试频次，如 5年3考',
-  mnemonic          VARCHAR(256) NOT NULL DEFAULT '' COMMENT '记忆口诀',
-  word_type         VARCHAR(8)   NOT NULL DEFAULT '' COMMENT '字词类型: 实词/虚词/通假字',
-  sort_order        INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE word_book_entry (
+  id                 VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '字词条目ID，如 wb_c_001',
+  word_book_id       VARCHAR(32)  NOT NULL COMMENT '所属词书ID',
+  `character`        VARCHAR(8)   NOT NULL COMMENT '汉字',
+  pinyin             VARCHAR(32)  NOT NULL DEFAULT '' COMMENT '拼音',
+  character_type     VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '字型: 象形字/指事字/会意字/形声字',
+  explanation        VARCHAR(512) NOT NULL DEFAULT '' COMMENT '字形解释',
+  oracle_form        VARCHAR(256) NOT NULL DEFAULT '' COMMENT '甲骨文图片URL',
+  exam_frequency     VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '考试频次，如 5年3考',
+  mnemonic           VARCHAR(256) NOT NULL DEFAULT '' COMMENT '记忆口诀',
+  word_type          VARCHAR(8)   NOT NULL DEFAULT '' COMMENT '字词类型: 实词/虚词/通假字',
+  similar_homophones JSON         COMMENT '同音易混字列表，JSON数组，如 ["字1","字2"]',
+  similar_shapes     JSON         COMMENT '形近字列表，JSON数组，如 ["字1","字2"]',
+  sort_order         INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  created_at         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_word_book_id (word_book_id),
   INDEX idx_character (`character`)
-) ENGINE=InnoDB COMMENT='字词';
+) ENGINE=InnoDB COMMENT='字词条目';
 
 -- ============================================
--- 3. 义项（一字多义）
+-- 3. 字词条目-关键词引用
 -- ============================================
-CREATE TABLE meaning (
+CREATE TABLE word_entry_keyword_ref (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  word_id     VARCHAR(32)  NOT NULL COMMENT '所属字词ID',
-  definition  VARCHAR(256) NOT NULL COMMENT '释义说明',
-  pinyin      VARCHAR(32)  NOT NULL DEFAULT '' COMMENT '该义项的读音（多音字时区分）',
-  example     VARCHAR(512) NOT NULL COMMENT '例句原文',
-  translation VARCHAR(512) NOT NULL DEFAULT '' COMMENT '例句翻译',
-  source      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '例句出处，如《论语·为政》',
+  entry_id    VARCHAR(32)  NOT NULL COMMENT '字词条目ID',
+  kid         VARCHAR(64)  NOT NULL COMMENT '引用的 article_keyword.kid',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  INDEX idx_word_id (word_id)
-) ENGINE=InnoDB COMMENT='义项';
+  INDEX idx_entry_id (entry_id),
+  INDEX idx_kid (kid)
+) ENGINE=InnoDB COMMENT='字词条目-关键词引用';
 
 -- ============================================
--- 4. 考题句子
+-- 4. 考题
 -- ============================================
-CREATE TABLE sentence (
-  id                    VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '句子ID，如 s_c_001_1',
-  word_id               VARCHAR(32)  NOT NULL COMMENT '考查的字词ID',
-  text                  VARCHAR(512) NOT NULL COMMENT '句子原文',
-  source                VARCHAR(128) NOT NULL DEFAULT '' COMMENT '句子出处',
-  translation           VARCHAR(512) NOT NULL DEFAULT '' COMMENT '整句翻译',
-  target_word           VARCHAR(8)   NOT NULL COMMENT '考查的目标字',
-  correct_meaning_index TINYINT      NOT NULL DEFAULT 0 COMMENT '正确答案在distractors中的序号(0-based)',
-  difficulty            VARCHAR(10)  NOT NULL DEFAULT 'basic' COMMENT '难度: basic/medium/hard',
-  article_id            VARCHAR(32)  COMMENT '关联的名篇ID',
-  audio_url             VARCHAR(256) COMMENT '预录音频URL',
-  sort_order            INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  created_at            DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at            DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_word_id (word_id),
-  INDEX idx_article_id (article_id),
+CREATE TABLE quiz_item (
+  id          VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '考题ID',
+  entry_id    VARCHAR(32)  NOT NULL COMMENT '所属字词条目ID',
+  kid_ref     VARCHAR(64)  COMMENT '关联的 article_keyword.kid',
+  difficulty  VARCHAR(10)  NOT NULL DEFAULT 'basic' COMMENT '难度: basic/medium/hard',
+  target_word VARCHAR(8)   NOT NULL COMMENT '考查的目标字',
+  definition  VARCHAR(256) NOT NULL COMMENT '正确答案释义',
+  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  INDEX idx_entry_id (entry_id),
+  INDEX idx_kid_ref (kid_ref),
   INDEX idx_difficulty (difficulty)
-) ENGINE=InnoDB COMMENT='考题句子';
+) ENGINE=InnoDB COMMENT='考题';
 
 -- ============================================
--- 5. 句子干扰项
+-- 5. 考题干扰项
 -- ============================================
-CREATE TABLE sentence_distractor (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  sentence_id VARCHAR(32)  NOT NULL COMMENT '所属句子ID',
-  text        VARCHAR(128) NOT NULL COMMENT '干扰项文本',
-  sort_order  TINYINT      NOT NULL DEFAULT 0 COMMENT '排序序号',
-  INDEX idx_sentence_id (sentence_id)
-) ENGINE=InnoDB COMMENT='句子干扰项';
+CREATE TABLE quiz_distractor (
+  id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  quiz_item_id VARCHAR(32)  NOT NULL COMMENT '所属考题ID',
+  text         VARCHAR(128) NOT NULL COMMENT '干扰项文本',
+  sort_order   TINYINT      NOT NULL DEFAULT 0 COMMENT '排序序号',
+  INDEX idx_quiz_item_id (quiz_item_id)
+) ENGINE=InnoDB COMMENT='考题干扰项';
 
 -- ============================================
--- 6. 同音易混字
+-- 6. 字词用法（替代原 meaning 表）
 -- ============================================
-CREATE TABLE similar_homophone (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  word_id     VARCHAR(32)  NOT NULL COMMENT '所属字词ID',
-  `character`   VARCHAR(8)   NOT NULL COMMENT '同音易混字',
-  sort_order  TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_word_id (word_id)
-) ENGINE=InnoDB COMMENT='同音易混字';
+CREATE TABLE word_usage (
+  id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  entry_id            VARCHAR(32)  NOT NULL COMMENT '所属字词条目ID',
+  usage_type          VARCHAR(16)  NOT NULL COMMENT '用法类型: definition(义项)/example(例句)',
+  definition          VARCHAR(256) NOT NULL COMMENT '释义/用法说明',
+  example_sentence    VARCHAR(512) COMMENT '例句原文',
+  example_translation VARCHAR(512) COMMENT '例句翻译',
+  example_source      VARCHAR(128) COMMENT '例句出处',
+  sort_order          INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  INDEX idx_entry_id (entry_id)
+) ENGINE=InnoDB COMMENT='字词用法';
 
 -- ============================================
--- 7. 形近字
--- ============================================
-CREATE TABLE similar_shape (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  word_id     VARCHAR(32)  NOT NULL COMMENT '所属字词ID',
-  `character`   VARCHAR(8)   NOT NULL COMMENT '形近字',
-  sort_order  TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_word_id (word_id)
-) ENGINE=InnoDB COMMENT='形近字';
-
--- ============================================
--- 8. 名篇
+-- 7. 名篇
 -- ============================================
 CREATE TABLE article (
   id                  VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '名篇ID，如 art_001',
@@ -139,20 +125,20 @@ CREATE TABLE article (
 ) ENGINE=InnoDB COMMENT='名篇';
 
 -- ============================================
--- 9. 名篇句子
+-- 8. 名篇句子
 -- ============================================
 CREATE TABLE article_sentence (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  article_id  VARCHAR(32)  NOT NULL COMMENT '所属名篇ID',
+  id          BIGINT        AUTO_INCREMENT PRIMARY KEY,
+  article_id  VARCHAR(32)   NOT NULL COMMENT '所属名篇ID',
   text        VARCHAR(1024) NOT NULL COMMENT '句子原文',
   translation VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '句子翻译',
-  audio_url   VARCHAR(256) COMMENT '句子音频URL',
-  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '句子序号',
+  audio_url   VARCHAR(256)  COMMENT '句子音频URL',
+  sort_order  INT           NOT NULL DEFAULT 0 COMMENT '句子序号',
   INDEX idx_article_id (article_id)
 ) ENGINE=InnoDB COMMENT='名篇句子';
 
 -- ============================================
--- 10. 名篇句子内联生词
+-- 9. 名篇句子内联生词
 -- ============================================
 CREATE TABLE article_keyword (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -161,26 +147,29 @@ CREATE TABLE article_keyword (
   definition           VARCHAR(256) NOT NULL COMMENT '释义',
   word_book_id         VARCHAR(32)  COMMENT '所属词书ID',
   mastery_level        VARCHAR(16)  COMMENT '掌握程度，可为空',
+  kid                  VARCHAR(64)  UNIQUE COMMENT '全局唯一关键词标识，供 word_entry_keyword_ref 和 quiz_item 引用',
   match_word           VARCHAR(128) COMMENT '消歧用：多字上下文片段，用于定位句中具体出现位置',
+  word_type            VARCHAR(16)  COMMENT '生词类型：shi/xu/tongjia/gujinyi/huoyong',
   sort_order           TINYINT      NOT NULL DEFAULT 0,
-  INDEX idx_as_id (article_sentence_id)
+  INDEX idx_as_id (article_sentence_id),
+  UNIQUE KEY uk_kid (kid)
 ) ENGINE=InnoDB COMMENT='名篇句子内联生词';
 
 -- ============================================
--- 11. 名篇逐字标注（已废弃，保留兼容，典故注释已改用 article_glossary 表）
+-- 10. 名篇逐字标注（已废弃，保留兼容，典故注释已改用 article_glossary 表）
 -- ============================================
 CREATE TABLE article_char_annotation (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
   article_sentence_id  BIGINT       NOT NULL COMMENT '所属名篇句子ID',
   char_text            VARCHAR(4)   NOT NULL COMMENT '单个汉字或标点',
-  `role`                 VARCHAR(10)  NOT NULL COMMENT '角色: content(实词)/function(虚词)/punct(标点)',
+  `role`               VARCHAR(10)  NOT NULL COMMENT '角色: content(实词)/function(虚词)/punct(标点)',
   definition           VARCHAR(256) COMMENT '释义（实词必填，虚词可选，标点无）',
   sort_order           INT          NOT NULL DEFAULT 0 COMMENT '字符序号',
   INDEX idx_as_id (article_sentence_id)
 ) ENGINE=InnoDB COMMENT='名篇逐字标注';
 
 -- ============================================
--- 11b. 名篇典故注释
+-- 11. 名篇典故注释
 -- ============================================
 CREATE TABLE article_glossary (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -192,19 +181,7 @@ CREATE TABLE article_glossary (
 ) ENGINE=InnoDB COMMENT='名篇典故注释';
 
 -- ============================================
--- 12. 名篇关联字词（多对多）
--- ============================================
-CREATE TABLE article_related_word (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  article_id  VARCHAR(32)  NOT NULL,
-  word_id     VARCHAR(32)  NOT NULL,
-  UNIQUE KEY uk_article_word (article_id, word_id),
-  INDEX idx_article_id (article_id),
-  INDEX idx_word_id (word_id)
-) ENGINE=InnoDB COMMENT='名篇关联字词';
-
--- ============================================
--- 13. 勋章定义
+-- 12. 勋章定义
 -- ============================================
 CREATE TABLE badge (
   id               VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '勋章ID，如 badge_streak_3',
@@ -219,7 +196,7 @@ CREATE TABLE badge (
 ) ENGINE=InnoDB COMMENT='勋章定义';
 
 -- ============================================
--- 14. 用户表
+-- 13. 用户表
 -- ============================================
 CREATE TABLE `user` (
   id             BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -239,13 +216,13 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB COMMENT='用户';
 
 -- ============================================
--- 15. 用户字词学习进度
+-- 14. 用户字词学习进度（word_id → entry_id）
 -- ============================================
 CREATE TABLE user_word_progress (
   id                BIGINT       AUTO_INCREMENT PRIMARY KEY,
   user_id           BIGINT       NOT NULL COMMENT '用户ID',
   word_book_id      VARCHAR(32)  NOT NULL COMMENT '词书ID',
-  word_id           VARCHAR(32)  NOT NULL COMMENT '字词ID',
+  entry_id          VARCHAR(32)  NOT NULL COMMENT '字词条目ID',
   stage             VARCHAR(8)   NOT NULL DEFAULT '0' COMMENT '复习阶段: 0~6 或 done',
   next_review_date  DATE         COMMENT '下次复习日期',
   correct_count     INT          NOT NULL DEFAULT 0 COMMENT '累计答对次数',
@@ -253,13 +230,13 @@ CREATE TABLE user_word_progress (
   reset_count       INT          NOT NULL DEFAULT 0 COMMENT '重置次数',
   created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_user_word (user_id, word_book_id, word_id),
+  UNIQUE KEY uk_user_word (user_id, word_book_id, entry_id),
   INDEX idx_user_id (user_id),
   INDEX idx_next_review (next_review_date)
 ) ENGINE=InnoDB COMMENT='用户字词学习进度';
 
 -- ============================================
--- 16. 用户名篇阅读进度
+-- 15. 用户名篇阅读进度
 -- ============================================
 CREATE TABLE user_article_progress (
   id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -275,7 +252,7 @@ CREATE TABLE user_article_progress (
 ) ENGINE=InnoDB COMMENT='用户名篇阅读进度';
 
 -- ============================================
--- 17. 用户打卡记录
+-- 16. 用户打卡记录
 -- ============================================
 CREATE TABLE user_checkin (
   id          BIGINT   AUTO_INCREMENT PRIMARY KEY,
@@ -288,7 +265,7 @@ CREATE TABLE user_checkin (
 ) ENGINE=InnoDB COMMENT='用户打卡记录';
 
 -- ============================================
--- 18. 用户获得的勋章
+-- 17. 用户获得的勋章
 -- ============================================
 CREATE TABLE user_badge (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -302,24 +279,24 @@ CREATE TABLE user_badge (
 ) ENGINE=InnoDB COMMENT='用户获得的勋章';
 
 -- ============================================
--- 19. 答题历史记录
+-- 18. 答题历史记录（word_id → entry_id, sentence_id → quiz_item_id）
 -- ============================================
 CREATE TABLE user_answer_history (
   id               BIGINT       AUTO_INCREMENT PRIMARY KEY,
   user_id          BIGINT       NOT NULL COMMENT '用户ID',
   word_book_id     VARCHAR(32)  NOT NULL COMMENT '词书ID',
-  word_id          VARCHAR(32)  NOT NULL COMMENT '字词ID',
-  sentence_id      VARCHAR(32)  NOT NULL COMMENT '句子ID',
+  entry_id         VARCHAR(32)  NOT NULL COMMENT '字词条目ID',
+  quiz_item_id     VARCHAR(32)  NOT NULL COMMENT '考题ID',
   selected_option  TINYINT      NOT NULL COMMENT '选择的选项序号(0-based)',
   correct          TINYINT(1)   NOT NULL COMMENT '是否答对',
   timestamp_ms     BIGINT       NOT NULL COMMENT '答题时间戳(ms)',
   created_at       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_word (user_id, word_book_id, word_id),
+  INDEX idx_user_entry (user_id, word_book_id, entry_id),
   INDEX idx_created (created_at)
 ) ENGINE=InnoDB COMMENT='答题历史记录';
 
 -- ============================================
--- 20. 错误反馈
+-- 19. 错误反馈
 -- ============================================
 CREATE TABLE feedback (
   id            BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -340,7 +317,7 @@ CREATE TABLE feedback (
 ) ENGINE=InnoDB COMMENT='错误反馈';
 
 -- ============================================
--- 21. 每日学习任务（当日生成，当日有效）
+-- 20. 每日学习任务（当日生成，当日有效）
 -- ============================================
 CREATE TABLE daily_task (
   id                BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -361,29 +338,29 @@ CREATE TABLE daily_task (
 ) ENGINE=InnoDB COMMENT='每日学习任务';
 
 -- ============================================
--- 22. 错题本
+-- 21. 错题本（word_id → entry_id）
 -- ============================================
 CREATE TABLE study_mistake (
   id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
   user_id             BIGINT       NOT NULL COMMENT '用户ID',
-  word_id             VARCHAR(32)  NOT NULL COMMENT '字词ID',
+  entry_id            VARCHAR(32)  NOT NULL COMMENT '字词条目ID',
   word_book_id        VARCHAR(32)  NOT NULL COMMENT '词书ID',
   total_errors        INT          NOT NULL DEFAULT 0 COMMENT '所有句子的错误次数之和（冗余字段，避免每次查询遍历子表）',
   last_mistake_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次答错时间',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_user_word_book (user_id, word_book_id, word_id),
+  UNIQUE KEY uk_user_entry_book (user_id, word_book_id, entry_id),
   INDEX idx_user_id (user_id),
   INDEX idx_word_book_id (word_book_id)
 ) ENGINE=InnoDB COMMENT='错题本——一条记录一个字';
 
 -- ============================================
--- 22b. 错题本句子明细
+-- 22. 错题本句子明细（sentence_id → quiz_item_id）
 -- ============================================
 CREATE TABLE study_mistake_sentence (
   id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
   mistake_id          BIGINT       NOT NULL COMMENT '所属错题记录ID',
-  sentence_id         VARCHAR(32)  NOT NULL COMMENT '句子ID',
+  quiz_item_id        VARCHAR(32)  NOT NULL COMMENT '考题ID',
   sentence_text       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '答错时的原句',
   wrong_answer        VARCHAR(128) NOT NULL DEFAULT '' COMMENT '用户错误答案',
   correct_answer      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '正确答案',
@@ -391,7 +368,7 @@ CREATE TABLE study_mistake_sentence (
   consecutive_correct INT          NOT NULL DEFAULT 0 COMMENT '连续答对次数（达到阈值自动移出该句）',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_mistake_sentence (mistake_id, sentence_id),
+  UNIQUE KEY uk_mistake_quiz (mistake_id, quiz_item_id),
   INDEX idx_mistake_id (mistake_id)
 ) ENGINE=InnoDB COMMENT='错题本句子明细——一条记录一个句子';
 

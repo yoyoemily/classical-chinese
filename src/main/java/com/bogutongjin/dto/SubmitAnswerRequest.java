@@ -11,10 +11,10 @@ import java.util.Map;
 public class SubmitAnswerRequest {
     @NotBlank(message = "wordBookId 不能为空")
     private String wordBookId;
-    @NotBlank(message = "wordId 不能为空")
-    private String wordId;
-    @NotBlank(message = "sentenceId 不能为空")
-    private String sentenceId;
+    @NotBlank(message = "entryId 不能为空")
+    private String entryId;
+    @NotBlank(message = "quizItemId 不能为空")
+    private String quizItemId;
     @NotNull(message = "selectedOption 不能为空")
     private Integer selectedOption;
     @NotNull(message = "correct 不能为空")

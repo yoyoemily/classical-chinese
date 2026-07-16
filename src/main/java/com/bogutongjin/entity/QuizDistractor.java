@@ -2,14 +2,14 @@ package com.bogutongjin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import java.io.Serializable;
 
 @Data
-@TableName("similar_homophone")
-public class SimilarHomophone {
+@TableName("quiz_distractor")
+public class QuizDistractor implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String wordId;
-    @TableField("`character`")
-    private String character;
+    private String quizItemId;
+    private String text;
     private Integer sortOrder;
 }

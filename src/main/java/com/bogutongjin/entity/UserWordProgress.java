@@ -12,7 +12,7 @@ public class UserWordProgress {
     private Long id;
     private Long userId;
     private String wordBookId;
-    private String wordId;
+    private String entryId;
     private String stage;
     private LocalDate nextReviewDate;
     private Integer correctCount;

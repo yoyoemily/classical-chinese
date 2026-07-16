@@ -11,8 +11,8 @@ public class UserAnswerHistory {
     private Long id;
     private Long userId;
     private String wordBookId;
-    private String wordId;
-    private String sentenceId;
+    private String entryId;
+    private String quizItemId;
     private Integer selectedOption;
     private Integer correct;
     private Long timestampMs;

@@ -35,7 +35,7 @@ public class ProgressService {
         Map<String, Object> wpMap = new LinkedHashMap<>();
         for (UserWordProgress wp : wordProgresses) {
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("wordId", wp.getWordId());
+            item.put("entryId", wp.getEntryId());
             item.put("stage", wp.getStage());
             item.put("nextReviewDate", wp.getNextReviewDate() != null ? wp.getNextReviewDate().toString() : "");
             item.put("correctCount", wp.getCorrectCount());
@@ -46,18 +46,18 @@ public class ProgressService {
             List<UserAnswerHistory> history = userAnswerHistoryMapper.selectList(
                     new LambdaQueryWrapper<UserAnswerHistory>()
                             .eq(UserAnswerHistory::getUserId, userId)
-                            .eq(UserAnswerHistory::getWordId, wp.getWordId())
+                            .eq(UserAnswerHistory::getEntryId, wp.getEntryId())
                             .orderByDesc(UserAnswerHistory::getCreatedAt));
             item.put("history", history.stream().map(h -> {
                 Map<String, Object> hm = new LinkedHashMap<>();
-                hm.put("sentenceId", h.getSentenceId());
+                hm.put("quizItemId", h.getQuizItemId());
                 hm.put("selectedOption", h.getSelectedOption());
                 hm.put("correct", h.getCorrect() == 1);
                 hm.put("timestamp", h.getTimestampMs());
                 return hm;
             }).collect(Collectors.toList()));
 
-            wpMap.put(wp.getWordId(), item);
+            wpMap.put(wp.getEntryId(), item);
         }
 
         // 打卡日期

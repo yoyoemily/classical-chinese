@@ -101,6 +101,14 @@
         <finalName>classical-chinese</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <executable>/Users/zhutx/Library/Java/JavaVirtualMachines/ms-17.0.19/Contents/Home/bin/javac</executable>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>

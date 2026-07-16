@@ -10,7 +10,7 @@ public class StudyMistakeSentence {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long mistakeId;
-    private String sentenceId;
+    private String quizItemId;
     private String sentenceText;
     private String wrongAnswer;
     private String correctAnswer;

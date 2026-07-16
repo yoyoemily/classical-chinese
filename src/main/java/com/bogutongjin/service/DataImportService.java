@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,7 +88,7 @@ public class DataImportService {
 
         // 清空文章相关表（article_glossary 由 importGlossaryForArticle 独立管理，不 TRUNCATE）
         String[] tables = {
-                "article_related_word", "article_char_annotation", "article_keyword",
+                "article_keyword", "article_char_annotation",
                 "article_sentence", "article"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
@@ -101,7 +100,6 @@ public class DataImportService {
 
         // 导入
         importArticles(articles);
-        importArticleRelatedWords(articles);
 
         Map<String, Object> result = new java.util.LinkedHashMap<>();
         result.put("success", true);
@@ -165,7 +163,7 @@ public class DataImportService {
 
     /**
      * 单本词书独立导入（幂等：先删后插）
-     * 只影响该词书及下属的字词/义项/句子等关联数据，不影响名篇、勋章、经典等其他数据
+     * 只影响该词书及下属的字词/义项/考题等关联数据，不影响名篇、勋章、经典等其他数据
      */
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> importWordBook(String wordBookId, SourceWordBook book) {
@@ -174,14 +172,14 @@ public class DataImportService {
 
         // 2. 插入词书元数据（独立导入默认标记为已开通）
         book.setInitialized(true);
-        int wordCount = book.getWords() != null ? book.getWords().size() : 0;
+        int wordCount = book.getWordEntries() != null ? book.getWordEntries().size() : 0;
         book.setTotalWords(wordCount);
         insertWordBook(book);
 
-        // 3. 插入字词
-        if (CollUtil.isNotEmpty(book.getWords())) {
-            for (SourceWord w : book.getWords()) {
-                insertWord(book.getId(), w);
+        // 3. 插入字词条目
+        if (CollUtil.isNotEmpty(book.getWordEntries())) {
+            for (SourceWordEntry entry : book.getWordEntries()) {
+                insertWordBookEntry(book.getId(), entry);
             }
         }
 
@@ -194,23 +192,55 @@ public class DataImportService {
         return result;
     }
 
+    // ======================== 删除/清空 ========================
+
     private void deleteWordBookData(String wordBookId) {
         // 按外键依赖逆序删除
-        jdbc.update("DELETE sd FROM sentence_distractor sd " +
-                "INNER JOIN sentence s ON sd.sentence_id = s.id " +
-                "INNER JOIN word w ON s.word_id = w.id " +
-                "WHERE w.word_book_id = ?", wordBookId);
-        jdbc.update("DELETE FROM sentence WHERE word_id IN " +
-                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
-        jdbc.update("DELETE FROM meaning WHERE word_id IN " +
-                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
-        jdbc.update("DELETE FROM similar_homophone WHERE word_id IN " +
-                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
-        jdbc.update("DELETE FROM similar_shape WHERE word_id IN " +
-                "(SELECT id FROM word WHERE word_book_id = ?)", wordBookId);
-        jdbc.update("DELETE FROM word WHERE word_book_id = ?", wordBookId);
+        jdbc.update("DELETE qd FROM quiz_distractor qd " +
+                "INNER JOIN quiz_item qi ON qd.quiz_item_id = qi.id " +
+                "WHERE qi.entry_id IN (SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM quiz_item WHERE entry_id IN " +
+                "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM word_entry_keyword_ref WHERE entry_id IN " +
+                "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM word_usage WHERE entry_id IN " +
+                "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
+        jdbc.update("DELETE FROM word_book_entry WHERE word_book_id = ?", wordBookId);
         jdbc.update("DELETE FROM word_book WHERE id = ?", wordBookId);
     }
+
+    private void truncateAll() {
+        // 按外键依赖逆序清空（child table → parent table）
+        String[] tables = {
+                "quiz_distractor",
+                "quiz_item",
+                "word_entry_keyword_ref",
+                "word_usage",
+                "word_book_entry",
+                "word_book",
+                "badge",
+                "user_word_progress",
+                "user_answer_history",
+                "user_checkin",
+                "user_badge",
+                "study_mistake_sentence",
+                "study_mistake",
+                "daily_task",
+                "feedback",
+                "classic_glossary",
+                "classic_paragraph",
+                "classic_chapter",
+                "classic"
+        };
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
+        for (String t : tables) {
+            jdbc.execute("TRUNCATE TABLE " + t);
+        }
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
+        log.info("已清空 {} 张业务表", tables.length);
+    }
+
+    // ======================== 勋章导入 ========================
 
     private void importBadges(List<SourceBadge> badges) {
         if (CollUtil.isEmpty(badges)) return;
@@ -230,6 +260,8 @@ public class DataImportService {
         log.info("勋章导入完成: {} 枚", batch.size());
     }
 
+    // ======================== 词书导入 ========================
+
     private void importWordBooks(List<SourceWordBook> books) {
         if (CollUtil.isEmpty(books)) return;
         for (SourceWordBook book : books) {
@@ -240,9 +272,9 @@ public class DataImportService {
                 upsertWordBook(book);
             } else {
                 insertWordBook(book);
-                if (CollUtil.isNotEmpty(book.getWords())) {
-                    for (SourceWord w : book.getWords()) {
-                        insertWord(book.getId(), w);
+                if (CollUtil.isNotEmpty(book.getWordEntries())) {
+                    for (SourceWordEntry entry : book.getWordEntries()) {
+                        insertWordBookEntry(book.getId(), entry);
                     }
                 }
             }
@@ -251,8 +283,8 @@ public class DataImportService {
     }
 
     private void insertWordBook(SourceWordBook b) {
-        // 防御：从 words 数组推算元数据，不盲信 JSON 字段值
-        int wordCount = b.getWords() != null ? b.getWords().size() : 0;
+        // 防御：从 wordEntries 数组推算元数据，不盲信 JSON 字段值
+        int wordCount = b.getWordEntries() != null ? b.getWordEntries().size() : 0;
         boolean init = b.getInitialized() != null ? b.getInitialized() : wordCount > 0;
         if (b.getTotalWords() == null || b.getTotalWords() == 0) {
             b.setTotalWords(wordCount);
@@ -279,55 +311,82 @@ public class DataImportService {
                 b.getId());
     }
 
-    private void insertWord(String bookId, SourceWord w) {
-        jdbc.update(
-                "INSERT INTO word (id, word_book_id, `character`, pinyin, character_type, explanation, oracle_form, exam_frequency, mnemonic, word_type, sort_order) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                w.getId(), bookId, w.getCharacter(), nvl(w.getPinyin()), nvl(w.getCharacterType()),
-                nvl(w.getExplanation()), nvl(w.getOracleForm()), nvl(w.getExamFrequency()),
-                nvl(w.getMnemonic()), nvl(w.getWordType()), 0);
+    // ======================== 字词条目导入 ========================
 
-        if (CollUtil.isNotEmpty(w.getMeanings())) {
-            String sql = "INSERT INTO meaning (word_id, definition, pinyin, example, translation, source, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private void insertWordBookEntry(String bookId, SourceWordEntry entry) {
+        // 序列化同音字/形近字列表为 JSON 字符串
+        String similarHomophonesJson = CollUtil.isNotEmpty(entry.getSimilarHomophones())
+                ? JSONUtil.toJsonStr(entry.getSimilarHomophones()) : null;
+        String similarShapesJson = CollUtil.isNotEmpty(entry.getSimilarShapes())
+                ? JSONUtil.toJsonStr(entry.getSimilarShapes()) : null;
+
+        jdbc.update(
+                "INSERT INTO word_book_entry (id, word_book_id, `character`, pinyin, character_type, explanation, oracle_form, exam_frequency, mnemonic, word_type, similar_homophones, similar_shapes, sort_order) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                entry.getId(), bookId, entry.getCharacter(), nvl(entry.getPinyin()),
+                nvl(entry.getCharacterType()), nvl(entry.getExplanation()),
+                nvl(entry.getOracleForm()), nvl(entry.getExamFrequency()),
+                nvl(entry.getMnemonic()), nvl(entry.getWordType()),
+                similarHomophonesJson, similarShapesJson, 0);
+
+        // 插入关键词引用
+        insertKeyWordRefs(entry.getId(), entry.getKeyWordRefs());
+
+        // 插入考题
+        if (CollUtil.isNotEmpty(entry.getQuizItems())) {
+            for (int i = 0; i < entry.getQuizItems().size(); i++) {
+                insertQuizItem(entry.getId(), entry.getQuizItems().get(i), i);
+            }
+        }
+
+        // 插入用法（只读型词书的释义/例句）
+        insertWordUsages(entry.getId(), entry.getUsages());
+    }
+
+    private void insertKeyWordRefs(String entryId, List<SourceKeyWordRef> refs) {
+        if (CollUtil.isEmpty(refs)) return;
+        String sql = "INSERT INTO word_entry_keyword_ref (entry_id, kid, sort_order) VALUES (?, ?, ?)";
+        List<Object[]> batch = new ArrayList<>();
+        for (int i = 0; i < refs.size(); i++) {
+            batch.add(new Object[]{entryId, refs.get(i).getKid(), i});
+        }
+        jdbc.batchUpdate(sql, batch);
+    }
+
+    private void insertQuizItem(String entryId, SourceQuizItem qi, int sortOrder) {
+        jdbc.update(
+                "INSERT INTO quiz_item (id, entry_id, kid_ref, difficulty, target_word, definition, sort_order) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                qi.getId(), entryId, qi.getKidRef(), nvl(qi.getDifficulty(), "basic"),
+                qi.getTargetWord(), qi.getDefinition(), sortOrder);
+
+        // 批量插入干扰项
+        if (CollUtil.isNotEmpty(qi.getDistractors())) {
+            String sql = "INSERT INTO quiz_distractor (quiz_item_id, text, sort_order) VALUES (?, ?, ?)";
             List<Object[]> batch = new ArrayList<>();
-            for (int i = 0; i < w.getMeanings().size(); i++) {
-                SourceMeaning m = w.getMeanings().get(i);
-                batch.add(new Object[]{w.getId(), m.getDefinition(), nvl(m.getPinyin()), m.getExample(), nvl(m.getTranslation()), nvl(m.getSource()), i});
+            for (int i = 0; i < qi.getDistractors().size(); i++) {
+                batch.add(new Object[]{qi.getId(), qi.getDistractors().get(i), i});
             }
             jdbc.batchUpdate(sql, batch);
         }
-
-        if (CollUtil.isNotEmpty(w.getSentences())) {
-            for (SourceSentence s : w.getSentences()) {
-                insertSentence(w.getId(), s);
-            }
-        }
-
-        if (CollUtil.isNotEmpty(w.getSimilarHomophones())) {
-            insertStrings("INSERT INTO similar_homophone (word_id, `character`, sort_order) VALUES (?, ?, ?)",
-                    w.getId(), w.getSimilarHomophones());
-        }
-
-        if (CollUtil.isNotEmpty(w.getSimilarShapes())) {
-            insertStrings("INSERT INTO similar_shape (word_id, `character`, sort_order) VALUES (?, ?, ?)",
-                    w.getId(), w.getSimilarShapes());
-        }
     }
 
-    private void insertSentence(String wordId, SourceSentence s) {
-        jdbc.update(
-                "INSERT INTO sentence (id, word_id, text, source, translation, target_word, correct_meaning_index, difficulty, article_id, audio_url, sort_order) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                s.getId(), wordId, s.getText(), nvl(s.getSource()), nvl(s.getTranslation()), nvl(s.getTargetWord()),
-                s.getCorrectMeaningIndex() != null ? s.getCorrectMeaningIndex() : 0,
-                nvl(s.getDifficulty(), "basic"),
-                s.getArticleId(), s.getAudioUrl(), 0);
-
-        if (CollUtil.isNotEmpty(s.getDistractors())) {
-            insertStrings("INSERT INTO sentence_distractor (sentence_id, text, sort_order) VALUES (?, ?, ?)",
-                    s.getId(), s.getDistractors());
+    private void insertWordUsages(String entryId, List<SourceWordUsage> usages) {
+        if (CollUtil.isEmpty(usages)) return;
+        String sql = "INSERT INTO word_usage (entry_id, usage_type, definition, example_sentence, example_translation, example_source, sort_order) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        List<Object[]> batch = new ArrayList<>();
+        for (int i = 0; i < usages.size(); i++) {
+            SourceWordUsage u = usages.get(i);
+            batch.add(new Object[]{
+                    entryId, u.getUsageType(), u.getDefinition(),
+                    u.getExampleSentence(), u.getExampleTranslation(), u.getExampleSource(), i
+            });
         }
+        jdbc.batchUpdate(sql, batch);
     }
+
+    // ======================== 名篇导入 ========================
 
     private void importArticles(List<SourceArticle> articles) {
         if (CollUtil.isEmpty(articles)) return;
@@ -335,17 +394,25 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sentenceSql = "INSERT INTO article_sentence (article_id, text, translation, audio_url, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, match_word, word_type, sort_order) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, kid, match_word, word_type, sort_order) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, `role`, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
         String glossarySql = "INSERT INTO article_glossary (article_sentence_id, word, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?)";
 
         for (SourceArticle a : articles) {
+            int sortOrder;
+            String artId = a.getId();
+            if (artId.startsWith("art_shell_")) {
+                // 壳文章 offset 10000 起
+                sortOrder = 10000 + Integer.parseInt(artId.replace("art_shell_", ""));
+            } else {
+                sortOrder = Integer.parseInt(artId.replace("art_", ""));
+            }
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
                     nvl(a.getCategory(), "prose"), a.getTextbook(), a.getBackground(), a.getFullTextAudioUrl(),
-                    Integer.parseInt(a.getId().replace("art_", "")));
+                    sortOrder);
 
             if (CollUtil.isEmpty(a.getSentences())) continue;
 
@@ -357,7 +424,8 @@ public class DataImportService {
                 if (CollUtil.isNotEmpty(s.getKeyWords())) {
                     List<Object[]> kwBatch = s.getKeyWords().stream()
                             .map(kw -> new Object[]{sentenceId, kw.getWord(), kw.getDefinition(),
-                                    kw.getWordBookId(), kw.getMasteryLevel(), kw.getMatchWord(), kw.getWordType(), 0})
+                                    kw.getWordBookId(), kw.getMasteryLevel(), kw.getKid(),
+                                    kw.getMatchWord(), kw.getWordType(), 0})
                             .collect(Collectors.toList());
                     jdbc.batchUpdate(keywordSql, kwBatch);
                 }
@@ -384,22 +452,7 @@ public class DataImportService {
         log.info("名篇导入完成: {} 篇", articles.size());
     }
 
-    private void importArticleRelatedWords(List<SourceArticle> articles) {
-        if (CollUtil.isEmpty(articles)) return;
-        String sql = "INSERT IGNORE INTO article_related_word (article_id, word_id) VALUES (?, ?)";
-        List<Object[]> batch = new ArrayList<>();
-        for (SourceArticle a : articles) {
-            if (CollUtil.isNotEmpty(a.getRelatedWordIds())) {
-                for (String wid : a.getRelatedWordIds()) {
-                    batch.add(new Object[]{a.getId(), wid});
-                }
-            }
-        }
-        if (!batch.isEmpty()) {
-            jdbc.batchUpdate(sql, batch);
-        }
-        log.info("名篇-字词关联导入完成: {} 条", batch.size());
-    }
+    // ======================== 经典导入 ========================
 
     private void importClassics(List<SourceClassic> classics) {
         if (CollUtil.isEmpty(classics)) return;
@@ -433,8 +486,8 @@ public class DataImportService {
      * 导入一部经典著作的章节内容（含章节、段落、注释）
      * 幂等：先删除该经典下已有的所有章节/段落/注释数据，再重新插入
      * 支持两种数据格式：
-     *   - 章节型（chapters 含 paragraphs 直接段落）→ 一级 chapter 结构
-     *   - 选集型（chapters 含 entries，entries 含 paragraphs）→ 二级 chapter(parent→child) 结构
+     *   - 章节型（chapters 含 paragraphs 直接段落）-> 一级 chapter 结构
+     *   - 选集型（chapters 含 entries，entries 含 paragraphs）-> 二级 chapter(parent->child) 结构
      * @param classicId 经典著作 ID（classic 表主键）
      * @param chapters  章节/门类数组（来自 chapters.json 或 entries.json）
      */
@@ -444,7 +497,7 @@ public class DataImportService {
         Classic classic = classicMapper.selectById(classicId);
         String classicName = classic != null ? classic.getName() : "ID=" + classicId;
 
-        // 2. 检测数据格式：有 entries 字段 → 选集型（二级结构）
+        // 2. 检测数据格式：有 entries 字段 -> 选集型（二级结构）
         boolean isAnthology = !CollUtil.isEmpty(chapters)
                 && chapters.stream().anyMatch(ch -> !CollUtil.isEmpty(ch.getEntries()));
 
@@ -480,7 +533,7 @@ public class DataImportService {
         jdbc.update("DELETE FROM classic_chapter WHERE classic_id = ?", classicId);
     }
 
-    /** 选集型导入：门→条目 二级结构 */
+    /** 选集型导入：门->条目 二级结构 */
     private void importAnthologyData(Long classicId, List<SourceClassicChapter> groups, String classicName) {
         String chapterSql = "INSERT INTO classic_chapter (classic_id, parent_id, title, author, era, background, sort_order, created_at, updated_at) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -565,37 +618,7 @@ public class DataImportService {
         return count;
     }
 
-    private void truncateAll() {
-        // 按外键依赖逆序清空（child table → parent table）
-        String[] tables = {
-                "sentence_distractor",
-                "sentence",
-                "meaning",
-                "similar_homophone",
-                "similar_shape",
-                "word",
-                "word_book",
-                "badge",
-                "user_word_progress",
-                "user_answer_history",
-                "user_checkin",
-                "user_badge",
-                "study_mistake_sentence",
-                "study_mistake",
-                "daily_task",
-                "feedback",
-                "classic_glossary",
-                "classic_paragraph",
-                "classic_chapter",
-                "classic"
-        };
-        jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
-        for (String t : tables) {
-            jdbc.execute("TRUNCATE TABLE " + t);
-        }
-        jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
-        log.info("已清空 {} 张业务表", tables.length);
-    }
+    // ======================== 工具方法 ========================
 
     private void insertStrings(String sql, String parentId, List<String> values) {
         List<Object[]> batch = new ArrayList<>();

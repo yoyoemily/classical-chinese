@@ -10,7 +10,7 @@ public class StudyMistake {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;
-    private String wordId;
+    private String entryId;
     private String wordBookId;
     private Integer totalErrors;
     private LocalDateTime lastMistakeTime;

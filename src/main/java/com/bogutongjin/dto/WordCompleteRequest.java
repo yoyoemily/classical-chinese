@@ -8,6 +8,6 @@ import lombok.Data;
 public class WordCompleteRequest {
     @NotBlank(message = "wordBookId 不能为空")
     private String wordBookId;
-    @NotBlank(message = "wordId 不能为空")
-    private String wordId;
+    @NotBlank(message = "entryId 不能为空")
+    private String entryId;
 }

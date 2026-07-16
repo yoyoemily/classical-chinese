@@ -1,7 +1,6 @@
 package com.bogutongjin.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.bogutongjin.common.BusinessException;
 import com.bogutongjin.common.ResourceNotFoundException;
 import com.bogutongjin.entity.*;
 import com.bogutongjin.mapper.*;
@@ -21,9 +20,9 @@ import java.util.stream.Collectors;
 public class StudyService {
 
     private final WordBookMapper wordBookMapper;
-    private final WordMapper wordMapper;
-    private final SentenceMapper sentenceMapper;
-    private final SentenceDistractorMapper sentenceDistractorMapper;
+    private final WordBookEntryMapper wordBookEntryMapper;
+    private final QuizItemMapper quizItemMapper;
+    private final QuizDistractorMapper quizDistractorMapper;
     private final UserWordProgressMapper userWordProgressMapper;
     private final UserAnswerHistoryMapper userAnswerHistoryMapper;
     private final UserCheckinMapper userCheckinMapper;
@@ -33,7 +32,9 @@ public class StudyService {
     private final DailyTaskMapper dailyTaskMapper;
     private final StudyMistakeMapper studyMistakeMapper;
     private final StudyMistakeSentenceMapper studyMistakeSentenceMapper;
-    private final MeaningMapper meaningMapper;
+    private final ArticleKeywordMapper articleKeywordMapper;
+    private final ArticleSentenceMapper articleSentenceMapper;
+    private final ArticleMapper articleMapper;
 
     // -------------------- 今日任务 --------------------
 
@@ -57,11 +58,11 @@ public class StudyService {
                         .eq(UserWordProgress::getWordBookId, wordBookId));
 
         Map<String, UserWordProgress> progressMap = allProgress.stream()
-                .collect(Collectors.toMap(UserWordProgress::getWordId, p -> p, (a, b) -> a));
+                .collect(Collectors.toMap(UserWordProgress::getEntryId, p -> p, (a, b) -> a));
 
-        // 获取词书中所有词
-        List<Word> allWords = wordMapper.selectList(
-                new LambdaQueryWrapper<Word>().eq(Word::getWordBookId, wordBookId).orderByAsc(Word::getSortOrder));
+        // 获取词书中所有词条
+        List<WordBookEntry> allEntries = wordBookEntryMapper.selectList(
+                new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, wordBookId).orderByAsc(WordBookEntry::getSortOrder));
 
         LocalDate today = LocalDate.now();
         List<Map<String, Object>> reviewWords = new ArrayList<>();
@@ -71,9 +72,9 @@ public class StudyService {
         for (UserWordProgress up : allProgress) {
             if ("done".equals(up.getStage())) continue;
             if (up.getNextReviewDate() != null && !up.getNextReviewDate().isAfter(today)) {
-                Word w = findWord(allWords, up.getWordId());
-                if (w != null) {
-                    Map<String, Object> item = buildTodayWord(w, up, true, wordBookId);
+                WordBookEntry e = findEntry(allEntries, up.getEntryId());
+                if (e != null) {
+                    Map<String, Object> item = buildTodayEntry(e, up, true, wordBookId);
                     if (item != null) reviewWords.add(item);
                 }
             }
@@ -81,12 +82,12 @@ public class StudyService {
 
         // 新学词：没有进度的词
         Set<String> inProgress = progressMap.keySet();
-        List<Word> newOnes = allWords.stream()
-                .filter(w -> !inProgress.contains(w.getId()))
+        List<WordBookEntry> newOnes = allEntries.stream()
+                .filter(e -> !inProgress.contains(e.getId()))
                 .collect(Collectors.toList());
 
-        for (Word w : newOnes) {
-            Map<String, Object> item = buildTodayWord(w, null, false, wordBookId);
+        for (WordBookEntry e : newOnes) {
+            Map<String, Object> item = buildTodayEntry(e, null, false, wordBookId);
             if (item != null) newWords.add(item);
         }
 
@@ -105,39 +106,50 @@ public class StudyService {
         return result;
     }
 
-    private Word findWord(List<Word> words, String wordId) {
-        return words.stream().filter(w -> w.getId().equals(wordId)).findFirst().orElse(null);
+    private WordBookEntry findEntry(List<WordBookEntry> entries, String entryId) {
+        return entries.stream().filter(e -> e.getId().equals(entryId)).findFirst().orElse(null);
     }
 
-    private Map<String, Object> buildTodayWord(Word w, UserWordProgress up, boolean isReview, String wordBookId) {
-        List<Sentence> sentences = sentenceMapper.selectList(
-                new LambdaQueryWrapper<Sentence>().eq(Sentence::getWordId, w.getId()).orderByAsc(Sentence::getSortOrder));
-        if (sentences.isEmpty()) return null;
+    private Map<String, Object> buildTodayEntry(WordBookEntry entry, UserWordProgress up, boolean isReview, String wordBookId) {
+        List<QuizItem> quizItems = quizItemMapper.selectList(
+                new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entry.getId()).orderByAsc(QuizItem::getSortOrder));
+        if (quizItems.isEmpty()) return null;
 
         Map<String, Object> item = new LinkedHashMap<>();
-        item.put("wordId", w.getId());
-        item.put("character", w.getCharacter());
+        item.put("entryId", entry.getId());
+        item.put("character", entry.getCharacter());
         item.put("isReview", isReview);
         if (isReview && up != null) {
             item.put("reviewStage", up.getStage());
         }
-        item.put("sentences", sentences.stream().map(s -> {
-            Map<String, Object> sm = new LinkedHashMap<>();
-            sm.put("id", s.getId());
-            sm.put("text", s.getText());
-            sm.put("source", s.getSource());
-            sm.put("translation", s.getTranslation());
-            sm.put("targetWord", s.getTargetWord());
-            sm.put("correctMeaningIndex", s.getCorrectMeaningIndex());
-            sm.put("difficulty", s.getDifficulty());
-            sm.put("articleId", s.getArticleId());
-            sm.put("audioUrl", s.getAudioUrl());
+        item.put("quizItems", quizItems.stream().map(q -> {
+            Map<String, Object> qm = new LinkedHashMap<>();
+            qm.put("id", q.getId());
+            qm.put("definition", q.getDefinition());
+            qm.put("difficulty", q.getDifficulty());
+            qm.put("targetWord", q.getTargetWord());
             // 干扰项
-            List<SentenceDistractor> distractors = sentenceDistractorMapper.selectList(
-                    new LambdaQueryWrapper<SentenceDistractor>().eq(SentenceDistractor::getSentenceId, s.getId())
-                            .orderByAsc(SentenceDistractor::getSortOrder));
-            sm.put("distractors", distractors.stream().map(SentenceDistractor::getText).collect(Collectors.toList()));
-            return sm;
+            List<QuizDistractor> distractors = quizDistractorMapper.selectList(
+                    new LambdaQueryWrapper<QuizDistractor>().eq(QuizDistractor::getQuizItemId, q.getId())
+                            .orderByAsc(QuizDistractor::getSortOrder));
+            qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
+            qm.put("kidRef", q.getKidRef());
+            // 句子上下文：优先取 quiz_item 自身存储的句子
+            qm.put("sentenceText", q.getSentenceText() != null ? q.getSentenceText() : "");
+            qm.put("sentenceTranslation", q.getSentenceTranslation() != null ? q.getSentenceTranslation() : "");
+            qm.put("sentenceSource", q.getSentenceSource() != null ? q.getSentenceSource() : "");
+            // 通过 kid 查 articleId
+            if (q.getKidRef() != null && !q.getKidRef().isEmpty()) {
+                ArticleKeyword ak = articleKeywordMapper.selectOne(
+                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, q.getKidRef()));
+                if (ak != null) {
+                    ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+                    if (as != null) {
+                        qm.put("articleId", as.getArticleId() != null ? as.getArticleId() : "");
+                    }
+                }
+            }
+            return qm;
         }).collect(Collectors.toList()));
         return item;
     }
@@ -145,26 +157,26 @@ public class StudyService {
     // -------------------- 提交答题 --------------------
 
     @Transactional
-    public Map<String, Object> submitAnswer(Long userId, String wordBookId, String wordId, String sentenceId,
+    public Map<String, Object> submitAnswer(Long userId, String wordBookId, String entryId, String quizItemId,
                                              Integer selectedOption, Boolean correct,
                                              String correctAnswerText, String wrongAnswerText) {
         // 记录答题
         UserAnswerHistory history = new UserAnswerHistory();
         history.setUserId(userId);
         history.setWordBookId(wordBookId);
-        history.setWordId(wordId);
-        history.setSentenceId(sentenceId);
+        history.setEntryId(entryId);
+        history.setQuizItemId(quizItemId);
         history.setSelectedOption(selectedOption);
         history.setCorrect(correct ? 1 : 0);
         history.setTimestampMs(System.currentTimeMillis());
         userAnswerHistoryMapper.insert(history);
 
-        // 答对：增加当前句子的连续答对次数
+        // 答错记录错题
         if (!correct) {
-            recordMistake(userId, wordBookId, wordId, sentenceId, correctAnswerText, wrongAnswerText);
+            recordMistake(userId, wordBookId, entryId, quizItemId, correctAnswerText, wrongAnswerText);
         } else {
-            // 答对：增加当前句子的连续答对次数
-            incrementConsecutiveCorrect(userId, wordId, wordBookId, sentenceId);
+            // 答对：增加当前 quiz item 的连续答对次数
+            incrementConsecutiveCorrect(userId, entryId, wordBookId, quizItemId);
         }
 
         // 更新进度
@@ -172,13 +184,13 @@ public class StudyService {
                 new LambdaQueryWrapper<UserWordProgress>()
                         .eq(UserWordProgress::getUserId, userId)
                         .eq(UserWordProgress::getWordBookId, wordBookId)
-                        .eq(UserWordProgress::getWordId, wordId));
+                        .eq(UserWordProgress::getEntryId, entryId));
 
         if (progress == null) {
             progress = new UserWordProgress();
             progress.setUserId(userId);
             progress.setWordBookId(wordBookId);
-            progress.setWordId(wordId);
+            progress.setEntryId(entryId);
             progress.setStage("0");
             progress.setCorrectCount(0);
             progress.setWrongCount(0);
@@ -231,11 +243,11 @@ public class StudyService {
     // -------------------- 完成单个字词（写入 XP） --------------------
 
     /**
-     * 单个字词全部句子答完后调用（进入字总结页时）。
+     * 单个字词全部 quiz item 答完后调用（进入字总结页时）。
      * 仅新学词（今天之前无 UserWordProgress 记录）才写入 XP，复习词不给 XP。
      */
     @Transactional
-    public Map<String, Object> completeWord(Long userId, String wordBookId, String wordId) {
+    public Map<String, Object> completeWord(Long userId, String wordBookId, String entryId) {
         // 判断是否为新学词：今天之前是否已有该词的 progress 记录
         LocalDate today = LocalDate.now();
         LocalDateTime todayStart = today.atStartOfDay();
@@ -244,7 +256,7 @@ public class StudyService {
                 new LambdaQueryWrapper<UserWordProgress>()
                         .eq(UserWordProgress::getUserId, userId)
                         .eq(UserWordProgress::getWordBookId, wordBookId)
-                        .eq(UserWordProgress::getWordId, wordId)
+                        .eq(UserWordProgress::getEntryId, entryId)
                         .lt(UserWordProgress::getCreatedAt, todayStart)) > 0;
 
         int xpGained = 0;
@@ -380,20 +392,31 @@ public class StudyService {
 
     // -------------------- 错题本 --------------------
 
+    /** 获取句子文本（通过 quiz_item.kid_ref → article_keyword → article_sentence） */
+    private String getSentenceTextByQuizItemId(String quizItemId) {
+        QuizItem qi = quizItemMapper.selectById(quizItemId);
+        if (qi == null || qi.getKidRef() == null || qi.getKidRef().isEmpty()) return "";
+        ArticleKeyword ak = articleKeywordMapper.selectOne(
+                new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, qi.getKidRef()));
+        if (ak == null) return "";
+        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+        return as != null ? as.getText() : "";
+    }
+
     /** 答错时记录到错题本 */
-    private void recordMistake(Long userId, String wordBookId, String wordId, String sentenceId,
+    private void recordMistake(Long userId, String wordBookId, String entryId, String quizItemId,
                                 String correctAnswerText, String wrongAnswerText) {
-        // 查找或创建该字的错题记录（按 user_id + word_id + word_book_id 唯一）
+        // 查找或创建该字的错题记录（按 user_id + entry_id + word_book_id 唯一）
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getEntryId, entryId)
                         .eq(StudyMistake::getWordBookId, wordBookId));
 
         if (mistake == null) {
             mistake = new StudyMistake();
             mistake.setUserId(userId);
-            mistake.setWordId(wordId);
+            mistake.setEntryId(entryId);
             mistake.setWordBookId(wordBookId);
             mistake.setTotalErrors(1);
             mistake.setLastMistakeTime(java.time.LocalDateTime.now());
@@ -405,19 +428,18 @@ public class StudyService {
         }
 
         // 获取句子文本
-        Sentence sentence = sentenceMapper.selectById(sentenceId);
-        String sentenceText = sentence != null ? sentence.getText() : "";
+        String sentenceText = getSentenceTextByQuizItemId(quizItemId);
 
         String wrongAnswer = wrongAnswerText != null && !wrongAnswerText.isEmpty()
                 ? wrongAnswerText : "不知道";
         String correctAns = correctAnswerText != null && !correctAnswerText.isEmpty()
                 ? correctAnswerText : "";
 
-        // 查找已有该句子的记录
+        // 查找已有该题目的记录
         StudyMistakeSentence sentRecord = studyMistakeSentenceMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistakeSentence>()
                         .eq(StudyMistakeSentence::getMistakeId, mistake.getId())
-                        .eq(StudyMistakeSentence::getSentenceId, sentenceId));
+                        .eq(StudyMistakeSentence::getQuizItemId, quizItemId));
 
         if (sentRecord != null) {
             sentRecord.setSentenceText(sentenceText);
@@ -429,7 +451,7 @@ public class StudyService {
         } else {
             sentRecord = new StudyMistakeSentence();
             sentRecord.setMistakeId(mistake.getId());
-            sentRecord.setSentenceId(sentenceId);
+            sentRecord.setQuizItemId(quizItemId);
             sentRecord.setSentenceText(sentenceText);
             sentRecord.setWrongAnswer(wrongAnswer);
             sentRecord.setCorrectAnswer(correctAns);
@@ -439,43 +461,43 @@ public class StudyService {
         }
     }
 
-    /** 答对时增加该句子的连续答对计数，达到阈值则移出该句子 */
-    private void incrementConsecutiveCorrect(Long userId, String wordId, String wordBookId, String sentenceId) {
+    /** 答对时增加该题目的连续答对计数，达到阈值则移出该题目 */
+    private void incrementConsecutiveCorrect(Long userId, String entryId, String wordBookId, String quizItemId) {
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getEntryId, entryId)
                         .eq(StudyMistake::getWordBookId, wordBookId));
         if (mistake == null) return;
 
-        // 精确查找答对的那个句子
+        // 精确查找答对的那个 quiz item
         StudyMistakeSentence sent = studyMistakeSentenceMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistakeSentence>()
                         .eq(StudyMistakeSentence::getMistakeId, mistake.getId())
-                        .eq(StudyMistakeSentence::getSentenceId, sentenceId));
+                        .eq(StudyMistakeSentence::getQuizItemId, quizItemId));
         if (sent == null) return;
 
         sent.setConsecutiveCorrect(sent.getConsecutiveCorrect() + 1);
 
         if (sent.getConsecutiveCorrect() >= 3) {
-            // 该句子达到阈值，移出：外层 total_errors 减去该句错误次数
+            // 该题目达到阈值，移出：外层 total_errors 减去该题目错误次数
             studyMistakeSentenceMapper.deleteById(sent.getId());
             int newTotal = Math.max(0, (mistake.getTotalErrors() != null ? mistake.getTotalErrors() : 0) - sent.getMistakeCount());
             mistake.setTotalErrors(newTotal);
             studyMistakeMapper.updateById(mistake);
-            log.info("错题句子已移出: userId={}, wordId={}, sentenceId={}, consecutiveCorrect={}",
-                    userId, wordId, sentenceId, sent.getConsecutiveCorrect());
+            log.info("错题题目已移出: userId={}, entryId={}, quizItemId={}, consecutiveCorrect={}",
+                    userId, entryId, quizItemId, sent.getConsecutiveCorrect());
         } else {
             studyMistakeSentenceMapper.updateById(sent);
         }
 
-        // 如果所有句子都被移除了，删除错题主记录
+        // 如果所有题目都被移除了，删除错题主记录
         long remaining = studyMistakeSentenceMapper.selectCount(
                 new LambdaQueryWrapper<StudyMistakeSentence>()
                         .eq(StudyMistakeSentence::getMistakeId, mistake.getId()));
         if (remaining == 0) {
             studyMistakeMapper.deleteById(mistake.getId());
-            log.info("错题字已全部移出: userId={}, wordId={}", userId, wordId);
+            log.info("错题字已全部移出: userId={}, entryId={}", userId, entryId);
         }
     }
 
@@ -491,9 +513,9 @@ public class StudyService {
         List<StudyMistake> mistakes = studyMistakeMapper.selectList(wrapper);
         List<Map<String, Object>> result = new ArrayList<>();
         for (StudyMistake m : mistakes) {
-            Word word = wordMapper.selectById(m.getWordId());
+            WordBookEntry entry = wordBookEntryMapper.selectById(m.getEntryId());
 
-            // 获取该字的所有句子记录
+            // 获取该字的所有题目记录
             List<StudyMistakeSentence> sentences = studyMistakeSentenceMapper.selectList(
                     new LambdaQueryWrapper<StudyMistakeSentence>()
                             .eq(StudyMistakeSentence::getMistakeId, m.getId())
@@ -501,7 +523,7 @@ public class StudyService {
 
             List<Map<String, Object>> sentList = sentences.stream().map(s -> {
                 Map<String, Object> sm = new LinkedHashMap<>();
-                sm.put("sentenceId", s.getSentenceId());
+                sm.put("quizItemId", s.getQuizItemId());
                 sm.put("sentenceText", s.getSentenceText());
                 sm.put("wrongAnswer", s.getWrongAnswer());
                 sm.put("correctAnswer", s.getCorrectAnswer());
@@ -511,9 +533,9 @@ public class StudyService {
             }).collect(Collectors.toList());
 
             Map<String, Object> item = new LinkedHashMap<>();
-            item.put("wordId", m.getWordId());
-            item.put("character", word != null ? word.getCharacter() : "");
-            item.put("pinyin", word != null ? word.getPinyin() : "");
+            item.put("entryId", m.getEntryId());
+            item.put("character", entry != null ? entry.getCharacter() : "");
+            item.put("pinyin", entry != null ? entry.getPinyin() : "");
             item.put("totalErrors", m.getTotalErrors() != null ? m.getTotalErrors() : 0);
             item.put("lastErrorTime", m.getLastMistakeTime() != null ? m.getLastMistakeTime().toString().substring(0, 10) : "");
             item.put("sentences", sentList);
@@ -525,14 +547,14 @@ public class StudyService {
     }
 
     /** 移除错题 */
-    public void removeMistake(Long userId, String wordBookId, String wordId) {
+    public void removeMistake(Long userId, String wordBookId, String entryId) {
         StudyMistake mistake = studyMistakeMapper.selectOne(
                 new LambdaQueryWrapper<StudyMistake>()
                         .eq(StudyMistake::getUserId, userId)
-                        .eq(StudyMistake::getWordId, wordId)
+                        .eq(StudyMistake::getEntryId, entryId)
                         .eq(StudyMistake::getWordBookId, wordBookId));
         if (mistake != null) {
-            // 先删子表句子记录
+            // 先删子表题目记录
             studyMistakeSentenceMapper.delete(
                     new LambdaQueryWrapper<StudyMistakeSentence>()
                             .eq(StudyMistakeSentence::getMistakeId, mistake.getId()));

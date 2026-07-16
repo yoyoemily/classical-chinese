@@ -38,50 +38,53 @@ public class SourceData {
         private Boolean initialized;
         private Integer totalWords;
         private Integer sortOrder;
-        private List<SourceWord> words;
+        private List<SourceWordEntry> wordEntries;
     }
 
-    // ---- 字词 ----
+    // ---- 字词条目 ----
     @Data
-    public static class SourceWord {
+    public static class SourceWordEntry {
         private String id;
         private String character;
         private String pinyin;
         private String characterType;
         private String explanation;
-        private String examFrequency;
         private String oracleForm;
-        private List<SourceMeaning> meanings;
-        private List<SourceSentence> sentences;
-        private List<String> similarHomophones;
-        private List<String> similarShapes;
+        private String examFrequency;
         private String mnemonic;
         private String wordType;
+        private List<String> similarHomophones;
+        private List<String> similarShapes;
+        private List<SourceKeyWordRef> keyWordRefs;
+        private List<SourceQuizItem> quizItems;
+        private List<SourceWordUsage> usages;
     }
 
-    // ---- 义项 ----
+    // ---- 字词-关键词引用 ----
     @Data
-    public static class SourceMeaning {
-        private String definition;
-        private String pinyin;
-        private String example;
-        private String translation;
-        private String source;
+    public static class SourceKeyWordRef {
+        private String kid;
     }
 
-    // ---- 考题句子 ----
+    // ---- 考题 ----
     @Data
-    public static class SourceSentence {
+    public static class SourceQuizItem {
         private String id;
-        private String text;
-        private String source;
-        private String translation;
+        private String kidRef;
         private String targetWord;
-        private Integer correctMeaningIndex;
         private String difficulty;
+        private String definition;
         private List<String> distractors;
-        private String articleId;
-        private String audioUrl;
+    }
+
+    // ---- 字词用法 ----
+    @Data
+    public static class SourceWordUsage {
+        private String usageType;
+        private String definition;
+        private String exampleSentence;
+        private String exampleTranslation;
+        private String exampleSource;
     }
 
     // ---- 名篇 ----
@@ -115,6 +118,7 @@ public class SourceData {
         private String definition;
         private String wordBookId;
         private String masteryLevel;
+        private String kid;
         /** 消歧用：多字上下文片段，用于定位句中具体出现位置 */
         private String matchWord;
         /** 生词类型：shi/xu/tongjia/gujinyi/huoyong */

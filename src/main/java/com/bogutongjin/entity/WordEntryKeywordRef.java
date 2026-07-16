@@ -2,13 +2,14 @@ package com.bogutongjin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import java.io.Serializable;
 
 @Data
-@TableName("sentence_distractor")
-public class SentenceDistractor {
+@TableName("word_entry_keyword_ref")
+public class WordEntryKeywordRef implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String sentenceId;
-    private String text;
+    private String entryId;
+    private String kid;
     private Integer sortOrder;
 }

@@ -35,7 +35,7 @@ public class StudyController {
             @Valid @RequestBody SubmitAnswerRequest req,
             @CurrentUser Long userId) {
         return Result.ok(studyService.submitAnswer(
-                userId, req.getWordBookId(), req.getWordId(), req.getSentenceId(),
+                userId, req.getWordBookId(), req.getEntryId(), req.getQuizItemId(),
                 req.getSelectedOption(), req.getCorrect(),
                 req.getCorrectAnswer(), req.getWrongAnswer()));
     }
@@ -45,7 +45,7 @@ public class StudyController {
     public Result<Map<String, Object>> completeWord(
             @Valid @RequestBody WordCompleteRequest req,
             @CurrentUser Long userId) {
-        return Result.ok(studyService.completeWord(userId, req.getWordBookId(), req.getWordId()));
+        return Result.ok(studyService.completeWord(userId, req.getWordBookId(), req.getEntryId()));
     }
 
     /** 完成今日学习 */
@@ -65,12 +65,12 @@ public class StudyController {
     }
 
     /** 移除错题 */
-    @DeleteMapping("/mistakes/{wordId}")
+    @DeleteMapping("/mistakes/{entryId}")
     public Result<Void> removeMistake(
-            @PathVariable String wordId,
+            @PathVariable String entryId,
             @RequestParam String wordBookId,
             @CurrentUser Long userId) {
-        studyService.removeMistake(userId, wordBookId, wordId);
+        studyService.removeMistake(userId, wordBookId, entryId);
         return Result.ok();
     }
 }

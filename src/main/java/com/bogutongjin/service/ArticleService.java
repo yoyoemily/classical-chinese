@@ -20,7 +20,6 @@ public class ArticleService {
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleCharAnnotationMapper articleCharAnnotationMapper;
     private final ArticleGlossaryMapper articleGlossaryMapper;
-    private final ArticleRelatedWordMapper articleRelatedWordMapper;
 
     public List<Map<String, Object>> getArticles(String category, String textbook) {
         LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>().orderByAsc(Article::getSortOrder);
@@ -69,6 +68,9 @@ public class ArticleService {
                 km.put("definition", kw.getDefinition());
                 km.put("wordBookId", kw.getWordBookId());
                 km.put("masteryLevel", kw.getMasteryLevel());
+                if (kw.getKid() != null) {
+                    km.put("kid", kw.getKid());
+                }
                 if (kw.getMatchWord() != null) {
                     km.put("matchWord", kw.getMatchWord());
                 }
@@ -109,10 +111,8 @@ public class ArticleService {
             return sm;
         }).collect(Collectors.toList());
 
-        // 关联字词
-        List<ArticleRelatedWord> relatedWords = articleRelatedWordMapper.selectList(
-                new LambdaQueryWrapper<ArticleRelatedWord>().eq(ArticleRelatedWord::getArticleId, a.getId()));
-        List<String> relatedWordIds = relatedWords.stream().map(ArticleRelatedWord::getWordId).collect(Collectors.toList());
+        // 关联字词（article_related_word 表已废弃，直接返回空列表）
+        List<String> relatedWordIds = new ArrayList<>();
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", a.getId());
