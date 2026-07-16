@@ -410,15 +410,11 @@ public class StudyService {
 
     // -------------------- 错题本 --------------------
 
-    /** 获取句子文本（通过 quiz_item.kid_ref → article_keyword → article_sentence） */
+    /** 获取句子文本（直接从 quiz_item.sentence_text 取） */
     private String getSentenceTextByQuizItemId(String quizItemId) {
         QuizItem qi = quizItemMapper.selectById(quizItemId);
-        if (qi == null || qi.getKidRef() == null || qi.getKidRef().isEmpty()) return "";
-        ArticleKeyword ak = articleKeywordMapper.selectOne(
-                new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, qi.getKidRef()));
-        if (ak == null) return "";
-        ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
-        return as != null ? as.getText() : "";
+        if (qi == null) return "";
+        return qi.getSentenceText() != null ? qi.getSentenceText() : "";
     }
 
     /** 答错时记录到错题本 */
