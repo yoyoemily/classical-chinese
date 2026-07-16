@@ -393,8 +393,8 @@ public class DataImportService {
 
     private void importArticles(List<SourceArticle> articles) {
         if (CollUtil.isEmpty(articles)) return;
-        String articleSql = "INSERT INTO article (id, title, author, dynasty, category, textbook, background, full_text_audio_url, sort_order) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String articleSql = "INSERT INTO article (id, title, author, dynasty, category, textbook, background, full_text_audio_url, sort_order, has_content) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sentenceSql = "INSERT INTO article_sentence (article_id, text, translation, audio_url, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
         String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, kid, match_word, word_type, sort_order) " +
@@ -413,9 +413,10 @@ public class DataImportService {
             } else {
                 sortOrder = Integer.parseInt(artId.replace("art_", ""));
             }
+            int hasContent = CollUtil.isEmpty(a.getSentences()) ? 0 : 1;
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
                     nvl(a.getCategory(), "prose"), a.getTextbook(), a.getBackground(), a.getFullTextAudioUrl(),
-                    sortOrder);
+                    sortOrder, hasContent);
 
             if (CollUtil.isEmpty(a.getSentences())) continue;
 

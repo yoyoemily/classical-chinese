@@ -6,6 +6,7 @@ import com.bogutongjin.entity.*;
 import com.bogutongjin.mapper.*;
 import com.bogutongjin.util.PinyinUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,9 +21,12 @@ public class ArticleService {
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleCharAnnotationMapper articleCharAnnotationMapper;
     private final ArticleGlossaryMapper articleGlossaryMapper;
+    private final JdbcTemplate jdbc;
 
     public List<Map<String, Object>> getArticles(String category, String textbook) {
-        LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>().orderByAsc(Article::getSortOrder);
+        LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>()
+                .eq(Article::getHasContent, 1)
+                .orderByAsc(Article::getSortOrder);
 
         if (category != null && !"undefined".equals(category) && !"all".equals(category)) {
             qw.eq(Article::getCategory, category);
@@ -36,7 +40,39 @@ public class ArticleService {
         }
 
         List<Article> articles = articleMapper.selectList(qw);
-        return articles.stream().map(this::toArticleMap).collect(Collectors.toList());
+
+        // 批量查询每篇文章的词书重点字数（article_sentence JOIN article_keyword）
+        List<String> articleIds = articles.stream().map(Article::getId).toList();
+        Map<String, Integer> keywordCountMap = new HashMap<>();
+        if (!articleIds.isEmpty()) {
+            String inClause = articleIds.stream().map(id -> "'" + id + "'").collect(Collectors.joining(","));
+            List<Map<String, Object>> rows = jdbc.queryForList(
+                    "SELECT s.article_id, COUNT(k.id) AS cnt FROM article_sentence s " +
+                    "INNER JOIN article_keyword k ON k.article_sentence_id = s.id " +
+                    "WHERE s.article_id IN (" + inClause + ") GROUP BY s.article_id");
+            for (Map<String, Object> row : rows) {
+                keywordCountMap.put((String) row.get("article_id"),
+                        ((Number) row.get("cnt")).intValue());
+            }
+        }
+
+        return articles.stream().map(a -> toArticleListMap(a, keywordCountMap.getOrDefault(a.getId(), 0)))
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> toArticleListMap(Article a, int keywordCount) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", a.getId());
+        result.put("title", a.getTitle());
+        result.put("author", a.getAuthor());
+        result.put("dynasty", a.getDynasty());
+        result.put("category", a.getCategory());
+        result.put("textbook", a.getTextbook());
+        result.put("background", a.getBackground());
+        result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
+        result.put("sentences", new ArrayList<>());
+        result.put("keywordCount", keywordCount);
+        return result;
     }
 
     public Map<String, Object> getArticleDetail(String articleId) {
@@ -111,8 +147,10 @@ public class ArticleService {
             return sm;
         }).collect(Collectors.toList());
 
-        // 关联字词（article_related_word 表已废弃，直接返回空列表）
-        List<String> relatedWordIds = new ArrayList<>();
+        // 词书重点字数
+        int keywordCount = sentenceList.stream()
+                .mapToInt(s -> ((List<?>) s.get("keyWords")).size())
+                .sum();
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", a.getId());
@@ -124,7 +162,7 @@ public class ArticleService {
         result.put("background", a.getBackground());
         result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
         result.put("sentences", sentenceList);
-        result.put("relatedWordIds", relatedWordIds);
+        result.put("keywordCount", keywordCount);
         return result;
     }
 }

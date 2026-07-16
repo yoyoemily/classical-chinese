@@ -17,6 +17,7 @@ public class Article {
     private String background;
     private String fullTextAudioUrl;
     private Integer sortOrder;
+    private Integer hasContent;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

@@ -105,6 +105,9 @@ public class ContentService {
                 Map<String, Object> mm = new LinkedHashMap<>();
                 mm.put("definition", q.getDefinition());
                 mm.put("difficulty", q.getDifficulty());
+                mm.put("example", q.getSentenceText() != null ? q.getSentenceText() : "");
+                mm.put("translation", q.getSentenceTranslation() != null ? q.getSentenceTranslation() : "");
+                mm.put("source", q.getSentenceSource() != null ? q.getSentenceSource() : "");
                 meaningList.add(mm);
             }
 

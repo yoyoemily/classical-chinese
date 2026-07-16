@@ -118,6 +118,7 @@ CREATE TABLE article (
   background          TEXT         COMMENT '创作背景',
   full_text_audio_url VARCHAR(256) COMMENT '全文音频URL',
   sort_order          INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  has_content         TINYINT      NOT NULL DEFAULT 0 COMMENT '是否包含正文句子: 0=空壳, 1=有内容',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category),
