@@ -161,6 +161,7 @@ CREATE TABLE article_keyword (
   definition           VARCHAR(256) NOT NULL COMMENT '释义',
   word_book_id         VARCHAR(32)  COMMENT '所属词书ID',
   mastery_level        VARCHAR(16)  COMMENT '掌握程度，可为空',
+  match_word           VARCHAR(128) COMMENT '消歧用：多字上下文片段，用于定位句中具体出现位置',
   sort_order           TINYINT      NOT NULL DEFAULT 0,
   INDEX idx_as_id (article_sentence_id)
 ) ENGINE=InnoDB COMMENT='名篇句子内联生词';

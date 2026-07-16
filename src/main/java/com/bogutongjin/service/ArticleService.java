@@ -69,6 +69,9 @@ public class ArticleService {
                 km.put("definition", kw.getDefinition());
                 km.put("wordBookId", kw.getWordBookId());
                 km.put("masteryLevel", kw.getMasteryLevel());
+                if (kw.getMatchWord() != null) {
+                    km.put("matchWord", kw.getMatchWord());
+                }
                 return km;
             }).collect(Collectors.toList()));
 

@@ -13,5 +13,7 @@ public class ArticleKeyword {
     private String definition;
     private String wordBookId;
     private String masteryLevel;
+    /** 消歧用：多字上下文片段，用于定位句中具体出现位置 */
+    private String matchWord;
     private Integer sortOrder;
 }

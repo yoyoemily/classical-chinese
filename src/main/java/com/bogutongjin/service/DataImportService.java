@@ -335,8 +335,8 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sentenceSql = "INSERT INTO article_sentence (article_id, text, translation, audio_url, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, sort_order) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, match_word, sort_order) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, `role`, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?)";
         String glossarySql = "INSERT INTO article_glossary (article_sentence_id, word, definition, sort_order) " +
@@ -357,7 +357,7 @@ public class DataImportService {
                 if (CollUtil.isNotEmpty(s.getKeyWords())) {
                     List<Object[]> kwBatch = s.getKeyWords().stream()
                             .map(kw -> new Object[]{sentenceId, kw.getWord(), kw.getDefinition(),
-                                    kw.getWordBookId(), kw.getMasteryLevel(), 0})
+                                    kw.getWordBookId(), kw.getMasteryLevel(), kw.getMatchWord(), 0})
                             .collect(Collectors.toList());
                     jdbc.batchUpdate(keywordSql, kwBatch);
                 }
