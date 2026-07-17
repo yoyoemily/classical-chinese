@@ -8,3 +8,7 @@ spring:
 wechat:
   app-id: wx00adcbea9d77ba88
   app-secret: ${WECHAT_APP_SECRET:762a6a02dba5ba0b7f16650c5655ba95}
+
+logging:
+  level:
+    com.bogutongjin: DEBUG
