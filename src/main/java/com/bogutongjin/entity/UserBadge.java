@@ -15,6 +15,9 @@ public class UserBadge {
     private LocalDate earnedDate;
     private Integer notified;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

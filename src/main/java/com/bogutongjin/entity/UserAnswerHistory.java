@@ -17,6 +17,9 @@ public class UserAnswerHistory {
     private Integer correct;
     private Long timestampMs;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

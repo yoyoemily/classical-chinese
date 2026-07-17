@@ -19,6 +19,9 @@ public class UserWordProgress {
     private Integer wrongCount;
     private Integer resetCount;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

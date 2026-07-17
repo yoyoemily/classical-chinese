@@ -19,6 +19,10 @@ public class User {
     private Integer longestStreak;
     private Integer memberLevel;
 
+    private Integer deleted;
+
+    private LocalDateTime dataClearedAt;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

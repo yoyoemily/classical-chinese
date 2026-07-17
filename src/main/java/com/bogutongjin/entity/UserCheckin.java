@@ -13,6 +13,9 @@ public class UserCheckin {
     private Long userId;
     private LocalDate checkinDate;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

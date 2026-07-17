@@ -18,6 +18,9 @@ public class StudyMistakeSentence {
     private Integer mistakeCount;
     private Integer consecutiveCorrect;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

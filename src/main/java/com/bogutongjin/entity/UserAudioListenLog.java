@@ -15,6 +15,9 @@ public class UserAudioListenLog {
     private Integer xpAwarded;
     private Integer textLength;
 
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

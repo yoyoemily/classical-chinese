@@ -199,9 +199,11 @@ CREATE TABLE `user` (
   current_streak INT          NOT NULL DEFAULT 0 COMMENT '当前连续学习天数',
   longest_streak INT          NOT NULL DEFAULT 0 COMMENT '历史最长连续天数',
   member_level   TINYINT      NOT NULL DEFAULT 0 COMMENT '会员级别：0=非会员，1=普通会员',
+  deleted        TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除: 0=正常, 1=已删除',
+  data_cleared_at DATETIME    COMMENT '最近一次清除学习数据的时间',
   created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_open_id (open_id),
+  UNIQUE KEY uk_openid_deleted (open_id, deleted),
   INDEX idx_union_id (union_id)
 ) ENGINE=InnoDB COMMENT='用户';
 
@@ -218,6 +220,7 @@ CREATE TABLE user_word_progress (
   correct_count     INT          NOT NULL DEFAULT 0 COMMENT '累计答对次数',
   wrong_count       INT          NOT NULL DEFAULT 0 COMMENT '累计答错次数',
   reset_count       INT          NOT NULL DEFAULT 0 COMMENT '重置次数',
+  deleted           TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_word (user_id, word_book_id, entry_id),
@@ -232,6 +235,7 @@ CREATE TABLE user_checkin (
   id          BIGINT   AUTO_INCREMENT PRIMARY KEY,
   user_id     BIGINT   NOT NULL COMMENT '用户ID',
   checkin_date DATE    NOT NULL COMMENT '打卡日期',
+  deleted      TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_date (user_id, checkin_date),
   INDEX idx_user_id (user_id),
@@ -247,6 +251,7 @@ CREATE TABLE user_badge (
   badge_id    VARCHAR(32)  NOT NULL COMMENT '勋章ID',
   earned_date DATE         NOT NULL COMMENT '获得日期',
   notified    TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已通知用户',
+  deleted     TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_badge (user_id, badge_id),
   INDEX idx_user_id (user_id)
@@ -264,6 +269,7 @@ CREATE TABLE user_answer_history (
   selected_option  TINYINT      NOT NULL COMMENT '选择的选项序号(0-based)',
   correct          TINYINT(1)   NOT NULL COMMENT '是否答对',
   timestamp_ms     BIGINT       NOT NULL COMMENT '答题时间戳(ms)',
+  deleted          TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_user_entry (user_id, word_book_id, entry_id),
   INDEX idx_created (created_at)
@@ -309,6 +315,7 @@ CREATE TABLE daily_task (
   correct_count     INT          NOT NULL DEFAULT 0 COMMENT '答对数',
   wrong_count       INT          NOT NULL DEFAULT 0 COMMENT '答错数',
   status            TINYINT      NOT NULL DEFAULT 0 COMMENT '0=进行中, 1=已完成',
+  deleted           TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   completed_at      DATETIME     COMMENT '完成时间',
   created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -327,6 +334,7 @@ CREATE TABLE study_mistake (
   word_book_id        VARCHAR(32)  NOT NULL COMMENT '词书ID',
   total_errors        INT          NOT NULL DEFAULT 0 COMMENT '所有句子的错误次数之和（冗余字段，避免每次查询遍历子表）',
   last_mistake_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近一次答错时间',
+  deleted             TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_entry_book (user_id, word_book_id, entry_id),
@@ -347,6 +355,7 @@ CREATE TABLE study_mistake_sentence (
   correct_answer      VARCHAR(128) NOT NULL DEFAULT '' COMMENT '正确答案',
   mistake_count       INT          NOT NULL DEFAULT 1 COMMENT '该句子的累计错误次数',
   consecutive_correct INT          NOT NULL DEFAULT 0 COMMENT '连续答对次数（达到阈值自动移出该句）',
+  deleted             TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_mistake_quiz (mistake_id, quiz_item_id),
@@ -430,6 +439,7 @@ CREATE TABLE user_audio_listen_log (
   content_id   VARCHAR(128) NOT NULL COMMENT '内容ID: articleId 或 classicId:nodeId',
   xp_awarded   INT          NOT NULL DEFAULT 0 COMMENT '获得的XP',
   text_length  INT          NOT NULL DEFAULT 0 COMMENT '纯汉字字数（去标点/空白后）',
+  deleted      TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除',
   created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_content (user_id, content_type, content_id)
 ) ENGINE=InnoDB COMMENT='用户音频听读记录';
