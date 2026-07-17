@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bogutongjin.common.ResourceNotFoundException;
 import com.bogutongjin.entity.*;
 import com.bogutongjin.mapper.*;
+import com.bogutongjin.util.PinyinUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,22 +19,74 @@ public class ArticleService {
     private final ArticleMapper articleMapper;
     private final ArticleSentenceMapper articleSentenceMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
-    private final ArticleCharAnnotationMapper articleCharAnnotationMapper;
     private final ArticleGlossaryMapper articleGlossaryMapper;
-    private final ArticleRelatedWordMapper articleRelatedWordMapper;
+    private final UserAudioListenLogMapper userAudioListenLogMapper;
+    private final JdbcTemplate jdbc;
 
-    public List<Map<String, Object>> getArticles(String category, String textbook) {
-        LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>().orderByAsc(Article::getSortOrder);
+    public List<Map<String, Object>> getArticles(String category, String textbook, Long userId) {
+        LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>()
+                .eq(Article::getHasContent, 1)
+                .orderByAsc(Article::getSortOrder);
 
         if (category != null && !"undefined".equals(category) && !"all".equals(category)) {
             qw.eq(Article::getCategory, category);
         }
         if (textbook != null && !"undefined".equals(textbook) && !"all".equals(textbook)) {
-            qw.eq(Article::getTextbook, textbook);
+            if ("other".equals(textbook)) {
+                qw.isNull(Article::getTextbook);
+            } else {
+                qw.eq(Article::getTextbook, textbook);
+            }
         }
 
         List<Article> articles = articleMapper.selectList(qw);
-        return articles.stream().map(this::toArticleMap).collect(Collectors.toList());
+
+        // 批量查询每篇文章的词书重点字数（article_sentence JOIN article_keyword）
+        List<String> articleIds = articles.stream().map(Article::getId).toList();
+        Map<String, Integer> keywordCountMap = new HashMap<>();
+        if (!articleIds.isEmpty()) {
+            String inClause = articleIds.stream().map(id -> "'" + id + "'").collect(Collectors.joining(","));
+            List<Map<String, Object>> rows = jdbc.queryForList(
+                    "SELECT s.article_id, COUNT(k.id) AS cnt FROM article_sentence s " +
+                    "INNER JOIN article_keyword k ON k.article_sentence_id = s.id " +
+                    "WHERE s.article_id IN (" + inClause + ") GROUP BY s.article_id");
+            for (Map<String, Object> row : rows) {
+                keywordCountMap.put((String) row.get("article_id"),
+                        ((Number) row.get("cnt")).intValue());
+            }
+        }
+
+        // 批量查询当前用户已听读的文章
+        Set<String> listenedIds = Set.of();
+        if (userId != null && !articleIds.isEmpty()) {
+            List<UserAudioListenLog> logs = userAudioListenLogMapper.selectList(
+                    new LambdaQueryWrapper<UserAudioListenLog>()
+                            .eq(UserAudioListenLog::getUserId, userId)
+                            .eq(UserAudioListenLog::getContentType, "article")
+                            .in(UserAudioListenLog::getContentId, articleIds));
+            listenedIds = logs.stream().map(UserAudioListenLog::getContentId).collect(Collectors.toSet());
+        }
+
+        final Set<String> listened = listenedIds;
+        return articles.stream()
+                .map(a -> toArticleListMap(a, keywordCountMap.getOrDefault(a.getId(), 0), listened.contains(a.getId())))
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> toArticleListMap(Article a, int keywordCount, boolean listened) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", a.getId());
+        result.put("title", a.getTitle());
+        result.put("author", a.getAuthor());
+        result.put("dynasty", a.getDynasty());
+        result.put("category", a.getCategory());
+        result.put("textbook", a.getTextbook());
+        result.put("background", a.getBackground());
+        result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
+        result.put("sentences", new ArrayList<>());
+        result.put("keywordCount", keywordCount);
+        result.put("listened", listened);
+        return result;
     }
 
     public Map<String, Object> getArticleDetail(String articleId) {
@@ -47,44 +101,54 @@ public class ArticleService {
                 new LambdaQueryWrapper<ArticleSentence>().eq(ArticleSentence::getArticleId, a.getId())
                         .orderByAsc(ArticleSentence::getSortOrder));
 
+        // 批量查询所有句子的 keyWords 和 glossary，避免 N+1
+        List<Long> sentenceIds = sentences.stream().map(ArticleSentence::getId).toList();
+        final Map<Long, List<ArticleKeyword>> keywordMap = sentenceIds.isEmpty()
+                ? Map.of()
+                : articleKeywordMapper.selectList(
+                        new LambdaQueryWrapper<ArticleKeyword>()
+                                .in(ArticleKeyword::getArticleSentenceId, sentenceIds)
+                                .orderByAsc(ArticleKeyword::getSortOrder))
+                        .stream()
+                        .collect(Collectors.groupingBy(ArticleKeyword::getArticleSentenceId));
+        final Map<Long, List<ArticleGlossary>> glossaryMap = sentenceIds.isEmpty()
+                ? Map.of()
+                : articleGlossaryMapper.selectList(
+                        new LambdaQueryWrapper<ArticleGlossary>()
+                                .in(ArticleGlossary::getArticleSentenceId, sentenceIds)
+                                .orderByAsc(ArticleGlossary::getSortOrder))
+                        .stream()
+                        .collect(Collectors.groupingBy(ArticleGlossary::getArticleSentenceId));
+
         List<Map<String, Object>> sentenceList = sentences.stream().map(s -> {
             Map<String, Object> sm = new LinkedHashMap<>();
             sm.put("text", s.getText());
             sm.put("translation", s.getTranslation());
             sm.put("audioUrl", s.getAudioUrl());
 
-            // 内联生词
-            List<ArticleKeyword> keywords = articleKeywordMapper.selectList(
-                    new LambdaQueryWrapper<ArticleKeyword>()
-                            .eq(ArticleKeyword::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleKeyword::getSortOrder));
+            // 内联生词（从预查询的 Map 中取，无 DB 查询）
+            List<ArticleKeyword> keywords =
+            keywordMap.getOrDefault(s.getId(), List.of());
             sm.put("keyWords", keywords.stream().map(kw -> {
                 Map<String, Object> km = new LinkedHashMap<>();
                 km.put("word", kw.getWordText());
                 km.put("definition", kw.getDefinition());
-                km.put("wordBookId", kw.getWordBookId());
                 km.put("masteryLevel", kw.getMasteryLevel());
+                if (kw.getKid() != null) {
+                    km.put("kid", kw.getKid());
+                }
+                if (kw.getMatchWord() != null) {
+                    km.put("matchWord", kw.getMatchWord());
+                }
+                if (kw.getWordType() != null) {
+                    km.put("wordType", kw.getWordType());
+                }
                 return km;
             }).collect(Collectors.toList()));
 
-            // 逐字标注（废弃，保留兼容）
-            List<ArticleCharAnnotation> annotations = articleCharAnnotationMapper.selectList(
-                    new LambdaQueryWrapper<ArticleCharAnnotation>()
-                            .eq(ArticleCharAnnotation::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleCharAnnotation::getSortOrder));
-            sm.put("charAnnotations", annotations.stream().map(ca -> {
-                Map<String, Object> cm = new LinkedHashMap<>();
-                cm.put("char", ca.getCharText());
-                cm.put("role", ca.getRole());
-                cm.put("definition", ca.getDefinition());
-                return cm;
-            }).collect(Collectors.toList()));
-
-            // 典故注释
-            List<ArticleGlossary> glossaryList = articleGlossaryMapper.selectList(
-                    new LambdaQueryWrapper<ArticleGlossary>()
-                            .eq(ArticleGlossary::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleGlossary::getSortOrder));
+            // 典故注释（从预查询的 Map 中取，无 DB 查询）
+            List<ArticleGlossary> glossaryList =
+            glossaryMap.getOrDefault(s.getId(), List.of());
             sm.put("glossary", glossaryList.stream().map(g -> {
                 Map<String, Object> gm = new LinkedHashMap<>();
                 gm.put("word", g.getWord());
@@ -92,13 +156,16 @@ public class ArticleService {
                 return gm;
             }).collect(Collectors.toList()));
 
+            // 生僻字拼音
+            sm.put("rareCharPinyin", PinyinUtils.buildRareCharPinyin(s.getText()));
+
             return sm;
         }).collect(Collectors.toList());
 
-        // 关联字词
-        List<ArticleRelatedWord> relatedWords = articleRelatedWordMapper.selectList(
-                new LambdaQueryWrapper<ArticleRelatedWord>().eq(ArticleRelatedWord::getArticleId, a.getId()));
-        List<String> relatedWordIds = relatedWords.stream().map(ArticleRelatedWord::getWordId).collect(Collectors.toList());
+        // 词书重点字数
+        int keywordCount = sentenceList.stream()
+                .mapToInt(s -> ((List<?>) s.get("keyWords")).size())
+                .sum();
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", a.getId());
@@ -107,9 +174,10 @@ public class ArticleService {
         result.put("dynasty", a.getDynasty());
         result.put("category", a.getCategory());
         result.put("textbook", a.getTextbook());
+        result.put("background", a.getBackground());
         result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
         result.put("sentences", sentenceList);
-        result.put("relatedWordIds", relatedWordIds);
+        result.put("keywordCount", keywordCount);
         return result;
     }
 }

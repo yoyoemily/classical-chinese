@@ -11,9 +11,13 @@ public class Classic {
     private Long id;
     private String name;
     private String era;
+    private String author;
     private String icon;
     private String description;
     private String category;
+    private String structureType;
+    private String loadMode;
+    private String navMode;
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)

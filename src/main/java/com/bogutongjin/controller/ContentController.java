@@ -27,10 +27,8 @@ public class ContentController {
         return Result.ok(contentService.searchWords(keyword));
     }
 
-    @GetMapping("/full-text/{sentenceId}")
-    public Result<Map<String, Object>> getFullText(@PathVariable String sentenceId) {
-        Map<String, Object> fullText = contentService.getFullText(sentenceId);
-        if (fullText == null) return Result.fail(10003, "全文不存在");
-        return Result.ok(fullText);
+    @GetMapping("/words/types")
+    public Result<Map<String, List<Map<String, Object>>>> getWordsByType() {
+        return Result.ok(contentService.getWordsByType());
     }
 }

@@ -103,7 +103,8 @@ public class AuthService {
     private User findOrCreateByOpenId(String openId) {
         User user = userMapper.selectOne(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
-                        .eq(User::getOpenId, openId));
+                        .eq(User::getOpenId, openId)
+                        .eq(User::getDeleted, 0));
         if (user != null) return user;
 
         user = new User();

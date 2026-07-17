@@ -38,51 +38,56 @@ public class SourceData {
         private Boolean initialized;
         private Integer totalWords;
         private Integer sortOrder;
-        private List<SourceWord> words;
+        private List<SourceWordEntry> wordEntries;
     }
 
-    // ---- 字词 ----
+    // ---- 字词条目 ----
     @Data
-    public static class SourceWord {
+    public static class SourceWordEntry {
         private String id;
         private String character;
         private String pinyin;
         private String characterType;
         private String explanation;
-        private String examFrequency;
         private String oracleForm;
-        private List<SourceMeaning> meanings;
-        private List<SourceSentence> sentences;
-        private List<String> similarHomophones;
-        private List<String> similarShapes;
+        private String examFrequency;
         private String mnemonic;
         private String wordType;
+        private List<String> similarHomophones;
+        private List<String> similarShapes;
+        private List<SourceKeyWordRef> keyWordRefs;
+        private List<SourceQuizItem> quizItems;
+        private List<SourceWordUsage> usages;
     }
 
-    // ---- 义项 ----
+    // ---- 字词-关键词引用 ----
     @Data
-    public static class SourceMeaning {
-        private String definition;
-        private String pinyin;
-        private String example;
-        private String translation;
-        private String source;
+    public static class SourceKeyWordRef {
+        private String kid;
     }
 
-    // ---- 考题句子 ----
+    // ---- 考题 ----
     @Data
-    public static class SourceSentence {
+    public static class SourceQuizItem {
         private String id;
-        private String text;
-        private String source;
-        private String translation;
+        private String kidRef;
         private String targetWord;
-        private Integer correctMeaningIndex;
         private String difficulty;
+        private String definition;
         private List<String> distractors;
-        private String fullText;
-        private String articleId;
-        private String audioUrl;
+        private String sentenceText;
+        private String sentenceTranslation;
+        private String sentenceSource;
+    }
+
+    // ---- 字词用法 ----
+    @Data
+    public static class SourceWordUsage {
+        private String usageType;
+        private String definition;
+        private String exampleSentence;
+        private String exampleTranslation;
+        private String exampleSource;
     }
 
     // ---- 名篇 ----
@@ -94,6 +99,7 @@ public class SourceData {
         private String dynasty;
         private String category;
         private String textbook;
+        private String background;
         private String fullTextAudioUrl;
         private List<SourceArticleSentence> sentences;
         private List<String> relatedWordIds;
@@ -105,7 +111,6 @@ public class SourceData {
         private String translation;
         private List<SourceKeyWord> keyWords;
         private String audioUrl;
-        private List<SourceCharAnnotation> charAnnotations;
         private List<SourceGlossaryItem> glossary;
     }
 
@@ -113,15 +118,12 @@ public class SourceData {
     public static class SourceKeyWord {
         private String word;
         private String definition;
-        private String wordBookId;
         private String masteryLevel;
-    }
-
-    @Data
-    public static class SourceCharAnnotation {
-        private String charText;
-        private String role;
-        private String definition;
+        private String kid;
+        /** 消歧用：多字上下文片段，用于定位句中具体出现位置 */
+        private String matchWord;
+        /** 生词类型：shi/xu/tongjia/gujinyi/huoyong */
+        private String wordType;
     }
 
     @Data
@@ -153,8 +155,56 @@ public class SourceData {
         private Integer id;
         private String name;
         private String era;
+        private String author;
         private String icon;
         private String description;
         private String category;
+        private String structureType;
+        private String loadMode;
+        private String navMode;
+        private Integer sortOrder;
+    }
+
+    // ---- 经典章节型数据（独立导入用） ----
+    @Data
+    public static class SourceClassicBook {
+        private Integer id;
+        private String name;
+        private String author;
+        private String era;
+        private String category;
+        private String description;
+        private List<SourceClassicChapter> chapters;
+    }
+
+    @Data
+    public static class SourceClassicChapter {
+        private Integer id;
+        private String title;
+        private List<SourceClassicParagraph> paragraphs;
+        /** 选集型：该门类下的条目列表 */
+        private List<SourceAnthologyEntry> entries;
+    }
+
+    @Data
+    public static class SourceAnthologyEntry {
+        private String title;
+        private String author;
+        private String era;
+        private String background;
+        private List<SourceClassicParagraph> paragraphs;
+    }
+
+    @Data
+    public static class SourceClassicParagraph {
+        private String text;
+        private String translation;
+        private List<SourceClassicGlossary> glossary;
+    }
+
+    @Data
+    public static class SourceClassicGlossary {
+        private String word;
+        private String explanation;
     }
 }

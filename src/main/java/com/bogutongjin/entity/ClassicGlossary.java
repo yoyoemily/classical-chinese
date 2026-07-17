@@ -2,19 +2,17 @@ package com.bogutongjin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user_article_progress")
-public class UserArticleProgress {
+@TableName("classic_glossary")
+public class ClassicGlossary {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private Long userId;
-    private String articleId;
-    private Integer readProgress;
-    private String mastery;
-    private LocalDate lastReadDate;
+    private Long paragraphId;
+    private String word;
+    private String explanation;
+    private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

@@ -5,21 +5,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("sentence")
-public class Sentence {
-    @TableId
-    private String id;
-    private String wordId;
-    private String text;
-    private String source;
-    private String translation;
-    private String targetWord;
-    private Integer correctMeaningIndex;
-    private String difficulty;
-    private String fullText;
-    private String articleId;
-    private String audioUrl;
+@TableName("classic_paragraph")
+public class ClassicParagraph {
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    private Long chapterId;
     private Integer sortOrder;
+    private String text;
+    private String translation;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

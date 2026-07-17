@@ -17,6 +17,11 @@ public class User {
     private Integer totalXp;
     private Integer currentStreak;
     private Integer longestStreak;
+    private Integer memberLevel;
+
+    private Integer deleted;
+
+    private LocalDateTime dataClearedAt;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

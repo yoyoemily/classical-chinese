@@ -12,12 +12,15 @@ public class UserWordProgress {
     private Long id;
     private Long userId;
     private String wordBookId;
-    private String wordId;
+    private String entryId;
     private String stage;
     private LocalDate nextReviewDate;
     private Integer correctCount;
     private Integer wrongCount;
     private Integer resetCount;
+
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

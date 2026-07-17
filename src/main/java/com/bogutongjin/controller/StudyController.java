@@ -2,8 +2,10 @@ package com.bogutongjin.controller;
 
 import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
+import com.bogutongjin.dto.AudioCompleteRequest;
 import com.bogutongjin.dto.CompleteStudyRequest;
 import com.bogutongjin.dto.SubmitAnswerRequest;
+import com.bogutongjin.dto.WordCompleteRequest;
 import com.bogutongjin.service.StudyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +36,26 @@ public class StudyController {
             @Valid @RequestBody SubmitAnswerRequest req,
             @CurrentUser Long userId) {
         return Result.ok(studyService.submitAnswer(
-                userId, req.getWordBookId(), req.getWordId(), req.getSentenceId(),
+                userId, req.getWordBookId(), req.getEntryId(), req.getQuizItemId(),
                 req.getSelectedOption(), req.getCorrect(),
                 req.getCorrectAnswer(), req.getWrongAnswer()));
+    }
+
+    /** 完成单个字词学习（所有句子答完后，进入字总结页时调用） */
+    @PostMapping("/word-complete")
+    public Result<Map<String, Object>> completeWord(
+            @Valid @RequestBody WordCompleteRequest req,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.completeWord(userId, req.getWordBookId(), req.getEntryId()));
+    }
+
+    /** 音频完整播放完成（选篇/经典听读 XP） */
+    @PostMapping("/audio-complete")
+    public Result<Map<String, Object>> completeAudio(
+            @Valid @RequestBody AudioCompleteRequest req,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.completeAudioListen(
+                userId, req.getContentType(), req.getContentId()));
     }
 
     /** 完成今日学习 */
@@ -44,7 +63,15 @@ public class StudyController {
     public Result<Map<String, Object>> completeStudy(
             @Valid @RequestBody CompleteStudyRequest req,
             @CurrentUser Long userId) {
-        return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount()));
+        return Result.ok(studyService.completeStudy(userId, req.getWordBookId(), req.getCorrectCount(), req.getWrongCount(), req.getXpGained()));
+    }
+
+    /** 获取错题数量（仅 count，供首页等只需要数量的场景） */
+    @GetMapping("/mistakes/count")
+    public Result<Map<String, Object>> getMistakeCount(
+            @RequestParam(required = false) String wordBookId,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.getMistakeCount(userId, wordBookId));
     }
 
     /** 获取错题本 */
@@ -56,11 +83,12 @@ public class StudyController {
     }
 
     /** 移除错题 */
-    @DeleteMapping("/mistakes/{wordId}")
+    @DeleteMapping("/mistakes/{entryId}")
     public Result<Void> removeMistake(
-            @PathVariable String wordId,
+            @PathVariable String entryId,
+            @RequestParam String wordBookId,
             @CurrentUser Long userId) {
-        studyService.removeMistake(userId, wordId);
+        studyService.removeMistake(userId, wordBookId, entryId);
         return Result.ok();
     }
 }

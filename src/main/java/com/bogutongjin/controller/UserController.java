@@ -40,4 +40,25 @@ public class UserController {
         userService.saveUserInfo(userId, req.getAvatarUrl(), req.getNickName(), req.getGrade());
         return Result.ok();
     }
+
+    /** 签订金石契约 */
+    @PostMapping("/pact")
+    public Result<Map<String, Object>> signPact(@CurrentUser Long userId) {
+        userService.signPact(userId);
+        return Result.ok(Map.of("memberLevel", 1));
+    }
+
+    /** 清除学习数据 — 软删除 + clone 新用户，24 小时内可恢复 */
+    @PostMapping("/clear-data")
+    public Result<Map<String, Object>> clearData(@CurrentUser Long userId) {
+        Map<String, Object> result = userService.clearUserData(userId);
+        return Result.ok(result);
+    }
+
+    /** 恢复学习数据 — 新旧数据 deleted 互换 */
+    @PostMapping("/recover-data")
+    public Result<Map<String, Object>> recoverData(@CurrentUser Long userId) {
+        Map<String, Object> result = userService.recoverUserData(userId);
+        return Result.ok(result);
+    }
 }

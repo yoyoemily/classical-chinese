@@ -10,10 +10,13 @@ public class StudyMistake {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;
-    private String wordId;
+    private String entryId;
     private String wordBookId;
     private Integer totalErrors;
     private LocalDateTime lastMistakeTime;
+
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

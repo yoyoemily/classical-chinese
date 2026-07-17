@@ -5,17 +5,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user_answer_history")
-public class UserAnswerHistory {
+@TableName("user_audio_listen_log")
+public class UserAudioListenLog {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;
-    private String wordBookId;
-    private String entryId;
-    private String quizItemId;
-    private Integer selectedOption;
-    private Integer correct;
-    private Long timestampMs;
+    private String contentType;
+    private String contentId;
+    private Integer xpAwarded;
+    private Integer textLength;
 
     @TableLogic(value = "0", delval = "1")
     private Integer deleted;

@@ -9,13 +9,17 @@ import java.time.LocalDateTime;
 public class StudyMistakeSentence {
     @TableId(type = IdType.AUTO)
     private Long id;
+    private Long userId;
     private Long mistakeId;
-    private String sentenceId;
+    private String quizItemId;
     private String sentenceText;
     private String wrongAnswer;
     private String correctAnswer;
     private Integer mistakeCount;
     private Integer consecutiveCorrect;
+
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;

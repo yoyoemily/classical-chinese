@@ -17,6 +17,12 @@ public class Feedback {
     private String wordId;
     private String articleId;
     private String readingMode;
+    private Integer classicId;
+    private String nodeId;
+    private String nodeTitle;
+    private String sentenceText;
+    private String articleTitle;
+    private String className;
     private Integer resolved;
 
     @TableField(fill = FieldFill.INSERT)

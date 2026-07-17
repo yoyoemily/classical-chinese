@@ -13,4 +13,6 @@ public class CompleteStudyRequest {
     private Integer correctCount;
     @NotNull(message = "wrongCount 不能为空")
     private Integer wrongCount;
+    /** 本次获得经验值（仅新学词答对才计入） */
+    private Integer xpGained;
 }
