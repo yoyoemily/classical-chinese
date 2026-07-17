@@ -84,32 +84,6 @@ public class ProgressService {
         result.put("totalXP", user != null ? user.getTotalXp() : 0);
         result.put("wordProgresses", wpMap);
 
-        // 下一个可获勋章：全部 streak 勋章中，取 gap 最小的未获得勋章
-        Set<String> earnedIds = userBadgeMapper.selectList(
-                new LambdaQueryWrapper<UserBadge>().eq(UserBadge::getUserId, userId))
-                .stream().map(UserBadge::getBadgeId).collect(Collectors.toSet());
-        List<Badge> allBadges = badgeMapper.selectList(
-                new LambdaQueryWrapper<Badge>().eq(Badge::getConditionType, "streak").orderByAsc(Badge::getConditionValue));
-        Map<String, Object> nextBadge = null;
-        int bestGap = Integer.MAX_VALUE;
-        for (Badge badge : allBadges) {
-            if (!earnedIds.contains(badge.getId())) {
-                int gap = Math.max(0, badge.getConditionValue() - streak);
-                if (gap < bestGap) {
-                    bestGap = gap;
-                    Map<String, Object> nb = new LinkedHashMap<>();
-                    nb.put("id", badge.getId());
-                    nb.put("name", badge.getName());
-                    nb.put("icon", badge.getIcon());
-                    nb.put("description", badge.getDescription());
-                    nb.put("gap", gap);
-                    nb.put("gapUnit", "天");
-                    nextBadge = nb;
-                }
-            }
-        }
-        result.put("nextBadge", nextBadge);
-
         return result;
     }
 }
