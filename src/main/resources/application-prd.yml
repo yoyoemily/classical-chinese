@@ -6,5 +6,5 @@ spring:
     password: ${MYSQL_PASSWORD:fqg#U2%#_ODD32fkp}
 
 wechat:
-  app-id: wxa192d18a50c75dca
-  app-secret: ${WECHAT_APP_SECRET:3e60f050d617781d3a89c9a209d053c4}
+  app-id: wx00adcbea9d77ba88
+  app-secret: ${WECHAT_APP_SECRET:762a6a02dba5ba0b7f16650c5655ba95}
