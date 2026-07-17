@@ -25,7 +25,3 @@ jwt:
 
 app:
   source-data-path: classpath:source.json
-
-logging:
-  level:
-    com.bogutongjin: DEBUG
