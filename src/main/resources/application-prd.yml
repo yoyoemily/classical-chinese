@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mars-x.rwlb.rds.aliyuncs.com:3306/classical_chinese?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://rm-bp1f9c24xg17840hb.mysql.rds.aliyuncs.com:3306/classical_chinese?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: cc_admin
     password: ${MYSQL_PASSWORD:fqg#U2%#_ODD32fkp}
 
