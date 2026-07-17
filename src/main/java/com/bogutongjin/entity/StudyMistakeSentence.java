@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class StudyMistakeSentence {
     @TableId(type = IdType.AUTO)
     private Long id;
+    private Long userId;
     private Long mistakeId;
     private String quizItemId;
     private String sentenceText;

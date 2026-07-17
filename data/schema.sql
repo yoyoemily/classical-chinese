@@ -334,6 +334,7 @@ CREATE TABLE study_mistake (
 -- ============================================
 CREATE TABLE study_mistake_sentence (
   id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  user_id             BIGINT       NOT NULL COMMENT '用户ID（冗余字段，方便按用户直接清理数据）',
   mistake_id          BIGINT       NOT NULL COMMENT '所属错题记录ID',
   quiz_item_id        VARCHAR(32)  NOT NULL COMMENT '考题ID',
   sentence_text       VARCHAR(512) NOT NULL DEFAULT '' COMMENT '答错时的原句',
@@ -344,8 +345,9 @@ CREATE TABLE study_mistake_sentence (
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_mistake_quiz (mistake_id, quiz_item_id),
-  INDEX idx_mistake_id (mistake_id)
-) ENGINE=InnoDB COMMENT='错题本句子明细——一条记录一个句子';
+  INDEX idx_mistake_id (mistake_id),
+  INDEX idx_user_id (user_id)
+) ENGINE=InnoDB COMMENT='错题本句子明细——一条记录一个句子（user_id 冗余字段方便直接按用户清理数据）';
 
 -- ============================================
 -- 21. 经典著作

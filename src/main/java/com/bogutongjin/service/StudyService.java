@@ -514,6 +514,7 @@ public class StudyService {
             studyMistakeSentenceMapper.updateById(sentRecord);
         } else {
             sentRecord = new StudyMistakeSentence();
+            sentRecord.setUserId(userId);
             sentRecord.setMistakeId(mistake.getId());
             sentRecord.setQuizItemId(quizItemId);
             sentRecord.setSentenceText(sentenceText);
