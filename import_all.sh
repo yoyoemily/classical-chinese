@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================
-# 勋章导入（冷启动）
+# 勋章导入
 # 读取 source.json（classpath），导入 8 枚勋章
 # ============================================================
 set -euo pipefail
@@ -8,7 +8,7 @@ set -euo pipefail
 BASE_URL="${BASE_URL:-http://localhost:8080}"
 
 echo ""
-echo "🚀 勋章导入（冷启动）"
+echo "🚀 勋章导入"
 echo "   API: POST $BASE_URL/api/admin/import"
 echo "   源文件: classpath:source.json"
 echo ""

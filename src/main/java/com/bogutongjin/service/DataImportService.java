@@ -65,10 +65,139 @@ public class DataImportService {
         log.info("数据源解析完成: {} 枚勋章",
                 source.getBadges() != null ? source.getBadges().size() : 0);
 
-        truncateAll();
         importBadges(source.getBadges());
 
         log.info("数据源（勋章）导入完成");
+    }
+
+    /**
+     * 清空全部业务数据（24 张表）：用户表 + 用户数据 + 词书 + 选篇 + 经典 + 勋章定义
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> clearAll() {
+        long start = System.currentTimeMillis();
+        clearUserData();
+        clearWordBookData();
+        clearArticleData();
+        clearClassicData();
+        // badge 是勋章定义表，不属于用户数据
+        truncateTables(new String[]{"badge"});
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("已清空全部 24 张业务表 ({}ms)", elapsed);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("elapsedMs", elapsed);
+        result.put("tables", 24);
+        result.put("message", "全部业务数据已清空（24 张表）");
+        return result;
+    }
+
+    /**
+     * 清空用户数据（9 张表）
+     * user 账号表 + 学习进度/答题记录/打卡/已获勋章/错题本/每日任务/反馈
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> clearUserData() {
+        long start = System.currentTimeMillis();
+        String[] tables = {
+                "user_word_progress",
+                "user_answer_history",
+                "user_checkin",
+                "user_badge",
+                "study_mistake_sentence",
+                "study_mistake",
+                "daily_task",
+                "feedback",
+                "user"
+        };
+        truncateTables(tables);
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("已清空 {} 张用户业务表 ({}ms)", tables.length, elapsed);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("elapsedMs", elapsed);
+        result.put("tables", tables.length);
+        result.put("message", "用户业务数据已清空（" + tables.length + " 张表）");
+        return result;
+    }
+
+    /**
+     * 清空词书数据（6 张表）：word_book, word_book_entry, word_entry_keyword_ref, quiz_item, quiz_distractor, word_usage
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> clearWordBookData() {
+        long start = System.currentTimeMillis();
+        String[] tables = {
+                "quiz_distractor",
+                "quiz_item",
+                "word_entry_keyword_ref",
+                "word_usage",
+                "word_book_entry",
+                "word_book"
+        };
+        truncateTables(tables);
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("已清空 {} 张词书表 ({}ms)", tables.length, elapsed);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("elapsedMs", elapsed);
+        result.put("tables", tables.length);
+        result.put("message", "词书数据已清空（" + tables.length + " 张表）");
+        return result;
+    }
+
+    /**
+     * 清空选篇数据（4 张表）：article, article_sentence, article_keyword, article_glossary
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> clearArticleData() {
+        long start = System.currentTimeMillis();
+        String[] tables = {
+                "article_glossary",
+                "article_keyword",
+                "article_sentence",
+                "article"
+        };
+        truncateTables(tables);
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("已清空 {} 张选篇表 ({}ms)", tables.length, elapsed);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("elapsedMs", elapsed);
+        result.put("tables", tables.length);
+        result.put("message", "选篇数据已清空（" + tables.length + " 张表）");
+        return result;
+    }
+
+    /**
+     * 清空经典数据（4 张表）：classic, classic_chapter, classic_paragraph, classic_glossary
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> clearClassicData() {
+        long start = System.currentTimeMillis();
+        String[] tables = {
+                "classic_glossary",
+                "classic_paragraph",
+                "classic_chapter",
+                "classic"
+        };
+        truncateTables(tables);
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("已清空 {} 张经典表 ({}ms)", tables.length, elapsed);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("elapsedMs", elapsed);
+        result.put("tables", tables.length);
+        result.put("message", "经典数据已清空（" + tables.length + " 张表）");
+        return result;
+    }
+
+    private void truncateTables(String[] tables) {
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
+        for (String t : tables) {
+            jdbc.execute("TRUNCATE TABLE " + t);
+        }
+        jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
     }
 
     /**
@@ -232,29 +361,6 @@ public class DataImportService {
                 "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
         jdbc.update("DELETE FROM word_book_entry WHERE word_book_id = ?", wordBookId);
         jdbc.update("DELETE FROM word_book WHERE id = ?", wordBookId);
-    }
-
-    private void truncateAll() {
-        // 按外键依赖逆序清空（child table → parent table）
-        // 词书表 — 由 import_wordbook.sh 独立管理，不在此清空
-        // 经典表 — 由 import_classic_list.sh / import_classic.sh 独立管理，不在此清空
-        String[] tables = {
-                "badge",
-                "user_word_progress",
-                "user_answer_history",
-                "user_checkin",
-                "user_badge",
-                "study_mistake_sentence",
-                "study_mistake",
-                "daily_task",
-                "feedback"
-        };
-        jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
-        for (String t : tables) {
-            jdbc.execute("TRUNCATE TABLE " + t);
-        }
-        jdbc.execute("SET FOREIGN_KEY_CHECKS = 1");
-        log.info("已清空 {} 张业务表", tables.length);
     }
 
     // ======================== 勋章导入 ========================

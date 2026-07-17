@@ -40,6 +40,32 @@ public class ImportController {
         return Result.ok(Map.of("success", true, "elapsedMs", elapsed, "message", "勋章导入完成"));
     }
 
+    @PostMapping("/clear-data")
+    public Result<Map<String, Object>> clearData(@RequestParam(defaultValue = "all") String scope) {
+        long start = System.currentTimeMillis();
+        Map<String, Object> result;
+        switch (scope) {
+            case "user":
+                result = importService.clearUserData();
+                break;
+            case "wordbook":
+                result = importService.clearWordBookData();
+                break;
+            case "article":
+                result = importService.clearArticleData();
+                break;
+            case "classic":
+                result = importService.clearClassicData();
+                break;
+            case "all":
+            default:
+                result = importService.clearAll();
+                break;
+        }
+        result.put("elapsedMs", System.currentTimeMillis() - start);
+        return Result.ok(result);
+    }
+
     /**
      * 经典元数据全量导入（幂等 upsert）
      * 从知识库 classics.json 读取 52 部经典元数据
