@@ -101,17 +101,34 @@ public class ArticleService {
                 new LambdaQueryWrapper<ArticleSentence>().eq(ArticleSentence::getArticleId, a.getId())
                         .orderByAsc(ArticleSentence::getSortOrder));
 
+        // 批量查询所有句子的 keyWords 和 glossary，避免 N+1
+        List<Long> sentenceIds = sentences.stream().map(ArticleSentence::getId).toList();
+        final Map<Long, List<ArticleKeyword>> keywordMap = sentenceIds.isEmpty()
+                ? Map.of()
+                : articleKeywordMapper.selectList(
+                        new LambdaQueryWrapper<ArticleKeyword>()
+                                .in(ArticleKeyword::getArticleSentenceId, sentenceIds)
+                                .orderByAsc(ArticleKeyword::getSortOrder))
+                        .stream()
+                        .collect(Collectors.groupingBy(ArticleKeyword::getArticleSentenceId));
+        final Map<Long, List<ArticleGlossary>> glossaryMap = sentenceIds.isEmpty()
+                ? Map.of()
+                : articleGlossaryMapper.selectList(
+                        new LambdaQueryWrapper<ArticleGlossary>()
+                                .in(ArticleGlossary::getArticleSentenceId, sentenceIds)
+                                .orderByAsc(ArticleGlossary::getSortOrder))
+                        .stream()
+                        .collect(Collectors.groupingBy(ArticleGlossary::getArticleSentenceId));
+
         List<Map<String, Object>> sentenceList = sentences.stream().map(s -> {
             Map<String, Object> sm = new LinkedHashMap<>();
             sm.put("text", s.getText());
             sm.put("translation", s.getTranslation());
             sm.put("audioUrl", s.getAudioUrl());
 
-            // 内联生词
-            List<ArticleKeyword> keywords = articleKeywordMapper.selectList(
-                    new LambdaQueryWrapper<ArticleKeyword>()
-                            .eq(ArticleKeyword::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleKeyword::getSortOrder));
+            // 内联生词（从预查询的 Map 中取，无 DB 查询）
+            List<ArticleKeyword> keywords =
+            keywordMap.getOrDefault(s.getId(), List.of());
             sm.put("keyWords", keywords.stream().map(kw -> {
                 Map<String, Object> km = new LinkedHashMap<>();
                 km.put("word", kw.getWordText());
@@ -129,11 +146,9 @@ public class ArticleService {
                 return km;
             }).collect(Collectors.toList()));
 
-            // 典故注释
-            List<ArticleGlossary> glossaryList = articleGlossaryMapper.selectList(
-                    new LambdaQueryWrapper<ArticleGlossary>()
-                            .eq(ArticleGlossary::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleGlossary::getSortOrder));
+            // 典故注释（从预查询的 Map 中取，无 DB 查询）
+            List<ArticleGlossary> glossaryList =
+            glossaryMap.getOrDefault(s.getId(), List.of());
             sm.put("glossary", glossaryList.stream().map(g -> {
                 Map<String, Object> gm = new LinkedHashMap<>();
                 gm.put("word", g.getWord());
