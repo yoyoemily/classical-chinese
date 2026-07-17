@@ -27,6 +27,12 @@ public class FeedbackService {
             fb.setWordId(req.getContext().getWordId());
             fb.setArticleId(req.getContext().getArticleId());
             fb.setReadingMode(req.getContext().getReadingMode());
+            fb.setClassicId(req.getContext().getClassicId());
+            fb.setNodeId(req.getContext().getNodeId());
+            fb.setNodeTitle(req.getContext().getNodeTitle());
+            fb.setSentenceText(req.getContext().getSentenceText());
+            fb.setArticleTitle(req.getContext().getArticleTitle());
+            fb.setClassName(req.getContext().getClassName());
         }
         fb.setResolved(0);
         feedbackMapper.insert(fb);
