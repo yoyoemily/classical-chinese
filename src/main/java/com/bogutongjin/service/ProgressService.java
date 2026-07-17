@@ -17,7 +17,6 @@ public class ProgressService {
 
     private final UserMapper userMapper;
     private final UserWordProgressMapper userWordProgressMapper;
-    private final UserArticleProgressMapper userArticleProgressMapper;
     private final UserCheckinMapper userCheckinMapper;
     private final UserAnswerHistoryMapper userAnswerHistoryMapper;
     private final BadgeMapper badgeMapper;
@@ -74,19 +73,6 @@ public class ProgressService {
                 .stream().map(c -> c.getCheckinDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .collect(Collectors.toList());
 
-        // 名篇进度
-        List<UserArticleProgress> articleProgresses = userArticleProgressMapper.selectList(
-                new LambdaQueryWrapper<UserArticleProgress>().eq(UserArticleProgress::getUserId, userId));
-        Map<String, Object> apMap = new LinkedHashMap<>();
-        for (UserArticleProgress ap : articleProgresses) {
-            Map<String, Object> item = new LinkedHashMap<>();
-            item.put("articleId", ap.getArticleId());
-            item.put("readProgress", ap.getReadProgress());
-            item.put("mastery", ap.getMastery());
-            item.put("lastReadDate", ap.getLastReadDate() != null ? ap.getLastReadDate().toString() : null);
-            apMap.put(ap.getArticleId(), item);
-        }
-
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("wordBookId", wordBookId);
         result.put("wordsLearned", wordsLearned);
@@ -97,7 +83,6 @@ public class ProgressService {
         result.put("longestStreak", user != null ? user.getLongestStreak() : 0);
         result.put("totalXP", user != null ? user.getTotalXp() : 0);
         result.put("wordProgresses", wpMap);
-        result.put("articleProgresses", apMap);
 
         // 下一个可获勋章：全部 streak 勋章中，取 gap 最小的未获得勋章
         Set<String> earnedIds = userBadgeMapper.selectList(

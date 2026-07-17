@@ -172,7 +172,7 @@ CREATE TABLE article_glossary (
 ) ENGINE=InnoDB COMMENT='名篇典故注释';
 
 -- ============================================
--- 12. 勋章定义
+-- 11. 勋章定义
 -- ============================================
 CREATE TABLE badge (
   id               VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '勋章ID，如 badge_streak_3',
@@ -187,7 +187,7 @@ CREATE TABLE badge (
 ) ENGINE=InnoDB COMMENT='勋章定义';
 
 -- ============================================
--- 13. 用户表
+-- 12. 用户表
 -- ============================================
 CREATE TABLE `user` (
   id             BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -207,7 +207,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB COMMENT='用户';
 
 -- ============================================
--- 14. 用户字词学习进度（word_id → entry_id）
+-- 13. 用户字词学习进度（word_id → entry_id）
 -- ============================================
 CREATE TABLE user_word_progress (
   id                BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -227,23 +227,7 @@ CREATE TABLE user_word_progress (
 ) ENGINE=InnoDB COMMENT='用户字词学习进度';
 
 -- ============================================
--- 15. 用户名篇阅读进度
--- ============================================
-CREATE TABLE user_article_progress (
-  id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  user_id         BIGINT       NOT NULL COMMENT '用户ID',
-  article_id      VARCHAR(32)  NOT NULL COMMENT '名篇ID',
-  read_progress   INT          NOT NULL DEFAULT 0 COMMENT '已点击阅读的句子数',
-  mastery         VARCHAR(16)  NOT NULL DEFAULT 'none' COMMENT '掌握程度: none/read/understood/memorized',
-  last_read_date  DATE         COMMENT '最后阅读日期',
-  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_user_article (user_id, article_id),
-  INDEX idx_user_id (user_id)
-) ENGINE=InnoDB COMMENT='用户名篇阅读进度';
-
--- ============================================
--- 16. 用户打卡记录
+-- 14. 用户打卡记录
 -- ============================================
 CREATE TABLE user_checkin (
   id          BIGINT   AUTO_INCREMENT PRIMARY KEY,
@@ -256,7 +240,7 @@ CREATE TABLE user_checkin (
 ) ENGINE=InnoDB COMMENT='用户打卡记录';
 
 -- ============================================
--- 17. 用户获得的勋章
+-- 15. 用户获得的勋章
 -- ============================================
 CREATE TABLE user_badge (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -270,7 +254,7 @@ CREATE TABLE user_badge (
 ) ENGINE=InnoDB COMMENT='用户获得的勋章';
 
 -- ============================================
--- 18. 答题历史记录（word_id → entry_id, sentence_id → quiz_item_id）
+-- 16. 答题历史记录（word_id → entry_id, sentence_id → quiz_item_id）
 -- ============================================
 CREATE TABLE user_answer_history (
   id               BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -287,7 +271,7 @@ CREATE TABLE user_answer_history (
 ) ENGINE=InnoDB COMMENT='答题历史记录';
 
 -- ============================================
--- 19. 错误反馈
+-- 17. 错误反馈
 -- ============================================
 CREATE TABLE feedback (
   id            BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -308,7 +292,7 @@ CREATE TABLE feedback (
 ) ENGINE=InnoDB COMMENT='错误反馈';
 
 -- ============================================
--- 20. 每日学习任务（当日生成，当日有效）
+-- 18. 每日学习任务（当日生成，当日有效）
 -- ============================================
 CREATE TABLE daily_task (
   id                BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -329,7 +313,7 @@ CREATE TABLE daily_task (
 ) ENGINE=InnoDB COMMENT='每日学习任务';
 
 -- ============================================
--- 21. 错题本（word_id → entry_id）
+-- 19. 错题本（word_id → entry_id）
 -- ============================================
 CREATE TABLE study_mistake (
   id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -346,7 +330,7 @@ CREATE TABLE study_mistake (
 ) ENGINE=InnoDB COMMENT='错题本——一条记录一个字';
 
 -- ============================================
--- 22. 错题本句子明细（sentence_id → quiz_item_id）
+-- 20. 错题本句子明细（sentence_id → quiz_item_id）
 -- ============================================
 CREATE TABLE study_mistake_sentence (
   id                  BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -364,7 +348,7 @@ CREATE TABLE study_mistake_sentence (
 ) ENGINE=InnoDB COMMENT='错题本句子明细——一条记录一个句子';
 
 -- ============================================
--- 23. 经典著作
+-- 21. 经典著作
 -- ============================================
 CREATE TABLE classic (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -384,7 +368,7 @@ CREATE TABLE classic (
 ) ENGINE=InnoDB COMMENT='经典著作';
 
 -- ============================================
--- 24. 经典章节
+-- 22. 经典章节
 -- ============================================
 CREATE TABLE classic_chapter (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -402,7 +386,7 @@ CREATE TABLE classic_chapter (
 ) ENGINE=InnoDB COMMENT='经典章节';
 
 -- ============================================
--- 25. 经典段落
+-- 23. 经典段落
 -- ============================================
 CREATE TABLE classic_paragraph (
   id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
@@ -416,7 +400,7 @@ CREATE TABLE classic_paragraph (
 ) ENGINE=InnoDB COMMENT='经典段落';
 
 -- ============================================
--- 26. 经典典故注释
+-- 24. 经典典故注释
 -- ============================================
 CREATE TABLE classic_glossary (
   id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
