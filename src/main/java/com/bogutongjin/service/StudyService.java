@@ -35,6 +35,9 @@ public class StudyService {
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleSentenceMapper articleSentenceMapper;
     private final ArticleMapper articleMapper;
+    private final UserAudioListenLogMapper userAudioListenLogMapper;
+    private final ClassicChapterMapper classicChapterMapper;
+    private final ClassicParagraphMapper classicParagraphMapper;
 
     // -------------------- 今日任务 --------------------
 
@@ -341,6 +344,83 @@ public class StudyService {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("xpGained", xpGained);
         return result;
+    }
+
+    // -------------------- 音频听读完成（写入 XP） --------------------
+
+    /** CJK 汉字正则：基本区 + 扩展 A 区，囊括文言文常见繁体/异体 */
+    private static final java.util.regex.Pattern CJK_CHAR = java.util.regex.Pattern.compile("[^\\u4e00-\\u9fa5\\u3400-\\u4dbf]");
+
+    /**
+     * 音频完整播放完成后调用。去重：同一用户+同一内容只能获取一次 XP。
+     * 后端根据 contentId 查出原文，去标点后统计纯汉字字数，10 个汉字 = 1 XP。
+     */
+    @Transactional
+    public Map<String, Object> completeAudioListen(Long userId, String contentType, String contentId) {
+        // 查是否已有记录
+        boolean exists = userAudioListenLogMapper.exists(
+                new LambdaQueryWrapper<UserAudioListenLog>()
+                        .eq(UserAudioListenLog::getUserId, userId)
+                        .eq(UserAudioListenLog::getContentType, contentType)
+                        .eq(UserAudioListenLog::getContentId, contentId));
+
+        int xpGained = 0;
+        if (!exists) {
+            User user = userMapper.selectById(userId);
+            if (user != null) {
+                // 根据 contentType 查出原文
+                String rawText = fetchContentText(contentType, contentId);
+                // 统计纯汉字（去标点、空白、非汉字字符）
+                String cleanText = CJK_CHAR.matcher(rawText).replaceAll("");
+                int charCount = cleanText.length();
+                log.info("[AudioXP] userId={} contentType={} contentId={} rawTextLen={} charCount={} cleanText={}",
+                        userId, contentType, contentId, rawText.length(), charCount, cleanText);
+                xpGained = charCount / 10;
+                if (xpGained > 0) {
+                    user.setTotalXp(user.getTotalXp() + xpGained);
+                    userMapper.updateById(user);
+                }
+
+                // 插入追踪记录（即使 xpGained=0 也记录，防止重复请求）
+                UserAudioListenLog log = new UserAudioListenLog();
+                log.setUserId(userId);
+                log.setContentType(contentType);
+                log.setContentId(contentId);
+                log.setXpAwarded(xpGained);
+                log.setTextLength(charCount);
+                userAudioListenLogMapper.insert(log);
+            }
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("xpGained", xpGained);
+        return result;
+    }
+
+    /** 根据 contentType + contentId 查出原始文本 */
+    private String fetchContentText(String contentType, String contentId) {
+        if ("article".equals(contentType)) {
+            // article: contentId = articleId，查 article_sentence 拼全文
+            List<ArticleSentence> sentences = articleSentenceMapper.selectList(
+                    new LambdaQueryWrapper<ArticleSentence>()
+                            .eq(ArticleSentence::getArticleId, contentId)
+                            .orderByAsc(ArticleSentence::getSortOrder));
+            return sentences.stream().map(ArticleSentence::getText).collect(java.util.stream.Collectors.joining());
+        } else if ("classic_chapter".equals(contentType)) {
+            // classic_chapter: contentId = classicId:nodeId，查 classic_paragraph 拼全文
+            try {
+                long chapterId = Long.parseLong(contentId.substring(contentId.indexOf(':') + 1));
+                List<ClassicParagraph> paragraphs = classicParagraphMapper.selectList(
+                        new LambdaQueryWrapper<ClassicParagraph>()
+                                .eq(ClassicParagraph::getChapterId, chapterId)
+                                .orderByAsc(ClassicParagraph::getSortOrder));
+                return paragraphs.stream().map(ClassicParagraph::getText).collect(java.util.stream.Collectors.joining());
+            } catch (Exception e) {
+                log.warn("Failed to parse classic chapter contentId: {}", contentId, e);
+                return "";
+            }
+        }
+        return "";
     }
 
     // -------------------- 完成学习 --------------------

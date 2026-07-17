@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ public class ArticleController {
     @GetMapping
     public Result<List<Map<String, Object>>> getArticles(
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String textbook) {
-        return Result.ok(articleService.getArticles(category, textbook));
+            @RequestParam(required = false) String textbook,
+            @CurrentUser Long userId) {
+        return Result.ok(articleService.getArticles(category, textbook, userId));
     }
 
     @GetMapping("/{id}")

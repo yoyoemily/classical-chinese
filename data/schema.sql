@@ -419,3 +419,17 @@ CREATE TABLE classic_glossary (
   updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_paragraph_id (paragraph_id)
 ) ENGINE=InnoDB COMMENT='经典典故注释';
+
+-- ============================================
+-- 26. 用户音频听读记录
+-- ============================================
+CREATE TABLE user_audio_listen_log (
+  id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  user_id      BIGINT       NOT NULL COMMENT '用户ID',
+  content_type VARCHAR(32)  NOT NULL COMMENT '内容类型: article | classic_chapter',
+  content_id   VARCHAR(128) NOT NULL COMMENT '内容ID: articleId 或 classicId:nodeId',
+  xp_awarded   INT          NOT NULL DEFAULT 0 COMMENT '获得的XP',
+  text_length  INT          NOT NULL DEFAULT 0 COMMENT '纯汉字字数（去标点/空白后）',
+  created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_user_content (user_id, content_type, content_id)
+) ENGINE=InnoDB COMMENT='用户音频听读记录';

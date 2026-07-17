@@ -2,6 +2,7 @@ package com.bogutongjin.controller;
 
 import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
+import com.bogutongjin.dto.AudioCompleteRequest;
 import com.bogutongjin.dto.CompleteStudyRequest;
 import com.bogutongjin.dto.SubmitAnswerRequest;
 import com.bogutongjin.dto.WordCompleteRequest;
@@ -46,6 +47,15 @@ public class StudyController {
             @Valid @RequestBody WordCompleteRequest req,
             @CurrentUser Long userId) {
         return Result.ok(studyService.completeWord(userId, req.getWordBookId(), req.getEntryId()));
+    }
+
+    /** 音频完整播放完成（选篇/经典听读 XP） */
+    @PostMapping("/audio-complete")
+    public Result<Map<String, Object>> completeAudio(
+            @Valid @RequestBody AudioCompleteRequest req,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.completeAudioListen(
+                userId, req.getContentType(), req.getContentId()));
     }
 
     /** 完成今日学习 */

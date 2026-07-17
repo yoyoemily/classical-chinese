@@ -20,9 +20,10 @@ public class ArticleService {
     private final ArticleSentenceMapper articleSentenceMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleGlossaryMapper articleGlossaryMapper;
+    private final UserAudioListenLogMapper userAudioListenLogMapper;
     private final JdbcTemplate jdbc;
 
-    public List<Map<String, Object>> getArticles(String category, String textbook) {
+    public List<Map<String, Object>> getArticles(String category, String textbook, Long userId) {
         LambdaQueryWrapper<Article> qw = new LambdaQueryWrapper<Article>()
                 .eq(Article::getHasContent, 1)
                 .orderByAsc(Article::getSortOrder);
@@ -55,11 +56,24 @@ public class ArticleService {
             }
         }
 
-        return articles.stream().map(a -> toArticleListMap(a, keywordCountMap.getOrDefault(a.getId(), 0)))
+        // 批量查询当前用户已听读的文章
+        Set<String> listenedIds = Set.of();
+        if (userId != null && !articleIds.isEmpty()) {
+            List<UserAudioListenLog> logs = userAudioListenLogMapper.selectList(
+                    new LambdaQueryWrapper<UserAudioListenLog>()
+                            .eq(UserAudioListenLog::getUserId, userId)
+                            .eq(UserAudioListenLog::getContentType, "article")
+                            .in(UserAudioListenLog::getContentId, articleIds));
+            listenedIds = logs.stream().map(UserAudioListenLog::getContentId).collect(Collectors.toSet());
+        }
+
+        final Set<String> listened = listenedIds;
+        return articles.stream()
+                .map(a -> toArticleListMap(a, keywordCountMap.getOrDefault(a.getId(), 0), listened.contains(a.getId())))
                 .collect(Collectors.toList());
     }
 
-    private Map<String, Object> toArticleListMap(Article a, int keywordCount) {
+    private Map<String, Object> toArticleListMap(Article a, int keywordCount, boolean listened) {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", a.getId());
         result.put("title", a.getTitle());
@@ -71,6 +85,7 @@ public class ArticleService {
         result.put("fullTextAudioUrl", a.getFullTextAudioUrl());
         result.put("sentences", new ArrayList<>());
         result.put("keywordCount", keywordCount);
+        result.put("listened", listened);
         return result;
     }
 

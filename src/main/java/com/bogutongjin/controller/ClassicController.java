@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.service.ClassicService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,10 @@ public class ClassicController {
      * loadMode=full 时顺带返回全文 chapters 字段
      */
     @GetMapping("/{id}")
-    public Result<Map<String, Object>> getClassicMeta(@PathVariable Long id) {
-        return Result.ok(classicService.getClassicMeta(id));
+    public Result<Map<String, Object>> getClassicMeta(
+            @PathVariable Long id,
+            @CurrentUser Long userId) {
+        return Result.ok(classicService.getClassicMeta(id, userId));
     }
 
     /** 按需加载内容块 */

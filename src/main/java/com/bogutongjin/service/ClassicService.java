@@ -5,12 +5,15 @@ import com.bogutongjin.entity.Classic;
 import com.bogutongjin.entity.ClassicChapter;
 import com.bogutongjin.entity.ClassicParagraph;
 import com.bogutongjin.entity.ClassicGlossary;
+import com.bogutongjin.entity.UserAudioListenLog;
 import com.bogutongjin.mapper.ClassicMapper;
 import com.bogutongjin.mapper.ClassicChapterMapper;
 import com.bogutongjin.mapper.ClassicParagraphMapper;
 import com.bogutongjin.mapper.ClassicGlossaryMapper;
+import com.bogutongjin.mapper.UserAudioListenLogMapper;
 import com.bogutongjin.util.PinyinUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,12 +21,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClassicService {
 
     private final ClassicMapper classicMapper;
     private final ClassicChapterMapper classicChapterMapper;
     private final ClassicParagraphMapper classicParagraphMapper;
     private final ClassicGlossaryMapper classicGlossaryMapper;
+    private final UserAudioListenLogMapper userAudioListenLogMapper;
 
     /**
      * 获取经典著作列表，可按四部分类筛选
@@ -57,7 +62,7 @@ public class ClassicService {
      * @param classicId 经典著作ID
      * @return 基本信息 + 目录树
      */
-    public Map<String, Object> getClassicMeta(Long classicId) {
+    public Map<String, Object> getClassicMeta(Long classicId, Long userId) {
         Classic classic = classicMapper.selectById(classicId);
         if (classic == null) {
             throw new RuntimeException("经典不存在");
@@ -75,7 +80,14 @@ public class ClassicService {
         result.put("navMode", classic.getNavMode());
 
         // 目录树（轻量，仅标题不含内容）
-        result.put("toc", buildToc(classicId, classic.getStructureType(), classic.getNavMode()));
+        List<Map<String, Object>> toc = buildToc(classicId, classic.getStructureType(), classic.getNavMode());
+        result.put("toc", toc);
+
+        // 查询当前用户已听读的章节
+        if (userId != null) {
+            Set<String> listenedNodeIds = collectListenedClassicNodes(userId, classicId, toc);
+            result.put("listenedNodeIds", listenedNodeIds);
+        }
 
         // full 模式下顺带返回全文
         if ("full".equals(classic.getLoadMode())) {
@@ -359,5 +371,54 @@ public class ClassicService {
             cm.put("paragraphs", paraList);
             return cm;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 从 user_audio_listen_log 中收集当前用户已听读的叶子节点 ID
+     */
+    private Set<String> collectListenedClassicNodes(Long userId, Long classicId, List<Map<String, Object>> toc) {
+        // 收集所有叶子节点 ID
+        List<String> leafIds = new ArrayList<>();
+        collectLeafIds(toc, leafIds);
+
+        log.info("[AudioXP] collectListenedClassicNodes userId={} classicId={} leafIds={}", userId, classicId, leafIds);
+
+        if (leafIds.isEmpty()) return Set.of();
+
+        // 构造 content_id: classicId:nodeId
+        List<String> contentIds = leafIds.stream()
+                .map(id -> classicId + ":" + id)
+                .toList();
+
+        List<UserAudioListenLog> logs = userAudioListenLogMapper.selectList(
+                new LambdaQueryWrapper<UserAudioListenLog>()
+                        .eq(UserAudioListenLog::getUserId, userId)
+                        .eq(UserAudioListenLog::getContentType, "classic_chapter")
+                        .in(UserAudioListenLog::getContentId, contentIds));
+
+        log.info("[AudioXP] collectListenedClassicNodes contentIds queried: {} found: {}",
+                contentIds, logs.size());
+
+        return logs.stream()
+                .map(log -> {
+                    // 从 "classicId:nodeId" 中提取 nodeId
+                    String fullContentId = log.getContentId();
+                    int colonIdx = fullContentId.indexOf(':');
+                    return colonIdx > 0 ? fullContentId.substring(colonIdx + 1) : fullContentId;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    /** 递归收集 TOC 中所有叶子节点 ID */
+    @SuppressWarnings("unchecked")
+    private void collectLeafIds(List<Map<String, Object>> nodes, List<String> out) {
+        for (Map<String, Object> node : nodes) {
+            if (Boolean.TRUE.equals(node.get("isLeaf"))) {
+                out.add((String) node.get("id"));
+            }
+            if (node.containsKey("children")) {
+                collectLeafIds((List<Map<String, Object>>) node.get("children"), out);
+            }
+        }
     }
 }
