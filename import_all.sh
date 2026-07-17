@@ -1,14 +1,14 @@
 #!/bin/bash
 # ============================================================
-# 冷启动全量导入
-# 读取 source.json，导入词书 + 勋章 + 经典元数据
+# 勋章导入（冷启动）
+# 读取 source.json（classpath），导入 8 枚勋章
 # ============================================================
 set -euo pipefail
 
 BASE_URL="${BASE_URL:-http://localhost:8080}"
 
 echo ""
-echo "🚀 冷启动全量导入"
+echo "🚀 勋章导入（冷启动）"
 echo "   API: POST $BASE_URL/api/admin/import"
 echo "   源文件: classpath:source.json"
 echo ""

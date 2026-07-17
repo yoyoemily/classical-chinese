@@ -111,7 +111,6 @@ public class SourceData {
         private String translation;
         private List<SourceKeyWord> keyWords;
         private String audioUrl;
-        private List<SourceCharAnnotation> charAnnotations;
         private List<SourceGlossaryItem> glossary;
     }
 
@@ -126,13 +125,6 @@ public class SourceData {
         private String matchWord;
         /** 生词类型：shi/xu/tongjia/gujinyi/huoyong */
         private String wordType;
-    }
-
-    @Data
-    public static class SourceCharAnnotation {
-        private String charText;
-        private String role;
-        private String definition;
     }
 
     @Data

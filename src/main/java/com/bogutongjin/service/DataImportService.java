@@ -41,6 +41,10 @@ public class DataImportService {
     @Value("${app.articles-data-path:/Users/zhutx/Documents/knowledge_library/文言文/选篇/正文/articles.json}")
     private String articlesDataPath;
 
+    /** 知识库经典元数据 JSON 文件路径 */
+    @Value("${app.classics-data-path:/Users/zhutx/Documents/knowledge_library/文言文/经典/classics.json}")
+    private String classicsDataPath;
+
     @Transactional(rollbackFor = Exception.class)
     public void importFromJson() {
         String json;
@@ -58,17 +62,37 @@ public class DataImportService {
             throw new RuntimeException("读取数据源文件失败: " + sourceDataPath, e);
         }
         SourceData source = JSONUtil.toBean(json, SourceData.class);
-        log.info("数据源解析完成: {} 本词书, {} 枚勋章, {} 部经典",
-                source.getWordBooks().size(),
-                source.getBadges() != null ? source.getBadges().size() : 0,
-                source.getClassics() != null ? source.getClassics().size() : 0);
+        log.info("数据源解析完成: {} 枚勋章",
+                source.getBadges() != null ? source.getBadges().size() : 0);
 
         truncateAll();
         importBadges(source.getBadges());
-        importWordBooks(source.getWordBooks());
-        importClassics(source.getClassics());
 
-        log.info("数据源导入完成");
+        log.info("数据源（勋章）导入完成");
+    }
+
+    /**
+     * 经典元数据全量导入（幂等 upsert）
+     * 从知识库 classics.json 读取 52 部经典元数据
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importClassicsFromJson() {
+        String json;
+        String path = classicsDataPath;
+        try {
+            json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Path.of(path)), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException("读取经典元数据文件失败: " + path, e);
+        }
+        List<SourceClassic> classics = JSONUtil.toList(json, SourceClassic.class);
+
+        importClassics(classics);
+
+        Map<String, Object> result = new java.util.LinkedHashMap<>();
+        result.put("success", true);
+        result.put("count", classics.size());
+        result.put("message", "经典元数据导入完成");
+        return result;
     }
 
     /**
@@ -88,7 +112,7 @@ public class DataImportService {
 
         // 清空文章相关表（article_glossary 由 importGlossaryForArticle 独立管理，不 TRUNCATE）
         String[] tables = {
-                "article_keyword", "article_char_annotation",
+                "article_keyword",
                 "article_sentence", "article"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
@@ -212,13 +236,9 @@ public class DataImportService {
 
     private void truncateAll() {
         // 按外键依赖逆序清空（child table → parent table）
+        // 词书表 — 由 import_wordbook.sh 独立管理，不在此清空
+        // 经典表 — 由 import_classic_list.sh / import_classic.sh 独立管理，不在此清空
         String[] tables = {
-                "quiz_distractor",
-                "quiz_item",
-                "word_entry_keyword_ref",
-                "word_usage",
-                "word_book_entry",
-                "word_book",
                 "badge",
                 "user_word_progress",
                 "user_answer_history",
@@ -227,11 +247,7 @@ public class DataImportService {
                 "study_mistake_sentence",
                 "study_mistake",
                 "daily_task",
-                "feedback",
-                "classic_glossary",
-                "classic_paragraph",
-                "classic_chapter",
-                "classic"
+                "feedback"
         };
         jdbc.execute("SET FOREIGN_KEY_CHECKS = 0");
         for (String t : tables) {
@@ -399,8 +415,6 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?, ?)";
         String keywordSql = "INSERT INTO article_keyword (article_sentence_id, word_text, definition, word_book_id, mastery_level, kid, match_word, word_type, sort_order) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String annotationSql = "INSERT INTO article_char_annotation (article_sentence_id, char_text, `role`, definition, sort_order) " +
-                "VALUES (?, ?, ?, ?, ?)";
         String glossarySql = "INSERT INTO article_glossary (article_sentence_id, word, definition, sort_order) " +
                 "VALUES (?, ?, ?, ?)";
 
@@ -432,15 +446,6 @@ public class DataImportService {
                                     kw.getMatchWord(), kw.getWordType(), 0})
                             .collect(Collectors.toList());
                     jdbc.batchUpdate(keywordSql, kwBatch);
-                }
-
-                if (CollUtil.isNotEmpty(s.getCharAnnotations())) {
-                    List<Object[]> caBatch = new ArrayList<>();
-                    for (int j = 0; j < s.getCharAnnotations().size(); j++) {
-                        SourceCharAnnotation ca = s.getCharAnnotations().get(j);
-                        caBatch.add(new Object[]{sentenceId, ca.getCharText(), ca.getRole(), ca.getDefinition(), j});
-                    }
-                    jdbc.batchUpdate(annotationSql, caBatch);
                 }
 
                 if (CollUtil.isNotEmpty(s.getGlossary())) {

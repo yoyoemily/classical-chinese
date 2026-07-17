@@ -19,7 +19,6 @@ public class ArticleService {
     private final ArticleMapper articleMapper;
     private final ArticleSentenceMapper articleSentenceMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
-    private final ArticleCharAnnotationMapper articleCharAnnotationMapper;
     private final ArticleGlossaryMapper articleGlossaryMapper;
     private final JdbcTemplate jdbc;
 
@@ -114,19 +113,6 @@ public class ArticleService {
                     km.put("wordType", kw.getWordType());
                 }
                 return km;
-            }).collect(Collectors.toList()));
-
-            // 逐字标注（废弃，保留兼容）
-            List<ArticleCharAnnotation> annotations = articleCharAnnotationMapper.selectList(
-                    new LambdaQueryWrapper<ArticleCharAnnotation>()
-                            .eq(ArticleCharAnnotation::getArticleSentenceId, s.getId())
-                            .orderByAsc(ArticleCharAnnotation::getSortOrder));
-            sm.put("charAnnotations", annotations.stream().map(ca -> {
-                Map<String, Object> cm = new LinkedHashMap<>();
-                cm.put("char", ca.getCharText());
-                cm.put("role", ca.getRole());
-                cm.put("definition", ca.getDefinition());
-                return cm;
             }).collect(Collectors.toList()));
 
             // 典故注释

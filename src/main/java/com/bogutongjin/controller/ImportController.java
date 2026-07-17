@@ -37,7 +37,19 @@ public class ImportController {
         long start = System.currentTimeMillis();
         importService.importFromJson();
         long elapsed = System.currentTimeMillis() - start;
-        return Result.ok(Map.of("success", true, "elapsedMs", elapsed, "message", "数据源导入完成"));
+        return Result.ok(Map.of("success", true, "elapsedMs", elapsed, "message", "勋章导入完成"));
+    }
+
+    /**
+     * 经典元数据全量导入（幂等 upsert）
+     * 从知识库 classics.json 读取 52 部经典元数据
+     */
+    @PostMapping("/import/classics")
+    public Result<Map<String, Object>> importClassics() {
+        long start = System.currentTimeMillis();
+        Map<String, Object> result = importService.importClassicsFromJson();
+        result.put("elapsedMs", System.currentTimeMillis() - start);
+        return Result.ok(result);
     }
 
     /**

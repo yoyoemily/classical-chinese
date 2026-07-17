@@ -67,13 +67,16 @@ CREATE TABLE word_entry_keyword_ref (
 -- 4. 考题
 -- ============================================
 CREATE TABLE quiz_item (
-  id          VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '考题ID',
-  entry_id    VARCHAR(32)  NOT NULL COMMENT '所属字词条目ID',
-  kid_ref     VARCHAR(64)  COMMENT '关联的 article_keyword.kid',
-  difficulty  VARCHAR(10)  NOT NULL DEFAULT 'basic' COMMENT '难度: basic/medium/hard',
-  target_word VARCHAR(8)   NOT NULL COMMENT '考查的目标字',
-  definition  VARCHAR(256) NOT NULL COMMENT '正确答案释义',
-  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  id                  VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '考题ID',
+  entry_id            VARCHAR(32)  NOT NULL COMMENT '所属字词条目ID',
+  kid_ref             VARCHAR(64)  COMMENT '关联的 article_keyword.kid',
+  difficulty          VARCHAR(10)  NOT NULL DEFAULT 'basic' COMMENT '难度: basic/medium/hard',
+  target_word         VARCHAR(8)   NOT NULL COMMENT '考查的目标字',
+  definition          VARCHAR(256) NOT NULL COMMENT '正确答案释义',
+  sentence_text       VARCHAR(512) COMMENT '挖空句原文',
+  sentence_translation VARCHAR(512) COMMENT '挖空句译文',
+  sentence_source     VARCHAR(64)  COMMENT '挖空句出处（篇名）',
+  sort_order          INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   INDEX idx_entry_id (entry_id),
   INDEX idx_kid_ref (kid_ref),
   INDEX idx_difficulty (difficulty)
@@ -157,20 +160,7 @@ CREATE TABLE article_keyword (
 ) ENGINE=InnoDB COMMENT='名篇句子内联生词';
 
 -- ============================================
--- 10. 名篇逐字标注（已废弃，保留兼容，典故注释已改用 article_glossary 表）
--- ============================================
-CREATE TABLE article_char_annotation (
-  id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  article_sentence_id  BIGINT       NOT NULL COMMENT '所属名篇句子ID',
-  char_text            VARCHAR(4)   NOT NULL COMMENT '单个汉字或标点',
-  `role`               VARCHAR(10)  NOT NULL COMMENT '角色: content(实词)/function(虚词)/punct(标点)',
-  definition           VARCHAR(256) COMMENT '释义（实词必填，虚词可选，标点无）',
-  sort_order           INT          NOT NULL DEFAULT 0 COMMENT '字符序号',
-  INDEX idx_as_id (article_sentence_id)
-) ENGINE=InnoDB COMMENT='名篇逐字标注';
-
--- ============================================
--- 11. 名篇典故注释
+-- 10. 名篇典故注释
 -- ============================================
 CREATE TABLE article_glossary (
   id                   BIGINT       AUTO_INCREMENT PRIMARY KEY,
