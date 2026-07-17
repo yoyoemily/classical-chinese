@@ -533,7 +533,7 @@ public class DataImportService {
             } else {
                 sortOrder = Integer.parseInt(artId.replace("art_", ""));
             }
-            int hasContent = CollUtil.isEmpty(a.getSentences()) ? 0 : 1;
+            int hasContent = artId.startsWith("art_shell_") ? 0 : 1;
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
                     nvl(a.getCategory(), "prose"), a.getTextbook(), a.getBackground(), a.getFullTextAudioUrl(),
                     sortOrder, hasContent);
