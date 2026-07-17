@@ -11,7 +11,6 @@ public class ArticleKeyword {
     private Long articleSentenceId;
     private String wordText;
     private String definition;
-    private String wordBookId;
     private String masteryLevel;
     private String kid;
     /** 消歧用：多字上下文片段，用于定位句中具体出现位置 */

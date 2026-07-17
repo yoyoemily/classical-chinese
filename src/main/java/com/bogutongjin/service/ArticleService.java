@@ -101,7 +101,6 @@ public class ArticleService {
                 Map<String, Object> km = new LinkedHashMap<>();
                 km.put("word", kw.getWordText());
                 km.put("definition", kw.getDefinition());
-                km.put("wordBookId", kw.getWordBookId());
                 km.put("masteryLevel", kw.getMasteryLevel());
                 if (kw.getKid() != null) {
                     km.put("kid", kw.getKid());

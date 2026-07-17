@@ -149,7 +149,6 @@ CREATE TABLE article_keyword (
   article_sentence_id  BIGINT       NOT NULL COMMENT '所属名篇句子ID',
   word_text            VARCHAR(32)  NOT NULL COMMENT '生词文本',
   definition           VARCHAR(256) NOT NULL COMMENT '释义',
-  word_book_id         VARCHAR(32)  COMMENT '所属词书ID',
   mastery_level        VARCHAR(16)  COMMENT '掌握程度，可为空',
   kid                  VARCHAR(64)  UNIQUE COMMENT '全局唯一关键词标识，供 word_entry_keyword_ref 和 quiz_item 引用',
   match_word           VARCHAR(128) COMMENT '消歧用：多字上下文片段，用于定位句中具体出现位置',
