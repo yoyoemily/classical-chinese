@@ -48,6 +48,41 @@ public class WordBookService {
         List<WordBookEntry> entries = wordBookEntryMapper.selectList(
                 new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, bookId).orderByAsc(WordBookEntry::getSortOrder));
 
+        // 批量预加载所有关联数据
+        Set<String> entryIds = entries.stream().map(WordBookEntry::getId).collect(Collectors.toSet());
+
+        // 1. 关键词引用
+        Map<String, List<WordEntryKeywordRef>> keyWordRefMap = entryIds.isEmpty() ? Map.of()
+                : wordEntryKeywordRefMapper.selectList(
+                        new LambdaQueryWrapper<WordEntryKeywordRef>().in(WordEntryKeywordRef::getEntryId, entryIds)
+                                .orderByAsc(WordEntryKeywordRef::getSortOrder))
+                        .stream().collect(Collectors.groupingBy(WordEntryKeywordRef::getEntryId));
+
+        // 2. 答题项
+        Map<String, List<QuizItem>> quizItemMap = entryIds.isEmpty() ? Map.of()
+                : quizItemMapper.selectList(
+                        new LambdaQueryWrapper<QuizItem>().in(QuizItem::getEntryId, entryIds)
+                                .orderByAsc(QuizItem::getSortOrder))
+                        .stream().collect(Collectors.groupingBy(QuizItem::getEntryId));
+
+        // 3. 干扰项（按所有 quizItemId 批量加载）
+        Set<String> allQuizItemIds = quizItemMap.values().stream()
+                .flatMap(List::stream).map(QuizItem::getId).collect(Collectors.toSet());
+        Map<String, List<QuizDistractor>> distractorMap = allQuizItemIds.isEmpty() ? Map.of()
+                : quizDistractorMapper.selectList(
+                        new LambdaQueryWrapper<QuizDistractor>().in(QuizDistractor::getQuizItemId, allQuizItemIds)
+                                .orderByAsc(QuizDistractor::getSortOrder))
+                        .stream().collect(Collectors.groupingBy(QuizDistractor::getQuizItemId));
+
+        // 4. 用法（只读词书）
+        boolean isReadonly = "readonly".equals(book.getStudyMode());
+        Map<String, List<WordUsage>> usageMap = (isReadonly && !entryIds.isEmpty())
+                ? wordUsageMapper.selectList(
+                        new LambdaQueryWrapper<WordUsage>().in(WordUsage::getEntryId, entryIds)
+                                .orderByAsc(WordUsage::getSortOrder))
+                        .stream().collect(Collectors.groupingBy(WordUsage::getEntryId))
+                : Map.of();
+
         List<Map<String, Object>> wordList = entries.stream().map(e -> {
             Map<String, Object> em = new LinkedHashMap<>();
             em.put("id", e.getId());
@@ -62,18 +97,16 @@ public class WordBookService {
             em.put("similarHomophones", parseJsonArray(e.getSimilarHomophones()));
             em.put("similarShapes", parseJsonArray(e.getSimilarShapes()));
 
-            // 关键词引用
-            List<WordEntryKeywordRef> keyWordRefs = wordEntryKeywordRefMapper.selectList(
-                    new LambdaQueryWrapper<WordEntryKeywordRef>().eq(WordEntryKeywordRef::getEntryId, e.getId()).orderByAsc(WordEntryKeywordRef::getSortOrder));
+            // 关键词引用（从 Map 取）
+            List<WordEntryKeywordRef> keyWordRefs = keyWordRefMap.getOrDefault(e.getId(), List.of());
             em.put("keyWordRefs", keyWordRefs.stream().map(r -> {
                 Map<String, Object> rm = new LinkedHashMap<>();
                 rm.put("kid", r.getKid());
                 return rm;
             }).collect(Collectors.toList()));
 
-            // Quiz 题目（含干扰项）
-            List<QuizItem> quizItems = quizItemMapper.selectList(
-                    new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, e.getId()).orderByAsc(QuizItem::getSortOrder));
+            // Quiz 题目（含干扰项，均从 Map 取）
+            List<QuizItem> quizItems = quizItemMap.getOrDefault(e.getId(), List.of());
             em.put("quizItems", quizItems.stream().map(q -> {
                 Map<String, Object> qm = new LinkedHashMap<>();
                 qm.put("id", q.getId());
@@ -81,18 +114,15 @@ public class WordBookService {
                 qm.put("difficulty", q.getDifficulty());
                 qm.put("targetWord", q.getTargetWord());
                 qm.put("kidRef", q.getKidRef());
-                // 干扰项
-                List<QuizDistractor> distractors = quizDistractorMapper.selectList(
-                        new LambdaQueryWrapper<QuizDistractor>().eq(QuizDistractor::getQuizItemId, q.getId())
-                                .orderByAsc(QuizDistractor::getSortOrder));
+                // 干扰项——从批量预加载的 Map 取
+                List<QuizDistractor> distractors = distractorMap.getOrDefault(q.getId(), List.of());
                 qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
                 return qm;
             }).collect(Collectors.toList()));
 
             // 只读类词书才有用法
-            if ("readonly".equals(book.getStudyMode())) {
-                List<WordUsage> usages = wordUsageMapper.selectList(
-                        new LambdaQueryWrapper<WordUsage>().eq(WordUsage::getEntryId, e.getId()).orderByAsc(WordUsage::getSortOrder));
+            if (isReadonly) {
+                List<WordUsage> usages = usageMap.getOrDefault(e.getId(), List.of());
                 em.put("usages", usages.stream().map(u -> {
                     Map<String, Object> um = new LinkedHashMap<>();
                     um.put("usageType", u.getUsageType());
