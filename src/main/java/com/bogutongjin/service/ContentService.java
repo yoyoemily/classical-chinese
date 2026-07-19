@@ -37,6 +37,29 @@ public class ContentService {
         // 义项列表以 quizItem 驱动：每个 quizItem 即一个义项，keyWordRef 只补 word / articleId
         List<QuizItem> quizItems = quizItemMapper.selectList(
                 new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entryId).orderByAsc(QuizItem::getSortOrder));
+
+        // 批量预加载 articleKeyword（按 kidRef）
+        Set<String> kidRefs = quizItems.stream().map(QuizItem::getKidRef)
+                .filter(r -> r != null && !r.isEmpty()).collect(Collectors.toSet());
+        Map<String, ArticleKeyword> akMap = kidRefs.isEmpty() ? Map.of()
+                : articleKeywordMapper.selectList(
+                        new LambdaQueryWrapper<ArticleKeyword>().in(ArticleKeyword::getKid, kidRefs))
+                        .stream().collect(Collectors.toMap(ArticleKeyword::getKid, ak -> ak, (a, b) -> a));
+
+        // 批量预加载 articleSentence（按 keyword 关联的 sentenceId）
+        Set<Long> sentenceIds = akMap.values().stream().map(ArticleKeyword::getArticleSentenceId).collect(Collectors.toSet());
+        Map<Long, ArticleSentence> sentenceMap = sentenceIds.isEmpty() ? Map.of()
+                : articleSentenceMapper.selectBatchIds(sentenceIds).stream()
+                        .collect(Collectors.toMap(ArticleSentence::getId, s -> s));
+
+        // 批量预加载 quizDistractor（按 quizItemId）
+        Set<String> quizItemIds = quizItems.stream().map(QuizItem::getId).collect(Collectors.toSet());
+        Map<String, List<QuizDistractor>> distractorMap = quizItemIds.isEmpty() ? Map.of()
+                : quizDistractorMapper.selectList(
+                        new LambdaQueryWrapper<QuizDistractor>().in(QuizDistractor::getQuizItemId, quizItemIds)
+                                .orderByAsc(QuizDistractor::getSortOrder))
+                        .stream().collect(Collectors.groupingBy(QuizDistractor::getQuizItemId));
+
         result.put("keyWordRefs", quizItems.stream().map(qi -> {
             Map<String, Object> rm = new LinkedHashMap<>();
             rm.put("kid", qi.getKidRef() != null ? qi.getKidRef() : "");
@@ -45,13 +68,12 @@ public class ContentService {
             rm.put("sentenceTranslation", qi.getSentenceTranslation() != null ? qi.getSentenceTranslation() : "");
             rm.put("articleTitle", qi.getSentenceSource() != null ? qi.getSentenceSource() : "");
 
-            // 从 article_keyword 补 word 和 articleId
+            // 从批量预加载的 Map 补 word 和 articleId
             if (qi.getKidRef() != null && !qi.getKidRef().isEmpty()) {
-                ArticleKeyword ak = articleKeywordMapper.selectOne(
-                        new LambdaQueryWrapper<ArticleKeyword>().eq(ArticleKeyword::getKid, qi.getKidRef()));
+                ArticleKeyword ak = akMap.get(qi.getKidRef());
                 if (ak != null) {
                     rm.put("word", ak.getWordText() != null ? ak.getWordText() : "");
-                    ArticleSentence as = articleSentenceMapper.selectById(ak.getArticleSentenceId());
+                    ArticleSentence as = sentenceMap.get(ak.getArticleSentenceId());
                     if (as != null) {
                         rm.put("articleId", as.getArticleId() != null ? as.getArticleId() : "");
                     }
@@ -68,9 +90,7 @@ public class ContentService {
             qm.put("difficulty", q.getDifficulty());
             qm.put("targetWord", q.getTargetWord());
             qm.put("kidRef", q.getKidRef());
-            List<QuizDistractor> distractors = quizDistractorMapper.selectList(
-                    new LambdaQueryWrapper<QuizDistractor>().eq(QuizDistractor::getQuizItemId, q.getId())
-                            .orderByAsc(QuizDistractor::getSortOrder));
+            List<QuizDistractor> distractors = distractorMap.getOrDefault(q.getId(), List.of());
             qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
             return qm;
         }).collect(Collectors.toList()));
@@ -89,16 +109,27 @@ public class ContentService {
         List<WordBookEntry> entries = wordBookEntryMapper.selectList(
                 new LambdaQueryWrapper<WordBookEntry>().like(WordBookEntry::getCharacter, keyword));
 
+        if (entries.isEmpty()) return List.of();
+
+        // 批量预加载词书元数据
+        Set<String> bookIds = entries.stream().map(WordBookEntry::getWordBookId).collect(Collectors.toSet());
+        Map<String, WordBook> bookMap = wordBookMapper.selectBatchIds(bookIds).stream()
+                .collect(Collectors.toMap(WordBook::getId, b -> b));
+
+        // 批量预加载所有 quiz item
+        Set<String> entryIds = entries.stream().map(WordBookEntry::getId).collect(Collectors.toSet());
+        Map<String, List<QuizItem>> quizItemMap = quizItemMapper.selectList(
+                new LambdaQueryWrapper<QuizItem>().in(QuizItem::getEntryId, entryIds)
+                        .orderByAsc(QuizItem::getSortOrder))
+                .stream().collect(Collectors.groupingBy(QuizItem::getEntryId));
+
         List<Map<String, Object>> result = new ArrayList<>();
         for (WordBookEntry entry : entries) {
             // 跳过只读类词书（虚词深度解析等）
-            WordBook book = wordBookMapper.selectById(entry.getWordBookId());
+            WordBook book = bookMap.get(entry.getWordBookId());
             if (book == null || "readonly".equals(book.getStudyMode())) continue;
 
-            // 获取所有 quiz item 定义作为义项
-            List<QuizItem> quizItems = quizItemMapper.selectList(
-                    new LambdaQueryWrapper<QuizItem>().eq(QuizItem::getEntryId, entry.getId())
-                            .orderByAsc(QuizItem::getSortOrder));
+            List<QuizItem> quizItems = quizItemMap.getOrDefault(entry.getId(), List.of());
 
             List<Map<String, Object>> meaningList = new ArrayList<>();
             for (QuizItem q : quizItems) {
