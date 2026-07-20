@@ -551,7 +551,14 @@ public class DataImportService {
 
             for (int i = 0; i < a.getSentences().size(); i++) {
                 SourceArticleSentence s = a.getSentences().get(i);
-                jdbc.update(sentenceSql, a.getId(), s.getText(), nvl(s.getTranslation()), s.getAudioUrl(), i);
+                String translation = nvl(s.getTranslation());
+                // 有 keyWords 的句子必须有译文，阻断导入
+                if (CollUtil.isNotEmpty(s.getKeyWords()) && translation.isEmpty()) {
+                    throw new RuntimeException(String.format(
+                            "句子含 keyWords 但缺少译文: 文章[%s] %s, 第%d句 \"%s\"",
+                            a.getId(), a.getTitle(), i, s.getText()));
+                }
+                jdbc.update(sentenceSql, a.getId(), s.getText(), translation, s.getAudioUrl(), i);
                 Long sentenceId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
 
                 if (CollUtil.isNotEmpty(s.getKeyWords())) {
