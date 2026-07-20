@@ -226,7 +226,7 @@ public class DataImportService {
 
     /**
      * 选篇正文全量导入（幂等：先清空后插入）
-     * 从知识库 articles.json 读取 55 篇选篇正文
+     * 从知识库 articles.json 读取 55 篇选篇正文（本地模式）
      */
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> importArticlesFromJson() {
@@ -237,6 +237,15 @@ public class DataImportService {
         } catch (Exception e) {
             throw new RuntimeException("读取选篇正文文件失败: " + path, e);
         }
+        return importArticlesFromJson(json);
+    }
+
+    /**
+     * 选篇正文全量导入（幂等：先清空后插入）
+     * 从请求体直接传入 JSON 内容（线上模式，无需服务器本地文件）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importArticlesFromJson(String json) {
         List<SourceArticle> articles = JSONUtil.toList(json, SourceArticle.class);
 
         // 清空文章相关表（article_glossary 由 importGlossaryForArticle 独立管理，不 TRUNCATE）

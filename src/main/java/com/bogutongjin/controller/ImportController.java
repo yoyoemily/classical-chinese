@@ -80,12 +80,19 @@ public class ImportController {
 
     /**
      * 选篇正文全量导入（幂等：先清空后插入）
-     * 从知识库 articles.json 读取 55 篇选篇正文
+     * 支持两种模式：
+     *   - 无请求体：从服务器本地知识库 articles.json 读取（本地开发环境）
+     *   - 有请求体：直接解析请求体 JSON（线上环境，客户端 -d @文件 传入）
      */
     @PostMapping("/import/articles")
-    public Result<Map<String, Object>> importArticles() {
+    public Result<Map<String, Object>> importArticles(@RequestBody(required = false) String body) {
         long start = System.currentTimeMillis();
-        Map<String, Object> result = importService.importArticlesFromJson();
+        Map<String, Object> result;
+        if (body != null && !body.isBlank()) {
+            result = importService.importArticlesFromJson(body);
+        } else {
+            result = importService.importArticlesFromJson();
+        }
         result.put("elapsedMs", System.currentTimeMillis() - start);
         return Result.ok(result);
     }
