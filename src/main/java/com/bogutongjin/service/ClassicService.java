@@ -53,6 +53,7 @@ public class ClassicService {
             m.put("category", c.getCategory());
             m.put("loadMode", c.getLoadMode());
             m.put("navMode", c.getNavMode());
+            m.put("isCompleted", c.getIsCompleted());
             return m;
         }).collect(Collectors.toList());
     }

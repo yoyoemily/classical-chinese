@@ -19,6 +19,7 @@ public class Classic {
     private String loadMode;
     private String navMode;
     private Integer sortOrder;
+    private Integer isCompleted;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
