@@ -377,9 +377,10 @@ CREATE TABLE classic (
   structure_type VARCHAR(16)  NOT NULL DEFAULT 'chapter' COMMENT '结构类型: chapter=章节型, anthology=选集型, volume=卷帙型',
   load_mode   VARCHAR(16)  NOT NULL DEFAULT 'chunked' COMMENT '加载方式 full/chunked(可互换): full=全量一次返回, chunked=按需逐篇加载',
   nav_mode    VARCHAR(16)  NOT NULL DEFAULT 'list' COMMENT '导航方式 strip/list/accordion/search/author(不可互换,须匹配chapter表parent_id结构): strip=横向滚动, list=竖排, accordion=手风琴二级, search=搜索过滤, author=按作者浏览',
-  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  sort_order    INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
+  is_completed  TINYINT      NOT NULL DEFAULT 0 COMMENT '是否已完成: 0=未完成, 1=已完成(人工维护)',
+  created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category)
 ) ENGINE=InnoDB COMMENT='经典著作';
 
