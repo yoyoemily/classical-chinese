@@ -15,6 +15,10 @@ public class ClassicChapter {
     private String author;
     private String era;
     private String background;
+
+    /** 章节音频 URL（讯飞 TTS 合成后写入） */
+    private String audioUrl;
+
     private Integer sortOrder;
 
     @TableField(fill = FieldFill.INSERT)

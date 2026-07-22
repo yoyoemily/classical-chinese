@@ -395,6 +395,7 @@ CREATE TABLE classic_chapter (
   author      VARCHAR(32)  DEFAULT NULL COMMENT '篇章作者（选集型才填，章节型为 NULL）',
   era         VARCHAR(16)  DEFAULT NULL COMMENT '篇章所属朝代（选集型才填）',
   background  TEXT         DEFAULT NULL COMMENT '篇章创作背景',
+  audio_url   VARCHAR(512) DEFAULT NULL COMMENT '章节音频URL（讯飞TTS合成后写入）',
   sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

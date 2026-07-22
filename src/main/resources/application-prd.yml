@@ -12,3 +12,17 @@ wechat:
 logging:
   level:
     com.bogutongjin: INFO
+
+xfyun:
+  tts:
+    app-id: ${XF_APP_ID:ca91061a}
+    api-key: ${XF_API_KEY:72e44007ae317e669e7b3e8f75af963b}
+    api-secret: ${XF_API_SECRET:ZjAzYWMyZWQ2ZmM5NjAzNzJhY2M0YzBh}
+    vcn: x4_guanshan
+    speed: 50
+    volume: 50
+    pitch: 50
+    output-dir: ${user.home}/upload/wyq/tts
+    base-url: https://wyq.yinqueai.com/upload/wyq/tts
+    poll-interval-seconds: 5
+    poll-max-attempts: 60

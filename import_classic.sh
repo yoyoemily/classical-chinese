@@ -29,20 +29,34 @@ set -- ${FILTERED_ARGS[@]+"${FILTERED_ARGS[@]}"}
 KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
 CLASSICS_DIR="$KNOWLEDGE_LIB/文言文/经典"
 
-# 已上线经典列表（按菜单顺序排列）
+# 已上线经典列表（按 ID 排序，共 25 部）
 # 格式: "id|名称|文件名"
 declare -a ONLINE_CLASSICS=(
     "3|大学|大学/chapters.json"
     "4|中庸|中庸/chapters.json"
+    "5|周易|周易/chapters.json"
+    "17|荀子|荀子/chapters.json"
     "18|老子|老子/chapters.json"
+    "20|韩非子|韩非子/chapters.json"
+    "21|墨子|墨子/chapters.json"
     "22|孙子兵法|孙子兵法/chapters.json"
+    "24|鬼谷子|鬼谷子/chapters.json"
     "27|楚辞|楚辞/chapters.json"
     "28|唐诗三百首|唐诗三百首/entries.json"
+    "29|宋词三百首|宋词三百首/entries.json"
     "33|世说新语|世说新语/entries.json"
     "36|山海经|山海经/chapters.json"
+    "37|列子|列子/chapters.json"
     "38|孝经|孝经/chapters.json"
+    "40|颜氏家训|颜氏家训/chapters.json"
     "43|三字经|三字经/chapters.json"
     "44|千字文|千字文/chapters.json"
+    "46|晏子春秋|晏子春秋/chapters.json"
+    "47|菜根谭|菜根谭/chapters.json"
+    "48|西厢记|西厢记/entries.json"
+    "55|浮生六记|浮生六记/chapters.json"
+    "57|陶渊明集|陶渊明集/chapters.json"
+    "58|围炉夜话|围炉夜话/chapters.json"
 )
 
 import_one() {
