@@ -36,5 +36,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 头像上传文件映射：/upload/wyq/avatar/ → ~/upload/wyq/avatar/
         registry.addResourceHandler("/upload/wyq/avatar/**")
                 .addResourceLocations("file:" + System.getProperty("user.home") + "/upload/wyq/avatar/");
+        // TTS 音频文件映射：/upload/wyq/tts/ → ~/upload/wyq/tts/
+        registry.addResourceHandler("/upload/wyq/tts/**")
+                .addResourceLocations("file:" + System.getProperty("user.home") + "/upload/wyq/tts/");
     }
 }
