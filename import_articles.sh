@@ -1,11 +1,20 @@
 #!/bin/bash
 # ============================================================
-# 选篇正文全量导入（198篇，拆分为12个分文件）
+# 选篇正文全量导入（300篇，拆分为12个分文件）
 # 从知识库 articles_*.json 读取，拼接后发送，幂等（先清空后插入）
+#
+# 用法:
+#   ./import_articles.sh           本地开发（localhost:8080）
+#   ./import_articles.sh prd       正式环境（wyq.yinqueai.com）
+#   BASE_URL=xxx ./import_articles.sh  自定义地址
 # ============================================================
 set -euo pipefail
 
-BASE_URL="${BASE_URL:-http://localhost:8080}"
+if [[ "${1:-}" == "prd" || "${1:-}" == "prod" || "${1:-}" == "production" ]]; then
+    BASE_URL="https://wyq.yinqueai.com"
+else
+    BASE_URL="${BASE_URL:-http://localhost:8080}"
+fi
 KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
 ARTICLES_DIR="$KNOWLEDGE_LIB/文言文/选篇/正文"
 
@@ -26,9 +35,9 @@ echo "   源目录: $ARTICLES_DIR"
 echo "   分文件数: $FILE_COUNT"
 echo ""
 
+# 线上部署：拼接 12 个文件后作为请求体发送（-d @- 方式）
 # 本地开发：后端 Java 自动从目录读取分文件（无请求体模式）
-# 线上部署：拼接 12 个文件后作为请求体发送
-if [[ "${ONLINE:-}" == "true" ]]; then
+if [[ "$BASE_URL" == "https://"* ]]; then
     cd "$ARTICLES_DIR"
     python3 -c "
 import json, sys
