@@ -16,8 +16,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,9 +41,13 @@ public class DataImportService {
     @Value("${app.source-data-path:classpath:source.json}")
     private String sourceDataPath;
 
-    /** 知识库选篇正文 JSON 文件路径 */
+    /** 知识库选篇正文 JSON 文件路径（旧版单文件，已废弃；改用 articlesDataDir） */
     @Value("${app.articles-data-path:/Users/zhutx/Documents/knowledge_library/文言文/选篇/正文/articles.json}")
     private String articlesDataPath;
+
+    /** 知识库选篇正文分文件目录（12 个 articles_*.json） */
+    @Value("${app.articles-data-dir:/Users/zhutx/Documents/knowledge_library/文言文/选篇/正文}")
+    private String articlesDataDir;
 
     /** 知识库经典元数据 JSON 文件路径 */
     @Value("${app.classics-data-path:/Users/zhutx/Documents/knowledge_library/文言文/经典/classics.json}")
@@ -213,6 +221,13 @@ public class DataImportService {
         } catch (Exception e) {
             throw new RuntimeException("读取经典元数据文件失败: " + path, e);
         }
+        return importClassicsFromJson(json);
+    }
+
+    /**
+     * 经典元数据导入（接收请求体，用于线上环境 client 传入 JSON）
+     */
+    public Map<String, Object> importClassicsFromJson(String json) {
         List<SourceClassic> classics = JSONUtil.toList(json, SourceClassic.class);
 
         importClassics(classics);
@@ -226,18 +241,49 @@ public class DataImportService {
 
     /**
      * 选篇正文全量导入（幂等：先清空后插入）
-     * 从知识库 articles.json 读取 55 篇选篇正文（本地模式）
+     * 从知识库 articles_*.json 读取分文件并合并（本地模式）
      */
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> importArticlesFromJson() {
-        String json;
+        // 优先使用分文件目录
+        File dir = new File(articlesDataDir);
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles((d, name) -> name.startsWith("articles_") && name.endsWith(".json"));
+            if (files != null && files.length > 0) {
+                Arrays.sort(files);
+                StringBuilder sb = new StringBuilder();
+                sb.append("[");
+                boolean first = true;
+                for (File f : files) {
+                    try {
+                        String content = Files.readString(f.toPath(), StandardCharsets.UTF_8).trim();
+                        // 去掉首尾的 [ 和 ]
+                        if (content.startsWith("[")) content = content.substring(1);
+                        if (content.endsWith("]")) content = content.substring(0, content.length() - 1);
+                        content = content.trim();
+                        if (!content.isEmpty()) {
+                            if (!first) sb.append(",");
+                            sb.append(content);
+                            first = false;
+                        }
+                    } catch (Exception e) {
+                        log.warn("读取选篇文件失败: {}", f.getName(), e);
+                    }
+                }
+                sb.append("]");
+                log.info("从目录 {} 读取 {} 个分文件", articlesDataDir, files.length);
+                return importArticlesFromJson(sb.toString());
+            }
+        }
+
+        // 回退到旧版单文件路径
         String path = articlesDataPath;
         try {
-            json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Path.of(path)), StandardCharsets.UTF_8);
+            String json = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+            return importArticlesFromJson(json);
         } catch (Exception e) {
             throw new RuntimeException("读取选篇正文文件失败: " + path, e);
         }
-        return importArticlesFromJson(json);
     }
 
     /**
@@ -267,6 +313,39 @@ public class DataImportService {
         result.put("success", true);
         result.put("count", articles.size());
         result.put("message", "选篇正文导入完成");
+        return result;
+    }
+
+    /**
+     * 单篇选篇正文导入（幂等：按 articleId 先删后插）
+     * 只影响该篇的 sentence/keyword/glossary 数据，不触碰其他文章
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importSingleArticle(String articleId, SourceArticle article) {
+        // 1. 校验 articleId 一致性
+        if (!articleId.equals(article.getId())) {
+            throw new RuntimeException(String.format(
+                    "articleId 不一致: 路径参数=%s, 请求体 id=%s", articleId, article.getId()));
+        }
+
+        // 2. 删除该文章已有数据（按外键依赖逆序）
+        jdbc.update("DELETE FROM article_glossary WHERE article_sentence_id IN " +
+                "(SELECT id FROM article_sentence WHERE article_id = ?)", articleId);
+        jdbc.update("DELETE FROM article_keyword WHERE article_sentence_id IN " +
+                "(SELECT id FROM article_sentence WHERE article_id = ?)", articleId);
+        jdbc.update("DELETE FROM article_sentence WHERE article_id = ?", articleId);
+        jdbc.update("DELETE FROM article WHERE id = ?", articleId);
+
+        // 3. 插入
+        importArticles(List.of(article));
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("articleId", articleId);
+        result.put("title", article.getTitle());
+        int sentenceCount = article.getSentences() != null ? article.getSentences().size() : 0;
+        result.put("sentenceCount", sentenceCount);
+        result.put("message", "单篇选篇导入完成: " + articleId + " " + article.getTitle());
         return result;
     }
 

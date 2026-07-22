@@ -2,12 +2,30 @@
 # ============================================================
 # 经典著作章节导入
 #   ./import_classic.sh             引导选择：全部导入或指定单本
-#   ./import_classic.sh --all       一键导入全部 11 部已上线经典
+#   ./import_classic.sh prd         正式环境（wyq.yinqueai.com）
+#   ./import_classic.sh --all       一键导入全部已上线经典
+#   ./import_classic.sh --all prd   正式环境一键导入全部经典
 #   ./import_classic.sh <id>        直接导入指定经典
+#   ./import_classic.sh <id> prd    正式环境导入指定经典
+#   BASE_URL=xxx ./import_classic.sh  自定义地址
 # ============================================================
 set -euo pipefail
 
+# 先处理 prd 参数（可能在第 1 或第 2 个位置）
 BASE_URL="${BASE_URL:-http://localhost:8080}"
+for arg in "$@"; do
+    if [[ "$arg" == "prd" || "$arg" == "prod" || "$arg" == "production" ]]; then
+        BASE_URL="https://wyq.yinqueai.com"
+    fi
+done
+# 过滤掉 prd 参数，剩下的传给后续解析
+FILTERED_ARGS=()
+for arg in "$@"; do
+    if [[ "$arg" != "prd" && "$arg" != "prod" && "$arg" != "production" ]]; then
+        FILTERED_ARGS+=("$arg")
+    fi
+done
+set -- ${FILTERED_ARGS[@]+"${FILTERED_ARGS[@]}"}
 KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
 CLASSICS_DIR="$KNOWLEDGE_LIB/文言文/经典"
 
@@ -107,7 +125,19 @@ fi
 echo ""
 echo "📗 经典著作章节导入"
 echo "   知识库路径: $CLASSICS_DIR"
-echo "   API: POST $BASE_URL/api/admin/import/classic/{id}"
+echo ""
+
+read -r -p "选择环境 [1] 本地开发  [2] 正式环境  [Q] 退出 (1/2/Q): " ENV_CHOICE
+
+case "$ENV_CHOICE" in
+    1) BASE_URL="${BASE_URL:-http://localhost:8080}" ;;
+    2) BASE_URL="https://wyq.yinqueai.com" ;;
+    [Qq]) echo "已退出"; exit 0 ;;
+    *) echo "❌ 无效选择"; exit 1 ;;
+esac
+
+echo ""
+echo "   当前环境: $BASE_URL"
 echo ""
 echo "   [A] 全部导入（共 ${#ONLINE_CLASSICS[@]} 部）"
 

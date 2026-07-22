@@ -68,12 +68,19 @@ public class ImportController {
 
     /**
      * 经典元数据全量导入（幂等 upsert）
-     * 从知识库 classics.json 读取 52 部经典元数据
+     * 支持两种模式：
+     *   - 无请求体：从服务器本地知识库 classics.json 读取（本地开发环境）
+     *   - 有请求体：直接解析请求体 JSON（线上环境，客户端 -d @文件 传入）
      */
     @PostMapping("/import/classics")
-    public Result<Map<String, Object>> importClassics() {
+    public Result<Map<String, Object>> importClassics(@RequestBody(required = false) String body) {
         long start = System.currentTimeMillis();
-        Map<String, Object> result = importService.importClassicsFromJson();
+        Map<String, Object> result;
+        if (body != null && !body.isBlank()) {
+            result = importService.importClassicsFromJson(body);
+        } else {
+            result = importService.importClassicsFromJson();
+        }
         result.put("elapsedMs", System.currentTimeMillis() - start);
         return Result.ok(result);
     }
@@ -93,6 +100,20 @@ public class ImportController {
         } else {
             result = importService.importArticlesFromJson();
         }
+        result.put("elapsedMs", System.currentTimeMillis() - start);
+        return Result.ok(result);
+    }
+
+    /**
+     * 单篇选篇正文导入（幂等：按 articleId 先删后插）
+     * 接收单篇 SourceArticle JSON 请求体，只影响该篇文章
+     */
+    @PostMapping("/import/articles/{articleId}")
+    public Result<Map<String, Object>> importSingleArticle(
+            @PathVariable String articleId,
+            @RequestBody SourceData.SourceArticle article) {
+        long start = System.currentTimeMillis();
+        Map<String, Object> result = importService.importSingleArticle(articleId, article);
         result.put("elapsedMs", System.currentTimeMillis() - start);
         return Result.ok(result);
     }

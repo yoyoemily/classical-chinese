@@ -444,3 +444,18 @@ CREATE TABLE user_audio_listen_log (
   created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_user_content (user_id, content_type, content_id)
 ) ENGINE=InnoDB COMMENT='用户音频听读记录';
+
+-- ============================================
+-- 27. 用户意见建议
+-- ============================================
+CREATE TABLE suggestion (
+  id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id     BIGINT NOT NULL COMMENT '用户ID',
+  content     VARCHAR(2000) NOT NULL COMMENT '意见建议内容',
+  contact     VARCHAR(128) COMMENT '联系方式（手机号/微信/邮箱，选填）',
+  category    VARCHAR(24) COMMENT '分类: function/bug/experience/other',
+  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_user_id (user_id),
+  INDEX idx_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户意见建议';
