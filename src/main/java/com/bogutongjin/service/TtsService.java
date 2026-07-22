@@ -103,23 +103,15 @@ public class TtsService {
     /**
      * 合成经典章节音频并更新数据库
      *
-     * @param classicId 经典主键 ID，用于校验章节归属
      * @param chapterId 章节主键 ID（classic_chapter 表）
      * @param vcn       可选，覆盖默认发音人
      * @return 结果摘要
      */
-    public String synthesizeClassicChapter(Long classicId, Long chapterId, String vcn) {
+    public String synthesizeClassicChapter(Long chapterId, String vcn) {
         // 1. 验证章节存在
         ClassicChapter chapter = classicChapterMapper.selectById(chapterId);
         if (chapter == null) {
-            throw new IllegalArgumentException("经典篇章不存在: chapterId=" + chapterId);
-        }
-
-        // 2. 校验章节是否属于指定的经典
-        if (!classicId.equals(chapter.getClassicId())) {
-            throw new IllegalArgumentException(StrUtil.format(
-                    "篇章 {} 不属于经典 {}，实际属于经典 {}",
-                    chapterId, classicId, chapter.getClassicId()));
+            throw new IllegalArgumentException("经典章节不存在: " + chapterId);
         }
 
         // 2. 取全部段落，按 sort_order 拼接全文

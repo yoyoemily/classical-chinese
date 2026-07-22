@@ -48,20 +48,18 @@ public class TtsController {
      * 拼接 classic_paragraph 全部段落 → 调讯飞长文本 TTS → 存到
      * ~/upload/wyq/tts/classic/{classicId}_{chapterId}.mp3 → 更新 classic_chapter.audio_url
      *
-     * @param classicId 经典 ID，用于校验章节是否属于该经典
-     * @param vcn       可选，覆盖默认发音人（如 x4_mingge）
+     * @param vcn 可选，覆盖默认发音人（如 x4_mingge）
      */
     @PostMapping("/classic-chapter/{chapterId}")
     public Result<Map<String, Object>> synthesizeClassicChapter(
             @PathVariable Long chapterId,
-            @RequestParam Long classicId,
             @RequestParam(required = false) String vcn) {
-        log.info("[TTS] 收到经典章节合成请求: classicId={}, chapterId={}, vcn={}", classicId, chapterId, vcn);
+        log.info("[TTS] 收到经典章节合成请求: chapterId={}, vcn={}", chapterId, vcn);
         try {
-            String summary = ttsService.synthesizeClassicChapter(classicId, chapterId, vcn);
-            return Result.ok(Map.of("success", true, "classicId", classicId, "chapterId", chapterId, "summary", summary));
+            String summary = ttsService.synthesizeClassicChapter(chapterId, vcn);
+            return Result.ok(Map.of("success", true, "chapterId", chapterId, "summary", summary));
         } catch (Exception e) {
-            log.error("[TTS] 经典章节合成失败: classicId={}, chapterId={}", classicId, chapterId, e);
+            log.error("[TTS] 经典章节合成失败: chapterId={}", chapterId, e);
             return Result.fail(500, e.getMessage());
         }
     }

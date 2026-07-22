@@ -1,17 +1,16 @@
 package com.bogutongjin.util;
 
-import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.bogutongjin.config.XfyunTtsProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,6 +23,9 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * 鉴权方式：HMAC-SHA256 签名，拼到 URL query params（非 Header），
  * 签名原文格式："host: {host}\ndate: {RFC1123 GMT}\nPOST {path} HTTP/1.1"
+ * <p>
+ * HTTP 层使用 OkHttp（参照官方 demo 的 HttpUtil），避免 Hutool HttpURLConnection
+ * 在 read timeout 上不生效导致无限阻塞。
  */
 @Slf4j
 @Component
@@ -31,6 +33,15 @@ import java.util.concurrent.TimeUnit;
 public class XfyunTtsClient {
 
     private final XfyunTtsProperties props;
+
+    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .callTimeout(60, TimeUnit.SECONDS)
+            .build();
+
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json;charset=utf-8");
 
     // ============================================
     // 公开方法
@@ -83,12 +94,12 @@ public class XfyunTtsClient {
     private String createTask(String text, String vcn) {
         String body = buildCreateRequestBody(text, vcn);
         String url = buildAuthUrl(props.getCreateUrl(), "POST");
-        log.debug("[XfyunTTS] 创建任务, text.length={}, vcn={}", text.length(), vcn);
+        log.info("[XfyunTTS] 创建任务, text.length={}, vcn={}", text.length(), vcn);
         return doPost(url, body);
     }
 
     private String buildCreateRequestBody(String text, String vcn) {
-        String encodedText = Base64.encode(text);
+        String encodedText = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
 
         JSONObject body = JSONUtil.createObj();
 
@@ -147,7 +158,7 @@ public class XfyunTtsClient {
         String queryUrl = buildAuthUrl(props.getQueryUrl(), "POST");
 
         for (int i = 0; i < props.getPollMaxAttempts(); i++) {
-            // 第一次立即查询，后续等间隔再查
+            // 首次立即查询，后续等间隔
             if (i > 0) {
                 try {
                     TimeUnit.SECONDS.sleep(props.getPollIntervalSeconds());
@@ -169,7 +180,7 @@ public class XfyunTtsClient {
             String taskStatusStr = getStr(json, "header.task_status");
             int taskStatus = Integer.parseInt(taskStatusStr != null ? taskStatusStr : "0");
 
-            log.debug("[XfyunTTS] 轮询 #{}/{} taskId={}, status={}",
+            log.info("[XfyunTTS] 轮询 #{}/{} taskId={}, status={}",
                     i + 1, props.getPollMaxAttempts(), taskId, taskStatus);
 
             if (taskStatus == 5) {
@@ -177,10 +188,10 @@ public class XfyunTtsClient {
                 if (audioBase64 == null) {
                     throw new RuntimeException("查询结果中无音频数据, taskId=" + taskId);
                 }
-                String audioEncoding = getStr(json, "payload.audio.encoding");
-                byte[] decoded = Base64.decode(audioBase64);
+                byte[] decoded = Base64.getDecoder().decode(audioBase64);
                 String audioUrl = new String(decoded, StandardCharsets.UTF_8);
-                log.info("[XfyunTTS] 音频编码={}, audioUrl={}", audioEncoding, audioUrl);
+                log.info("[XfyunTTS] 音频编码={}, audioUrl={}",
+                        getStr(json, "payload.audio.encoding"), audioUrl);
                 return audioUrl;
             }
         }
@@ -204,14 +215,20 @@ public class XfyunTtsClient {
     // ============================================
 
     private byte[] downloadAudio(String audioUrl) {
-        HttpResponse resp = HttpRequest.get(audioUrl)
-                .timeout(30000)
-                .execute();
-        if (!resp.isOk()) {
-            throw new RuntimeException("下载音频失败, url=" + audioUrl
-                    + ", status=" + resp.getStatus());
+        Request request = new Request.Builder().url(audioUrl).build();
+        try (Response response = HTTP_CLIENT.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("下载音频失败, url=" + audioUrl
+                        + ", status=" + response.code());
+            }
+            ResponseBody body = response.body();
+            if (body == null) {
+                throw new RuntimeException("下载音频响应为空, url=" + audioUrl);
+            }
+            return body.bytes();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("下载音频失败, url=" + audioUrl, e);
         }
-        return resp.bodyBytes();
     }
 
     // ============================================
@@ -235,10 +252,16 @@ public class XfyunTtsClient {
                     "api_key=\"{}\", algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"{}\"",
                     props.getApiKey(), signature);
 
-            String authEncoded = Base64.encode(authorization);
+            String authEncoded = Base64.getEncoder().encodeToString(
+                    authorization.getBytes(StandardCharsets.UTF_8));
+
+            // URL 编码 query 参数，跟 demo 的 HttpUrl.Builder.addQueryParameter 行为一致
+            String encodedAuth = URLEncoder.encode(authEncoded, StandardCharsets.UTF_8);
+            String encodedDate = URLEncoder.encode(date, StandardCharsets.UTF_8);
+            String encodedHost = URLEncoder.encode(host, StandardCharsets.UTF_8);
 
             return StrUtil.format("{}://{}{}?authorization={}&date={}&host={}",
-                    url.getProtocol(), host, path, authEncoded, date, host);
+                    url.getProtocol(), host, path, encodedAuth, encodedDate, encodedHost);
         } catch (Exception e) {
             throw new RuntimeException("构建鉴权 URL 失败: " + requestUrl, e);
         }
@@ -257,31 +280,38 @@ public class XfyunTtsClient {
                     key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             mac.init(secretKey);
             byte[] raw = mac.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
-            return Base64.encode(raw);
+            return Base64.getEncoder().encodeToString(raw);
         } catch (Exception e) {
             throw new RuntimeException("HMAC-SHA256 签名失败", e);
         }
     }
 
     // ============================================
-    // HTTP 辅助
+    // HTTP 辅助（OkHttp，参照官方 demo）
     // ============================================
 
     private String doPost(String url, String body) {
-        HttpResponse resp = HttpRequest.post(url)
-                .body(body, "application/json;charset=utf-8")
-                .setConnectionTimeout(10000)
-                .setReadTimeout(30000)
-                .execute();
-        if (!resp.isOk()) {
-            throw new RuntimeException("讯飞 TTS HTTP 请求失败, url=" + url
-                    + ", status=" + resp.getStatus() + ", body=" + resp.body());
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(body, JSON_MEDIA_TYPE))
+                .build();
+        try (Response response = HTTP_CLIENT.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("讯飞 TTS HTTP 请求失败, url=" + url
+                        + ", status=" + response.code());
+            }
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException("讯飞 TTS 响应为空, url=" + url);
+            }
+            return responseBody.string();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("讯飞 TTS HTTP 请求失败, url=" + url, e);
         }
-        return resp.body();
     }
 
     // ============================================
-    // JSON 路径提取辅助（Hutool getByPath 只支持 2 参数）
+    // JSON 路径提取辅助（Hutool getByPath）
     // ============================================
 
     private String getStr(JSONObject json, String path) {
