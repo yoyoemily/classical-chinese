@@ -221,6 +221,13 @@ public class DataImportService {
         } catch (Exception e) {
             throw new RuntimeException("读取经典元数据文件失败: " + path, e);
         }
+        return importClassicsFromJson(json);
+    }
+
+    /**
+     * 经典元数据导入（接收请求体，用于线上环境 client 传入 JSON）
+     */
+    public Map<String, Object> importClassicsFromJson(String json) {
         List<SourceClassic> classics = JSONUtil.toList(json, SourceClassic.class);
 
         importClassics(classics);
@@ -306,6 +313,39 @@ public class DataImportService {
         result.put("success", true);
         result.put("count", articles.size());
         result.put("message", "选篇正文导入完成");
+        return result;
+    }
+
+    /**
+     * 单篇选篇正文导入（幂等：按 articleId 先删后插）
+     * 只影响该篇的 sentence/keyword/glossary 数据，不触碰其他文章
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importSingleArticle(String articleId, SourceArticle article) {
+        // 1. 校验 articleId 一致性
+        if (!articleId.equals(article.getId())) {
+            throw new RuntimeException(String.format(
+                    "articleId 不一致: 路径参数=%s, 请求体 id=%s", articleId, article.getId()));
+        }
+
+        // 2. 删除该文章已有数据（按外键依赖逆序）
+        jdbc.update("DELETE FROM article_glossary WHERE article_sentence_id IN " +
+                "(SELECT id FROM article_sentence WHERE article_id = ?)", articleId);
+        jdbc.update("DELETE FROM article_keyword WHERE article_sentence_id IN " +
+                "(SELECT id FROM article_sentence WHERE article_id = ?)", articleId);
+        jdbc.update("DELETE FROM article_sentence WHERE article_id = ?", articleId);
+        jdbc.update("DELETE FROM article WHERE id = ?", articleId);
+
+        // 3. 插入
+        importArticles(List.of(article));
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", true);
+        result.put("articleId", articleId);
+        result.put("title", article.getTitle());
+        int sentenceCount = article.getSentences() != null ? article.getSentences().size() : 0;
+        result.put("sentenceCount", sentenceCount);
+        result.put("message", "单篇选篇导入完成: " + articleId + " " + article.getTitle());
         return result;
     }
 
