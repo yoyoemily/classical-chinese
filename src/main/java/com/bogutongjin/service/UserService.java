@@ -63,8 +63,7 @@ public class UserService {
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         result.put("nickName", user.getNickName() != null ? user.getNickName() : "");
         result.put("avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");
-        result.put("codeVerified", memberStatus.get("codeVerified"));
-        result.put("codeActive", memberStatus.get("codeActive"));
+        result.put("codeStatus", memberStatus.get("codeStatus"));
 
         // 查找是否有冷却中的清除记录
         String recoveryDeadline = getRecoveryDeadline(user);
@@ -185,29 +184,33 @@ public class UserService {
     /** 构建会员状态（不含用户不存在检查） */
     private Map<String, Object> buildMemberStatus(User user) {
         int memberLevel = user.getMemberLevel() != null ? user.getMemberLevel() : 0;
-        boolean codeActive = isUserActive(user);
 
-        // 运行时检查：30 天不活跃 → 码失效
-        boolean codeVerified = false;
-        if (codeActive) {
-            // 查找该用户的最新已验证码
-            RedeemCode code = redeemCodeMapper.selectOne(
-                new LambdaQueryWrapper<RedeemCode>()
-                    .eq(RedeemCode::getUserId, user.getId())
-                    .eq(RedeemCode::getStatus, 1)
-                    .orderByDesc(RedeemCode::getVerifiedAt)
-                    .last("LIMIT 1")
-            );
-            codeVerified = code != null;
+        // -1=从没绑过码  1=码有效  2=码已过期
+        int codeStatus = 0;
+        // 先看有没有验证过的码
+        boolean hasActive = hasVerifiedCode(user.getId());
+        if (hasActive) {
+            codeStatus = 1;
         } else {
-            // 30 天不活跃，将 status=1 的码全部标记为过期
+            // 再看有没有过期码（status=2）
+            boolean hasExpired = hasExpiredCode(user.getId());
+            if (hasExpired) {
+                codeStatus = 2;
+            } else {
+                // 既没有 status=1 也没有 status=2 → 从没绑过
+                codeStatus = -1;
+            }
+        }
+
+        // 活跃检查：30 天不活跃 → 码失效，status=1 → 2
+        if (codeStatus == 1 && !isUserActive(user)) {
             expireUserCodes(user.getId());
+            codeStatus = 2;
         }
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("memberLevel", memberLevel);
-        result.put("codeVerified", codeVerified);
-        result.put("codeActive", codeActive);
+        result.put("codeStatus", codeStatus);
         result.put("lastActiveAt", user.getLastActiveAt() != null ? user.getLastActiveAt().toString() : null);
         return result;
     }
@@ -230,6 +233,24 @@ public class UserService {
             c.setStatus(2);
             redeemCodeMapper.updateById(c);
         }
+    }
+
+    /** 是否有已验证码（status=1） */
+    private boolean hasVerifiedCode(Long userId) {
+        return redeemCodeMapper.selectCount(
+            new LambdaQueryWrapper<RedeemCode>()
+                .eq(RedeemCode::getUserId, userId)
+                .eq(RedeemCode::getStatus, 1)
+        ) > 0;
+    }
+
+    /** 是否有已过期码（status=2），区分"从未绑过"和"过期了" */
+    private boolean hasExpiredCode(Long userId) {
+        return redeemCodeMapper.selectCount(
+            new LambdaQueryWrapper<RedeemCode>()
+                .eq(RedeemCode::getUserId, userId)
+                .eq(RedeemCode::getStatus, 2)
+        ) > 0;
     }
 
     // ============================================
