@@ -8,6 +8,11 @@ spring:
 wechat:
   app-id: wxa192d18a50c75dca
   app-secret: ${WECHAT_APP_SECRET:3e60f050d617781d3a89c9a209d053c4}
+  mp:
+    app-id: ${WECHAT_MP_APPID:wx4dbda941f1ae242b}
+    secret: ${WECHAT_MP_SECRET:3264a8b6245bb97a698bf6f1247558fa}
+    token: ${WECHAT_MP_TOKEN:wyqMp2026Token}
+    aes-key: ${WECHAT_MP_AES_KEY:SNeEfcr7eLXXMrtDChoZOuVcF3ufERnU259PojKnGDp}
 
 logging:
   level:

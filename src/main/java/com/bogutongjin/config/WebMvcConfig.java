@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/**", "/api/admin/**");   // 登录和管理接口放行
+                .excludePathPatterns("/api/auth/**", "/api/admin/**", "/api/wechat/mp/**");   // 登录、管理、公众号回调接口放行
     }
 
     @Override

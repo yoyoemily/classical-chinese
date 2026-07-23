@@ -151,15 +151,12 @@ public class ImportController {
     }
 
     /**
-     * 管理端：给指定用户生成学习码 WYQ-XXXX-XXXX
+     * 管理员生成学习码（不绑定用户，用户在小程序输入后认领）。
+     * 服务号审核通过前可手动生成测试码。
      */
     @PostMapping("/generate-code")
-    public Result<Map<String, Object>> generateCode(@RequestBody Map<String, Long> body) {
-        Long userId = body.get("userId");
-        if (userId == null) {
-            return Result.fail(10001, "userId 不能为空");
-        }
-        String code = userService.generateCode(userId);
-        return Result.ok(Map.of("code", code, "userId", userId));
+    public Result<Map<String, Object>> generateCode() {
+        String code = userService.generateCode();
+        return Result.ok(Map.of("code", code));
     }
 }

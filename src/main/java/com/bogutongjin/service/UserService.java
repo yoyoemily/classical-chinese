@@ -108,7 +108,8 @@ public class UserService {
     // ============================================
 
     /**
-     * 验证学习码：校验码存在、status=0、码属于当前用户。
+     * 验证学习码：校验码存在、status=0、码属于当前用户或待认领。
+     * 公众号生成的码（userId=NULL）→ 认领给当前用户。
      * 验证通过后设为 status=1，记录 verified_at。
      * 同时将同一用户的其他过期码（status=1 但 30 天不活跃）标记为 status=2。
      */
@@ -124,8 +125,11 @@ public class UserService {
             throw new BusinessException(10004, "学习码不存在");
         }
 
-        // 2. 校验是否属于当前用户（防止冒用）
-        if (!redeemCode.getUserId().equals(userId)) {
+        // 2. 校验归属
+        if (redeemCode.getUserId() == null) {
+            // 公众号生成的码，还没有绑定用户 → 认领
+            redeemCode.setUserId(userId);
+        } else if (!redeemCode.getUserId().equals(userId)) {
             throw new BusinessException(10005, "该学习码不属于您的账号");
         }
 
@@ -258,18 +262,37 @@ public class UserService {
     // ============================================
 
     /**
-     * 管理端给指定用户生成学习码。
-     * 用户已有未使用码（status=0）时先过期旧码，再生成新码。
+     * 管理端生成学习码（不绑定用户，用户在小程序输入后通过 verifyCode() 认领）。
+     * 服务号审核通过前可手动调用此方法生成测试码。
      *
-     * @param userId 目标用户 ID
-     * @return 生成的兑换码
+     * @return 生成的兑换码（6 位数字）
      */
     @Transactional
-    public String generateCode(Long userId) {
-        // 1. 将用户所有未使用码标记为过期
+    public String generateCode() {
+        String code = generateUniqueCode();
+
+        RedeemCode entity = new RedeemCode();
+        entity.setCode(code);
+        entity.setUserId(null);
+        entity.setStatus(0);
+        redeemCodeMapper.insert(entity);
+
+        return code;
+    }
+
+    /**
+     * 公众号关注回调生成学习码。
+     * userId 初始为 NULL，等用户在小程序输入后通过 verifyCode() 认领。
+     *
+     * @param mpOpenId 公众号 OpenID
+     * @return 生成的兑换码（6 位数字）
+     */
+    @Transactional
+    public String generateMpCode(String mpOpenId) {
+        // 1. 将该公众号用户所有未使用码标记为过期
         List<RedeemCode> unusedCodes = redeemCodeMapper.selectList(
             new LambdaQueryWrapper<RedeemCode>()
-                .eq(RedeemCode::getUserId, userId)
+                .eq(RedeemCode::getMpOpenId, mpOpenId)
                 .eq(RedeemCode::getStatus, 0)
         );
         for (RedeemCode c : unusedCodes) {
@@ -277,13 +300,14 @@ public class UserService {
             redeemCodeMapper.updateById(c);
         }
 
-        // 2. 生成新码：WYQ-XXXX-XXXX
+        // 2. 生成新码
         String code = generateUniqueCode();
 
-        // 3. 插入
+        // 3. 插入（userId=NULL，等小程序端输入时认领）
         RedeemCode entity = new RedeemCode();
         entity.setCode(code);
-        entity.setUserId(userId);
+        entity.setUserId(null);
+        entity.setMpOpenId(mpOpenId);
         entity.setStatus(0);
         redeemCodeMapper.insert(entity);
 

@@ -468,10 +468,12 @@ CREATE TABLE suggestion (
 CREATE TABLE redeem_code (
   id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
   code        VARCHAR(32)  NOT NULL UNIQUE COMMENT '兑换码，6 位数字',
-  user_id     BIGINT       NOT NULL COMMENT '所属用户ID',
+  user_id     BIGINT       COMMENT '所属小程序用户ID（公众号生成时为NULL，用户输入后认领）',
+  mp_open_id  VARCHAR(64)  COMMENT '公众号 OpenID（服务号关注时记录）',
   status      TINYINT      NOT NULL DEFAULT 0 COMMENT '0=未使用 1=已验证 2=已过期',
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   verified_at DATETIME     COMMENT '验证时间',
   INDEX idx_redeem_user_id (user_id),
+  INDEX idx_redeem_mp_open_id (mp_open_id),
   INDEX idx_redeem_code (code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学习码兑换记录';
