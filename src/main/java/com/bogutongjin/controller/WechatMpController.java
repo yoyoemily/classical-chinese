@@ -40,8 +40,9 @@ public class WechatMpController {
             @RequestBody String requestBody,
             @RequestParam("signature") String signature,
             @RequestParam("timestamp") String timestamp,
-            @RequestParam("nonce") String nonce) {
+            @RequestParam("nonce") String nonce,
+            @RequestParam(value = "msg_signature", required = false) String msgSignature) {
         log.debug("收到微信消息推送: {}", requestBody);
-        return mpService.handleMessage(requestBody, signature, timestamp, nonce);
+        return mpService.handleMessage(requestBody, signature, timestamp, nonce, msgSignature);
     }
 }

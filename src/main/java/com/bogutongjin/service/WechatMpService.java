@@ -39,16 +39,17 @@ public class WechatMpService {
     }
 
     /**
-     * 处理微信推送的 XML 消息/事件
+     * 处理微信推送的 XML 消息/事件（支持明文和加密模式）
      *
-     * @param requestBody XML 请求体
-     * @param signature   微信加密签名
-     * @param timestamp   时间戳
-     * @param nonce       随机数
+     * @param requestBody  XML 请求体
+     * @param signature    微信加密签名
+     * @param timestamp    时间戳
+     * @param nonce        随机数
+     * @param msgSignature 消息签名（加密模式时微信传递，明文模式为 null）
      * @return 回复消息 XML，无需回复时返回空字符串
      */
     public String handleMessage(String requestBody, String signature,
-                                 String timestamp, String nonce) {
+                                 String timestamp, String nonce, String msgSignature) {
         // 校验签名
         if (!wxMpService.checkSignature(timestamp, nonce, signature)) {
             log.warn("微信消息签名校验失败");
@@ -56,7 +57,19 @@ public class WechatMpService {
         }
 
         try {
-            WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
+            WxMpXmlMessage inMessage;
+
+            // 加密模式：消息体含 <Encrypt> 节点，需用 AES 解密
+            if (requestBody.contains("<Encrypt>") && msgSignature != null) {
+                var configStorage = wxMpService.getWxMpConfigStorage();
+                inMessage = WxMpXmlMessage.fromEncryptedXml(
+                    requestBody, configStorage, timestamp, nonce, msgSignature);
+                log.info("微信消息已解密: msgType={}, event={}, fromUser={}",
+                    inMessage.getMsgType(), inMessage.getEvent(), inMessage.getFromUser());
+            } else {
+                // 明文模式
+                inMessage = WxMpXmlMessage.fromXml(requestBody);
+            }
 
             log.info("收到微信消息: msgType={}, event={}, fromUser={}",
                 inMessage.getMsgType(), inMessage.getEvent(), inMessage.getFromUser());
