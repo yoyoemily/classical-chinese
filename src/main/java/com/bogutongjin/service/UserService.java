@@ -223,7 +223,7 @@ public class UserService {
 
     /** 判断用户是否在 30 天活跃窗口内 */
     private boolean isUserActive(User user) {
-        if (user.getLastActiveAt() == null) return false;
+        if (user.getLastActiveAt() == null) return true;  // 新字段无历史数据，保守处理，不误过期
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(CODE_EXPIRE_DAYS);
         return user.getLastActiveAt().isAfter(thirtyDaysAgo);
     }
