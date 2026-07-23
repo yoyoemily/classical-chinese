@@ -82,7 +82,7 @@ public class WechatMpService {
     private String handleSubscribe(WxMpXmlMessage inMessage) {
         String mpOpenId = inMessage.getFromUser();
 
-        // 生成 6 位数字学习码
+        // 生成 8 位数字学习码
         String code;
         try {
             code = userService.generateMpCode(mpOpenId);
