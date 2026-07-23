@@ -4,6 +4,7 @@ import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.GlossaryImportRequest;
 import com.bogutongjin.dto.SourceData;
 import com.bogutongjin.service.DataImportService;
+import com.bogutongjin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 public class ImportController {
 
     private final DataImportService importService;
+    private final UserService userService;
 
     /**
      * 简单的 POST 测试接口，验证后端连通性和请求链路
@@ -146,5 +148,18 @@ public class ImportController {
             @RequestBody List<SourceData.SourceClassicChapter> chapters) {
         importService.importClassicBook(classicId, chapters);
         return Result.ok(Map.of("success", true, "message", "经典 ID=" + classicId + " 导入完成"));
+    }
+
+    /**
+     * 管理端：给指定用户生成学习码 WYQ-XXXX-XXXX
+     */
+    @PostMapping("/generate-code")
+    public Result<Map<String, Object>> generateCode(@RequestBody Map<String, Long> body) {
+        Long userId = body.get("userId");
+        if (userId == null) {
+            return Result.fail(10001, "userId 不能为空");
+        }
+        String code = userService.generateCode(userId);
+        return Result.ok(Map.of("code", code, "userId", userId));
     }
 }

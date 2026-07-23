@@ -23,6 +23,8 @@ public class User {
 
     private LocalDateTime dataClearedAt;
 
+    private LocalDateTime lastActiveAt;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

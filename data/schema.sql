@@ -199,6 +199,7 @@ CREATE TABLE `user` (
   current_streak INT          NOT NULL DEFAULT 0 COMMENT '当前连续学习天数',
   longest_streak INT          NOT NULL DEFAULT 0 COMMENT '历史最长连续天数',
   member_level   TINYINT      NOT NULL DEFAULT 0 COMMENT '会员级别：0=非会员，1=普通会员',
+  last_active_at DATETIME     COMMENT '最后活跃时间（LoginInterceptor 每次请求更新）',
   deleted        TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除: 0=正常, 1=已删除',
   data_cleared_at DATETIME    COMMENT '最近一次清除学习数据的时间',
   created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -460,3 +461,17 @@ CREATE TABLE suggestion (
   INDEX idx_user_id (user_id),
   INDEX idx_category (category)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户意见建议';
+
+-- ============================================
+-- 28. 学习码兑换记录
+-- ============================================
+CREATE TABLE redeem_code (
+  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  code        VARCHAR(32)  NOT NULL UNIQUE COMMENT '兑换码，6 位数字',
+  user_id     BIGINT       NOT NULL COMMENT '所属用户ID',
+  status      TINYINT      NOT NULL DEFAULT 0 COMMENT '0=未使用 1=已验证 2=已过期',
+  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  verified_at DATETIME     COMMENT '验证时间',
+  INDEX idx_redeem_user_id (user_id),
+  INDEX idx_redeem_code (code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学习码兑换记录';
