@@ -115,10 +115,12 @@ public class UserService {
      */
     @Transactional
     public Map<String, Object> verifyCode(Long userId, String code) {
-        // 1. 查找该码
+        // 1. 查找该码（按时间逆序取最新，防止重复码）
         RedeemCode redeemCode = redeemCodeMapper.selectOne(
             new LambdaQueryWrapper<RedeemCode>()
                 .eq(RedeemCode::getCode, code)
+                .orderByDesc(RedeemCode::getCreatedAt)
+                .last("LIMIT 1")
         );
 
         if (redeemCode == null) {
@@ -265,7 +267,7 @@ public class UserService {
      * 管理端生成学习码（不绑定用户，用户在小程序输入后通过 verifyCode() 认领）。
      * 服务号审核通过前可手动调用此方法生成测试码。
      *
-     * @return 生成的兑换码（6 位数字）
+     * @return 生成的兑换码（8 位数字）
      */
     @Transactional
     public String generateCode() {
@@ -285,7 +287,7 @@ public class UserService {
      * userId 初始为 NULL，等用户在小程序输入后通过 verifyCode() 认领。
      *
      * @param mpOpenId 公众号 OpenID
-     * @return 生成的兑换码（6 位数字）
+     * @return 生成的兑换码（8 位数字）
      */
     @Transactional
     public String generateMpCode(String mpOpenId) {
@@ -314,11 +316,11 @@ public class UserService {
         return code;
     }
 
-    /** 生成 6 位随机数字 */
+    /** 生成 8 位随机数字 */
     private String generateUniqueCode() {
         java.security.SecureRandom random = new java.security.SecureRandom();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             sb.append(random.nextInt(10));
         }
         return sb.toString();
