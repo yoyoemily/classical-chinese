@@ -53,7 +53,17 @@ public class StudyService {
         int newLimit = dailyNew != null ? dailyNew : 20;
         int reviewLimit = dailyReview != null ? dailyReview : Integer.MAX_VALUE;
 
-        // 获取用户的词进度
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayStart = today.atStartOfDay();
+
+        // 一次性查询：跨所有词书统计今日新词数（created_at >= 今日 00:00），一次 COUNT 避免 N+1
+        long todayNewCount = userWordProgressMapper.selectCount(
+                new LambdaQueryWrapper<UserWordProgress>()
+                        .eq(UserWordProgress::getUserId, userId)
+                        .ge(UserWordProgress::getCreatedAt, todayStart));
+        boolean dailyNewLimitReached = todayNewCount >= newLimit;
+
+        // 获取用户的词进度（仅当前词书）
         List<UserWordProgress> allProgress = userWordProgressMapper.selectList(
                 new LambdaQueryWrapper<UserWordProgress>()
                         .eq(UserWordProgress::getUserId, userId)
@@ -65,8 +75,6 @@ public class StudyService {
         // 获取词书中所有词条
         List<WordBookEntry> allEntries = wordBookEntryMapper.selectList(
                 new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, wordBookId).orderByAsc(WordBookEntry::getSortOrder));
-
-        LocalDate today = LocalDate.now();
 
         // --- 分类：复习词 vs 新学词（先分类，再批量预载） ---
         Set<String> inProgress = progressMap.keySet();
@@ -85,7 +93,13 @@ public class StudyService {
         }
         // 截断后再批量预载（只加载实际要返回的 entry）
         if (reviewEntries.size() > reviewLimit) reviewEntries = new ArrayList<>(reviewEntries.subList(0, reviewLimit));
-        if (newEntries.size() > newLimit) newEntries = new ArrayList<>(newEntries.subList(0, newLimit));
+        // 跨词书新词限额：扣除今日已学数量，剩余额度才给本轮
+        int remainingNewQuota = (int) Math.max(0, newLimit - todayNewCount);
+        if (remainingNewQuota == 0) {
+            newEntries.clear();
+        } else if (newEntries.size() > remainingNewQuota) {
+            newEntries = new ArrayList<>(newEntries.subList(0, remainingNewQuota));
+        }
 
         // --- 批量预载所有子数据（替代 N+1） ---
         Set<String> relevantEntryIds = new LinkedHashSet<>();
@@ -161,6 +175,7 @@ public class StudyService {
         result.put("newWords", newWords);
         result.put("totalWords", reviewWords.size() + newWords.size());
         result.put("estimatedMinutes", (reviewWords.size() + newWords.size()) * 2);
+        result.put("dailyNewLimitReached", dailyNewLimitReached);
         return result;
     }
 
@@ -316,6 +331,7 @@ public class StudyService {
     /**
      * 单个字词全部 quiz item 答完后调用（进入字总结页时）。
      * 仅新学词（今天之前无 UserWordProgress 记录）才写入 XP，复习词不给 XP。
+     * 硬上限兜底：当日跨词书新词数 >= 50 时拒发 XP，防止绕过前端入口拦截直接调 API。
      */
     @Transactional
     public Map<String, Object> completeWord(Long userId, String wordBookId, String entryId) {
@@ -332,6 +348,19 @@ public class StudyService {
 
         int xpGained = 0;
         if (!hasExisting) {
+            // 兜底：跨词书新词数硬上限校验（一次 COUNT，正常路径不会触发）
+            long todayNewCount = userWordProgressMapper.selectCount(
+                    new LambdaQueryWrapper<UserWordProgress>()
+                            .eq(UserWordProgress::getUserId, userId)
+                            .ge(UserWordProgress::getCreatedAt, todayStart));
+            if (todayNewCount >= 50) {
+                log.warn("completeWord 硬上限触发: userId={} wordBookId={} entryId={} todayNewCount={}",
+                        userId, wordBookId, entryId, todayNewCount);
+                Map<String, Object> blocked = new LinkedHashMap<>();
+                blocked.put("xpGained", 0);
+                return blocked;
+            }
+
             // 新学词完成后即时写入 XP
             User user = userMapper.selectById(userId);
             if (user != null) {
