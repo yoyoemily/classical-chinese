@@ -3,7 +3,9 @@ package com.bogutongjin.controller;
 import com.bogutongjin.annotation.CurrentUser;
 import com.bogutongjin.common.Result;
 import com.bogutongjin.dto.SaveUserInfoRequest;
+import com.bogutongjin.dto.VerifyCodeRequest;
 import com.bogutongjin.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,5 +62,21 @@ public class UserController {
     public Result<Map<String, Object>> recoverData(@CurrentUser Long userId) {
         Map<String, Object> result = userService.recoverUserData(userId);
         return Result.ok(result);
+    }
+
+    /** 验证学习码（仅校验，不改 memberLevel） */
+    @PostMapping("/verify-code")
+    public Result<Map<String, Object>> verifyCode(
+            @Valid @RequestBody VerifyCodeRequest req,
+            @CurrentUser Long userId) {
+        Map<String, Object> result = userService.verifyCode(userId, req.getCode());
+        return Result.ok(result);
+    }
+
+    /** 查询会员状态（含 30 天过期判断） */
+    @GetMapping("/member-status")
+    public Result<Map<String, Object>> getMemberStatus(@CurrentUser Long userId) {
+        Map<String, Object> status = userService.getMemberStatus(userId);
+        return Result.ok(status);
     }
 }

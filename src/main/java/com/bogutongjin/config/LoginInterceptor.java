@@ -1,5 +1,6 @@
 package com.bogutongjin.config;
 
+import com.bogutongjin.mapper.UserMapper;
 import com.bogutongjin.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class LoginInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
+    private final UserMapper userMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -49,6 +51,15 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         request.setAttribute("userId", userId);
+
+        // 异步更新 last_active_at（不阻塞请求）
+        try {
+            userMapper.updateLastActiveAt(userId);
+        } catch (Exception ignored) {
+            // 更新失败不影响请求
+        }
+
         return true;
     }
 }
+
