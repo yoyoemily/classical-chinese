@@ -15,7 +15,7 @@
 # ============================================================
 set -euo pipefail
 
-KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
+KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/knowledge_library}"
 WORD_BOOK_DIR="$KNOWLEDGE_LIB/文言文/词书"
 
 # 先处理 prd 参数（可能在任意位置）

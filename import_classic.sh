@@ -26,7 +26,7 @@ for arg in "$@"; do
     fi
 done
 set -- ${FILTERED_ARGS[@]+"${FILTERED_ARGS[@]}"}
-KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
+KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/knowledge_library}"
 CLASSICS_DIR="$KNOWLEDGE_LIB/文言文/经典"
 
 # 已上线经典列表（按 ID 排序，共 25 部）
