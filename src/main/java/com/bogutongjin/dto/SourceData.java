@@ -207,4 +207,32 @@ public class SourceData {
         private String word;
         private String explanation;
     }
+
+    // ---- 经典典故注释独立导入 ----
+
+    /** 经典典故注释导入：顶层数组元素。有 entries → 选集型，否则 → 章节型 */
+    @Data
+    public static class ClassicGlossaryImportChapter {
+        @JsonProperty("chapterTitle")
+        private String chapterTitle;
+        /** 选集型：该门类下的条目列表 */
+        private List<ClassicGlossaryImportEntry> entries;
+        /** 章节型：该章下的段落列表 */
+        private List<ClassicGlossaryImportParagraph> paragraphs;
+    }
+
+    /** 选集型条目 */
+    @Data
+    public static class ClassicGlossaryImportEntry {
+        @JsonProperty("entryTitle")
+        private String entryTitle;
+        private List<ClassicGlossaryImportParagraph> paragraphs;
+    }
+
+    /** 段落匹配键 + glossary 数组 */
+    @Data
+    public static class ClassicGlossaryImportParagraph {
+        private Integer sortOrder;
+        private List<SourceClassicGlossary> glossary;
+    }
 }
