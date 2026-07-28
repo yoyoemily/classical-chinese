@@ -2,6 +2,7 @@ package com.bogutongjin.service;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaCodeLineColor;
+import com.bogutongjin.config.WechatMaProperties;
 import com.bogutongjin.entity.InviteRecord;
 import com.bogutongjin.entity.User;
 import com.bogutongjin.mapper.InviteRecordMapper;
@@ -34,6 +35,7 @@ public class InviteService {
     private final WxMaService wxMaService;
     private final UserMapper userMapper;
     private final InviteRecordMapper inviteRecordMapper;
+    private final WechatMaProperties wechatMaProperties;
 
     private static final String SCENE_PREFIX = "i_";
     private static final String LANDING_PAGE = "pages/index/index";
@@ -107,7 +109,7 @@ public class InviteService {
         WxMaCodeLineColor lineColor = new WxMaCodeLineColor(String.valueOf(r), String.valueOf(g), String.valueOf(b));
 
         byte[] bytes = wxMaService.getQrcodeService().createWxaCodeUnlimitBytes(
-                scene, LANDING_PAGE, false, "release",
+                scene, LANDING_PAGE, false, wechatMaProperties.getEnvVersion(),
                 WXACODE_GEN_SIZE, false, lineColor, true
         );
 

@@ -18,4 +18,7 @@ public class WechatMaProperties {
 
     /** 小程序 AppSecret */
     private String appSecret;
+
+    /** 小程序码 env_version：develop | trial | release */
+    private String envVersion = "release";
 }

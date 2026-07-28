@@ -8,6 +8,7 @@ spring:
 wechat:
   app-id: wx00adcbea9d77ba88
   app-secret: ${WECHAT_APP_SECRET:762a6a02dba5ba0b7f16650c5655ba95}
+  env-version: develop
   mp:
     app-id: ${WECHAT_MP_APPID:wx4dbda941f1ae242b}
     secret: ${WECHAT_MP_SECRET:3264a8b6245bb97a698bf6f1247558fa}
