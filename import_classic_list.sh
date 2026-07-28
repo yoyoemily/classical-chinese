@@ -15,7 +15,7 @@ if [[ "${1:-}" == "prd" || "${1:-}" == "prod" || "${1:-}" == "production" ]]; th
 else
     BASE_URL="${BASE_URL:-http://localhost:8080}"
 fi
-KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/Documents/knowledge_library}"
+KNOWLEDGE_LIB="${KNOWLEDGE_LIB:-$HOME/knowledge_library}"
 CLASSICS_JSON="$KNOWLEDGE_LIB/文言文/经典/classics.json"
 
 if [[ ! -f "$CLASSICS_JSON" ]]; then

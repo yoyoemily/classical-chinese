@@ -828,7 +828,218 @@ public class DataImportService {
         return count;
     }
 
+    // ======================== 经典典故注释独立导入 ========================
+
+    /**
+     * 经典典故注释独立导入（幂等：先删后插，渐进式）
+     * 仅更新 glossary.json 中匹配到的段落的注释，不动正文/译文。
+     *
+     * @param classicId 经典著作 ID（classic 表主键）
+     * @param chapters  注释导入请求（章节型或选集型格式，与 glossary.json 结构一致）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> importClassicGlossary(Long classicId, List<ClassicGlossaryImportChapter> chapters) {
+        Classic classic = classicMapper.selectById(classicId);
+        String classicName = classic != null ? classic.getName() : "ID=" + classicId;
+        if (classic == null) {
+            throw new RuntimeException("经典 ID=" + classicId + " 不存在");
+        }
+
+        // 空数组 = 清空该经典全部注释
+        if (CollUtil.isEmpty(chapters)) {
+            String deleteAllSql = """
+                    DELETE cg FROM classic_glossary cg
+                    JOIN classic_paragraph cp ON cg.paragraph_id = cp.id
+                    JOIN classic_chapter cc ON cp.chapter_id = cc.id
+                    WHERE cc.classic_id = ?
+                    """;
+            int deleted = jdbc.update(deleteAllSql, classicId);
+            log.info("经典「{}」glossary 导入: 空数组，已清空全部 {} 条注释", classicName, deleted);
+            return Map.of("success", true, "message", "空数组，已清空全部注释",
+                    "classicName", classicName, "updatedParagraphs", 0, "totalGlossary", 0, "cleanedParagraphs", deleted);
+        }
+
+        // 检测格式：有 entries → 选集型
+        boolean isAnthology = chapters.stream().anyMatch(ch -> !CollUtil.isEmpty(ch.getEntries()));
+
+        if (isAnthology) {
+            return importAnthologyGlossary(classicId, chapters, classicName);
+        } else {
+            return importChapterGlossary(classicId, chapters, classicName);
+        }
+    }
+
+    /** 章节型：按 chapterTitle + paragraph sortOrder 匹配，更新 glossary */
+    private Map<String, Object> importChapterGlossary(Long classicId,
+            List<ClassicGlossaryImportChapter> chapters, String classicName) {
+        String findParaSql = """
+                SELECT cp.id FROM classic_paragraph cp
+                JOIN classic_chapter cc ON cp.chapter_id = cc.id
+                WHERE cc.classic_id = ? AND cc.parent_id IS NULL AND cc.title = ? AND cp.sort_order = ?
+                """;
+        String deleteGlossarySql = "DELETE FROM classic_glossary WHERE paragraph_id = ?";
+        String insertGlossarySql = "INSERT INTO classic_glossary (paragraph_id, word, explanation, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+        LocalDateTime now = LocalDateTime.now();
+        int updatedParagraphs = 0;
+        int totalGlossary = 0;
+        Set<Long> processedParaIds = new HashSet<>();
+
+        for (ClassicGlossaryImportChapter chapter : chapters) {
+            if (CollUtil.isEmpty(chapter.getParagraphs())) continue;
+
+            for (ClassicGlossaryImportParagraph pg : chapter.getParagraphs()) {
+                if (pg.getSortOrder() == null) continue;
+
+                List<Long> paraIds = jdbc.queryForList(
+                        findParaSql, Long.class, classicId, chapter.getChapterTitle(), pg.getSortOrder());
+
+                if (paraIds.isEmpty()) {
+                    log.warn("经典「{}」找不到段落: chapter={}, sortOrder={}",
+                            classicName, chapter.getChapterTitle(), pg.getSortOrder());
+                    continue;
+                }
+
+                Long paraId = paraIds.get(0);
+                processedParaIds.add(paraId);
+                // 幂等：先删旧注释，再插新注释
+                jdbc.update(deleteGlossarySql, paraId);
+
+                if (!CollUtil.isEmpty(pg.getGlossary())) {
+                    for (int gi = 0; gi < pg.getGlossary().size(); gi++) {
+                        SourceClassicGlossary gloss = pg.getGlossary().get(gi);
+                        jdbc.update(insertGlossarySql, paraId, gloss.getWord(), gloss.getExplanation(), gi, now, now);
+                        totalGlossary++;
+                    }
+                }
+                updatedParagraphs++;
+            }
+        }
+
+        // 清理不在 JSON 中的段落的注释
+        int cleaned = cleanOrphanGlossary(classicId, processedParaIds, classicName);
+
+        log.info("经典「{}」(章节型) glossary 导入完成: {} 段落, {} 条注释, 清理孤立注释 {} 段",
+                classicName, updatedParagraphs, totalGlossary, cleaned);
+        return Map.of("success", true, "classicName", classicName,
+                "updatedParagraphs", updatedParagraphs, "totalGlossary", totalGlossary, "cleanedParagraphs", cleaned);
+    }
+
+    /** 选集型：按 groupTitle + entryTitle + paragraph sortOrder 匹配，更新 glossary */
+    private Map<String, Object> importAnthologyGlossary(Long classicId,
+            List<ClassicGlossaryImportChapter> groups, String classicName) {
+        // 从 entry（子 chapter）关联段落
+        String findParaSql = """
+                SELECT cp.id FROM classic_paragraph cp
+                JOIN classic_chapter entry_cc ON cp.chapter_id = entry_cc.id
+                JOIN classic_chapter group_cc ON entry_cc.parent_id = group_cc.id
+                WHERE group_cc.classic_id = ? AND group_cc.parent_id IS NULL
+                  AND group_cc.title = ? AND entry_cc.title = ? AND cp.sort_order = ?
+                """;
+        String deleteGlossarySql = "DELETE FROM classic_glossary WHERE paragraph_id = ?";
+        String insertGlossarySql = "INSERT INTO classic_glossary (paragraph_id, word, explanation, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+        LocalDateTime now = LocalDateTime.now();
+        int updatedParagraphs = 0;
+        int totalGlossary = 0;
+        Set<Long> processedParaIds = new HashSet<>();
+
+        for (ClassicGlossaryImportChapter group : groups) {
+            if (CollUtil.isEmpty(group.getEntries())) continue;
+
+            for (ClassicGlossaryImportEntry entry : group.getEntries()) {
+                if (CollUtil.isEmpty(entry.getParagraphs())) continue;
+
+                for (ClassicGlossaryImportParagraph pg : entry.getParagraphs()) {
+                    if (pg.getSortOrder() == null) continue;
+
+                    List<Long> paraIds = jdbc.queryForList(
+                            findParaSql, Long.class, classicId, group.getChapterTitle(),
+                            entry.getEntryTitle(), pg.getSortOrder());
+
+                    if (paraIds.isEmpty()) {
+                        log.warn("经典「{}」找不到段落: group={}, entry={}, sortOrder={}",
+                                classicName, group.getChapterTitle(), entry.getEntryTitle(), pg.getSortOrder());
+                        continue;
+                    }
+
+                    Long paraId = paraIds.get(0);
+                    processedParaIds.add(paraId);
+                    jdbc.update(deleteGlossarySql, paraId);
+
+                    if (!CollUtil.isEmpty(pg.getGlossary())) {
+                        for (int gi = 0; gi < pg.getGlossary().size(); gi++) {
+                            SourceClassicGlossary gloss = pg.getGlossary().get(gi);
+                            jdbc.update(insertGlossarySql, paraId, gloss.getWord(), gloss.getExplanation(), gi, now, now);
+                            totalGlossary++;
+                        }
+                    }
+                    updatedParagraphs++;
+                }
+            }
+        }
+
+        // 清理不在 JSON 中的段落的注释
+        int cleaned = cleanOrphanGlossary(classicId, processedParaIds, classicName);
+
+        log.info("经典「{}」(选集型) glossary 导入完成: {} 段落, {} 条注释, 清理孤立注释 {} 段",
+                classicName, updatedParagraphs, totalGlossary, cleaned);
+        return Map.of("success", true, "classicName", classicName,
+                "updatedParagraphs", updatedParagraphs, "totalGlossary", totalGlossary, "cleanedParagraphs", cleaned);
+    }
+
     // ======================== 工具方法 ========================
+
+    /**
+     * 删除经典中所有不在已处理段落集合内的段落的 glossary 注释。
+     * 确保导入后 glossary 状态与 JSON 完全一致——JSON 中不存在的段不再保留旧注释。
+     */
+    private int cleanOrphanGlossary(Long classicId, Set<Long> processedParaIds, String classicName) {
+        String findOrphanSql = """
+                SELECT cg.id FROM classic_glossary cg
+                JOIN classic_paragraph cp ON cg.paragraph_id = cp.id
+                JOIN classic_chapter cc ON cp.chapter_id = cc.id
+                WHERE cc.classic_id = ? AND cp.id NOT IN (%s)
+                """;
+
+        if (processedParaIds.isEmpty()) {
+            // 清空该经典所有段落的注释
+            String deleteAllSql = """
+                    DELETE cg FROM classic_glossary cg
+                    JOIN classic_paragraph cp ON cg.paragraph_id = cp.id
+                    JOIN classic_chapter cc ON cp.chapter_id = cc.id
+                    WHERE cc.classic_id = ?
+                    """;
+            int count = jdbc.update(deleteAllSql, classicId);
+            if (count > 0) {
+                log.info("经典「{}」清理孤立注释: 已处理段落集为空，清空全部 {} 条", classicName, count);
+            }
+            return count;
+        }
+
+        // 构建 IN 子句的占位符和参数列表
+        List<Object> params = new ArrayList<>();
+        params.add(classicId);
+        params.addAll(processedParaIds);
+        String placeholders = processedParaIds.stream().map(id -> "?").collect(Collectors.joining(","));
+        String sql = String.format(findOrphanSql, placeholders);
+
+        List<Long> orphanIds = jdbc.queryForList(sql, Long.class, params.toArray());
+        if (orphanIds.isEmpty()) {
+            return 0;
+        }
+
+        // 分批删除（IN 子句限制）
+        String deleteInSql = "DELETE FROM classic_glossary WHERE id IN (%s)";
+        for (int i = 0; i < orphanIds.size(); i += 500) {
+            int end = Math.min(i + 500, orphanIds.size());
+            List<Long> batch = orphanIds.subList(i, end);
+            String inPlaceholders = batch.stream().map(id -> "?").collect(Collectors.joining(","));
+            jdbc.update(String.format(deleteInSql, inPlaceholders), batch.toArray());
+        }
+
+        log.info("经典「{}」清理孤立注释: {} 段不在 JSON 中，共 {} 条已删除",
+                classicName, orphanIds.size(), orphanIds.size());
+        return orphanIds.size();
+    }
 
     private void insertStrings(String sql, String parentId, List<String> values) {
         List<Object[]> batch = new ArrayList<>();

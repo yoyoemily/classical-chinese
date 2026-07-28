@@ -151,6 +151,18 @@ public class ImportController {
     }
 
     /**
+     * 经典典故注释独立导入（幂等：先删后插，渐进式）
+     * 仅在匹配到的段落上更新注释，不修改正文/译文。
+     * 接收章节型或选集型 glossary.json 格式，与正文 JSON 格式一致。
+     */
+    @PostMapping("/import/classic/{classicId}/glossary")
+    public Result<Map<String, Object>> importClassicGlossary(
+            @PathVariable Long classicId,
+            @RequestBody List<SourceData.ClassicGlossaryImportChapter> chapters) {
+        return Result.ok(importService.importClassicGlossary(classicId, chapters));
+    }
+
+    /**
      * 管理员生成学习码（不绑定用户，用户在小程序输入后认领）。
      * 服务号审核通过前可手动生成测试码。
      */
