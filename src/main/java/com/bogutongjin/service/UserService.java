@@ -330,7 +330,7 @@ public class UserService {
     // 签署契约
     // ============================================
 
-    /** 签订金石契约——前置条件：必须有已验证的学习码（status=1） */
+    /** 签订金石契约 */
     @Transactional
     public void signPact(Long userId) {
         User user = userMapper.selectById(userId);
@@ -338,18 +338,6 @@ public class UserService {
 
         // 已是会员，幂等返回
         if (user.getMemberLevel() != null && user.getMemberLevel() >= 1) return;
-
-        // 前置条件：必须有已验证的学习码
-        RedeemCode code = redeemCodeMapper.selectOne(
-            new LambdaQueryWrapper<RedeemCode>()
-                .eq(RedeemCode::getUserId, userId)
-                .eq(RedeemCode::getStatus, 1)
-                .orderByDesc(RedeemCode::getVerifiedAt)
-                .last("LIMIT 1")
-        );
-        if (code == null) {
-            throw new BusinessException(10007, "请先关注公众号获取学习码");
-        }
 
         user.setMemberLevel(1);
         userMapper.updateById(user);
