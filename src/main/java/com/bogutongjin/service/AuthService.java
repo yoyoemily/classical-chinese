@@ -23,6 +23,7 @@ public class AuthService {
 
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
+    private final InviteService inviteService;
 
     @Value("${wechat.app-id}")
     private String appId;
@@ -34,12 +35,14 @@ public class AuthService {
             "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
 
     /**
-     * 微信登录：code → openId → 查找/创建用户 → 签发 JWT
+     * 微信登录：code → openId → 查找/创建用户 → 绑定邀请关系 → 签发 JWT
      *
-     * @param code wx.login() 返回的临时 code
+     * @param code      wx.login() 返回的临时 code
+     * @param scene     小程序码 scene 值（扫码进入时携带），格式 "i_{userId}"
+     * @param inviterId 分享卡片 inviter 参数
      * @return { token, userId }
      */
-    public Map<String, Object> login(String code) {
+    public Map<String, Object> login(String code, String scene, Long inviterId) {
         // 1. 获取 openId（正式环境走微信 API，开发环境 app-secret 缺失时用 code 做 openId）
         String openId = resolveOpenId(code);
         if (openId == null) {
@@ -49,12 +52,36 @@ public class AuthService {
         // 2. 查找或创建用户
         User user = findOrCreateByOpenId(openId);
 
-        // 3. 签发 JWT
+        // 3. 绑定邀请关系（首次登录时写入，幂等）
+        bindInviterIfNeeded(user, scene, inviterId);
+
+        // 4. 签发 JWT
         String token = jwtUtil.generate(user.getId());
 
         log.info("用户登录成功: userId={}, openId={}", user.getId(), openId);
 
         return Map.of("token", token, "userId", user.getId());
+    }
+
+    /**
+     * 解析邀请来源并绑定（scene 优先 > inviterId）
+     */
+    private void bindInviterIfNeeded(User user, String scene, Long inviterId) {
+        String effectiveScene = null;
+        if (scene != null && scene.startsWith("i_")) {
+            effectiveScene = scene;
+        } else if (inviterId != null && inviterId > 0) {
+            effectiveScene = "i_" + inviterId;
+        }
+
+        if (effectiveScene != null) {
+            try {
+                inviteService.bindInviter(user.getId(), effectiveScene);
+            } catch (Exception e) {
+                // 绑定失败不阻塞登录
+                log.error("邀请绑定失败: userId={}, scene={}", user.getId(), effectiveScene, e);
+            }
+        }
     }
 
     /**
