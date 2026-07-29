@@ -1,5 +1,6 @@
 package com.bogutongjin.controller;
 
+import com.bogutongjin.common.Result;
 import com.bogutongjin.service.InviteService;
 import com.bogutongjin.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,8 +57,8 @@ public class InviteController {
      * 获取当前用户的邀请统计
      */
     @GetMapping("/stats")
-    public Map<String, Object> getStats(@RequestAttribute("userId") Long userId) {
+    public Result<Map<String, Object>> getStats(@RequestAttribute("userId") Long userId) {
         long count = inviteService.getInviteCount(userId);
-        return Map.of("totalInvited", count);
+        return Result.ok(Map.of("totalInvited", count));
     }
 }

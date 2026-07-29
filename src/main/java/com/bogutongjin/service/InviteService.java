@@ -17,10 +17,13 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,7 +57,12 @@ public class InviteService {
 
     // 白底圆角卡片
     private static final int CARD_PADDING = 16;
-    private static final int CARD_RADIUS = 16;
+    private static final int CARD_RADIUS = 24;
+
+    // 头像参数
+    private static final int AVATAR_SIZE = 120;
+    private static final int AVATAR_X = (POSTER_WIDTH - AVATAR_SIZE) / 2;  // 300
+    private static final int AVATAR_Y = 116;
     private static final String LINE_COLOR = "#2e5d3c";  // 与海报主色一致
 
     // 内存缓存（1 小时 TTL）
@@ -76,11 +84,14 @@ public class InviteService {
         }
 
         try {
+            // 0. 查用户（用于获取头像和昵称）
+            User user = userMapper.selectById(userId);
+
             // 1. 生成小程序码
             byte[] wxacodeBytes = generateWxacode(userId);
 
             // 2. 合成海报
-            byte[] posterBytes = compositePoster(wxacodeBytes);
+            byte[] posterBytes = compositePoster(wxacodeBytes, user);
 
             // 3. 预写 invite_record（幂等，同一 userId 只写一次）
             ensureInviteRecord(userId);
@@ -120,7 +131,7 @@ public class InviteService {
     /**
      * 将小程序码合成到海报模板上
      */
-    private byte[] compositePoster(byte[] wxacodeBytes) throws Exception {
+    private byte[] compositePoster(byte[] wxacodeBytes, User user) throws Exception {
         // 加载模板图
         ClassPathResource templateResource = new ClassPathResource("static/assets/share-poster-template.png");
         BufferedImage poster;
@@ -131,6 +142,40 @@ public class InviteService {
             throw new IllegalStateException("海报模板文件无效：static/assets/share-poster-template.png");
         }
 
+        Graphics2D posterG2d = poster.createGraphics();
+        posterG2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        posterG2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        // 头像（圆形裁剪，下载失败静默跳过）
+        String avatarUrl = (user != null && user.getAvatarUrl() != null) ? user.getAvatarUrl() : null;
+        if (avatarUrl != null && !avatarUrl.isBlank()) {
+            try {
+                BufferedImage avatar = downloadAndCropCircle(avatarUrl, AVATAR_SIZE);
+                // 白色描边
+                posterG2d.setColor(Color.WHITE);
+                posterG2d.setStroke(new BasicStroke(4f));
+                posterG2d.draw(new Ellipse2D.Float(AVATAR_X - 2, AVATAR_Y - 2,
+                        AVATAR_SIZE + 4, AVATAR_SIZE + 4));
+                posterG2d.setStroke(new BasicStroke(1f));
+                posterG2d.drawImage(avatar, AVATAR_X, AVATAR_Y, null);
+            } catch (Exception e) {
+                log.warn("下载或绘制头像失败，跳过: avatarUrl={}", avatarUrl, e);
+            }
+        }
+
+        // 昵称 + 邀你打卡
+        String nickName = (user != null && user.getNickName() != null && !user.getNickName().isBlank())
+                ? user.getNickName() : "学友";
+        String inviteText = nickName + " 邀你打卡";
+        Font inviteFont = new Font("SansSerif", Font.BOLD, 30);
+        posterG2d.setFont(inviteFont);
+        posterG2d.setColor(new Color(0x33, 0x33, 0x33));
+        FontMetrics inviteFm = posterG2d.getFontMetrics();
+        int inviteTextWidth = inviteFm.stringWidth(inviteText);
+        int inviteTextX = (POSTER_WIDTH - inviteTextWidth) / 2;
+        int inviteTextY = 290;
+        posterG2d.drawString(inviteText, inviteTextX, inviteTextY);
+
         // 加载小程序码并缩放
         BufferedImage wxacode = ImageIO.read(new java.io.ByteArrayInputStream(wxacodeBytes));
         BufferedImage qrScaled = new BufferedImage(QR_DISPLAY_SIZE, QR_DISPLAY_SIZE, BufferedImage.TYPE_INT_ARGB);
@@ -138,10 +183,6 @@ public class InviteService {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(wxacode, 0, 0, QR_DISPLAY_SIZE, QR_DISPLAY_SIZE, null);
         g2d.dispose();
-
-        // 合成到海报
-        Graphics2D posterG2d = poster.createGraphics();
-        posterG2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // 画白底圆角卡片
         int cardSize = QR_DISPLAY_SIZE + CARD_PADDING * 2;
@@ -152,6 +193,18 @@ public class InviteService {
 
         // 贴小程序码
         posterG2d.drawImage(qrScaled, QR_X, QR_Y, null);
+
+        // 二维码下方提示文字
+        String hintText = "长按或扫码进入";
+        Font hintFont = new Font("SansSerif", Font.PLAIN, 22);
+        posterG2d.setFont(hintFont);
+        posterG2d.setColor(new Color(0x88, 0x88, 0x88));
+        FontMetrics hintFm = posterG2d.getFontMetrics();
+        int hintTextWidth = hintFm.stringWidth(hintText);
+        int hintTextX = QR_X + QR_DISPLAY_SIZE / 2 - hintTextWidth / 2;
+        int hintTextY = QR_Y + QR_DISPLAY_SIZE + CARD_PADDING + 30;
+        posterG2d.drawString(hintText, hintTextX, hintTextY);
+
         posterG2d.dispose();
 
         // 输出 PNG
@@ -159,6 +212,46 @@ public class InviteService {
         ImageIO.write(poster, "PNG", bos);
 
         return bos.toByteArray();
+    }
+
+    /**
+     * 下载微信头像并裁剪为圆形
+     */
+    private BufferedImage downloadAndCropCircle(String avatarUrl, int size) throws Exception {
+        // 微信头像 URL 末尾 /132 → /0 取原图（1080px）
+        String url = avatarUrl;
+        if (url.endsWith("/132")) {
+            url = url.replaceAll("/132$", "/0");
+        }
+
+        BufferedImage src;
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+        conn.setRequestProperty("User-Agent", "ClassicalChinese/1.0");
+        try (InputStream is = conn.getInputStream()) {
+            src = ImageIO.read(is);
+        } finally {
+            conn.disconnect();
+        }
+        if (src == null) throw new IllegalStateException("无法读取头像图片");
+
+        // 缩放为正方形
+        BufferedImage scaled = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = scaled.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(src, 0, 0, size, size, null);
+        g2d.dispose();
+
+        // 圆形裁剪
+        BufferedImage circle = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        g2d = circle.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setClip(new Ellipse2D.Float(0, 0, size, size));
+        g2d.drawImage(scaled, 0, 0, null);
+        g2d.dispose();
+
+        return circle;
     }
 
     /**
@@ -227,7 +320,16 @@ public class InviteService {
                         .setSql("invited_count = invited_count + 1")
                         .eq(User::getId, inviterUserId));
 
-        // 6. 回填 invite_record 的 invitee_id
+        // 6. 推广数达到 5 → 自动升级为契约会员（原子更新，仅升级不降级）
+        userMapper.update(null,
+                new LambdaUpdateWrapper<User>()
+                        .set(User::getMemberLevel, 1)
+                        .eq(User::getId, inviterUserId)
+                        .eq(User::getMemberLevel, 0)
+                        .ge(User::getInvitedCount, 5));
+        log.info("用户 {} 推广数+1，若已达5则自动升级契约会员", inviterUserId);
+
+        // 7. 回填 invite_record 的 invitee_id
         String sceneCode = scene;
         if (!scene.startsWith(SCENE_PREFIX)) {
             sceneCode = SCENE_PREFIX + scene;
@@ -245,9 +347,8 @@ public class InviteService {
      * 获取邀请人数
      */
     public long getInviteCount(Long userId) {
-        return inviteRecordMapper.selectCount(
-                new LambdaQueryWrapper<InviteRecord>()
-                        .eq(InviteRecord::getInviterId, userId));
+        User user = userMapper.selectById(userId);
+        return user != null && user.getInvitedCount() != null ? user.getInvitedCount() : 0;
     }
 
     /**
