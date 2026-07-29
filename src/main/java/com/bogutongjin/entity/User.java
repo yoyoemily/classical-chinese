@@ -17,6 +17,7 @@ public class User {
     private Integer totalXp;
     private Integer currentStreak;
     private Integer longestStreak;
+    private Integer checkinDays;
     private Integer memberLevel;
 
     private Long invitedBy;

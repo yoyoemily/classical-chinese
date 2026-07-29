@@ -139,6 +139,7 @@ public class AuthService {
         user.setTotalXp(0);
         user.setCurrentStreak(0);
         user.setLongestStreak(0);
+        user.setCheckinDays(0);
         userMapper.insert(user);
         log.info("创建新用户: userId={}, openId={}", user.getId(), openId);
         return user;

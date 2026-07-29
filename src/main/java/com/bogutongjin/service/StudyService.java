@@ -480,6 +480,10 @@ public class StudyService {
             if (streak > user.getLongestStreak()) {
                 user.setLongestStreak(streak);
             }
+            // 当日首次打卡：累计学习天数 +1（SQL 级别原子操作）
+            userMapper.updateCheckinDays(userId);
+            // 防止 updateById 将 checkinDays 覆写为旧值
+            user.setCheckinDays(null);
             userMapper.updateById(user);
         }
 
