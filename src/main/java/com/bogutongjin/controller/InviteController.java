@@ -59,6 +59,6 @@ public class InviteController {
     @GetMapping("/stats")
     public Result<Map<String, Object>> getStats(@RequestAttribute("userId") Long userId) {
         long count = inviteService.getInviteCount(userId);
-        return Result.ok(Map.of("totalInvited", count));
+        return Result.ok(Map.of("totalInvited", count, "memberThreshold", inviteService.getMemberThreshold()));
     }
 }

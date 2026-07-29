@@ -28,3 +28,6 @@ jwt:
 
 app:
   source-data-path: classpath:source.json
+
+invite:
+  member-threshold: 5   # 推广人数达到此阈值后自动升级为契约会员

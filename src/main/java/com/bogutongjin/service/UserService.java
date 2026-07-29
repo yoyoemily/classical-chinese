@@ -61,6 +61,7 @@ public class UserService {
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
         result.put("longestStreak", user.getLongestStreak() != null ? user.getLongestStreak() : 0);
+        result.put("checkinDays", user.getCheckinDays() != null ? user.getCheckinDays() : 0);
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         result.put("nickName", user.getNickName() != null ? user.getNickName() : "");
         result.put("avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");

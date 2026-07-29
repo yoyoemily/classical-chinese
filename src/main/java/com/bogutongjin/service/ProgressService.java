@@ -81,6 +81,7 @@ public class ProgressService {
         int streak = user != null ? user.getCurrentStreak() : 0;
         result.put("currentStreak", streak);
         result.put("longestStreak", user != null ? user.getLongestStreak() : 0);
+        result.put("checkinDays", user != null ? user.getCheckinDays() : 0);
         result.put("totalXP", user != null ? user.getTotalXp() : 0);
         result.put("wordProgresses", wpMap);
 

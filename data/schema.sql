@@ -198,6 +198,7 @@ CREATE TABLE `user` (
   total_xp       INT          NOT NULL DEFAULT 0 COMMENT '累计经验值',
   current_streak INT          NOT NULL DEFAULT 0 COMMENT '当前连续学习天数',
   longest_streak INT          NOT NULL DEFAULT 0 COMMENT '历史最长连续天数',
+  checkin_days INT     NOT NULL DEFAULT 0 COMMENT '累计学习天数（首次打卡+1）',
   member_level   TINYINT      NOT NULL DEFAULT 0 COMMENT '会员级别：0=非会员，1=普通会员',
   invited_by     BIGINT       COMMENT '邀请人（上级）用户ID，首次登录写入，不可修改',
   invited_count  INT          NOT NULL DEFAULT 0 COMMENT '已邀请人数（推广数）',
