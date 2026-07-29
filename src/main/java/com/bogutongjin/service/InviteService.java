@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.core.io.ClassPathResource;
@@ -39,6 +40,9 @@ public class InviteService {
     private final UserMapper userMapper;
     private final InviteRecordMapper inviteRecordMapper;
     private final WechatMaProperties wechatMaProperties;
+
+    @org.springframework.beans.factory.annotation.Value("${invite.member-threshold:5}")
+    private int memberThreshold;
 
     private static final String SCENE_PREFIX = "i_";
     private static final String LANDING_PAGE = "pages/index/index";
@@ -255,8 +259,8 @@ public class InviteService {
     }
 
     /**
-     * 预写 invite_record（生成海报时调用）
-     * scene_code 唯一索引保证幂等
+     * 预写 invite_record（生成海报时调用）。
+     * 静默处理 DuplicateKeyException，防止并发竞态导致海报生成报错。
      */
     private void ensureInviteRecord(Long userId) {
         String sceneCode = SCENE_PREFIX + userId;
@@ -270,7 +274,11 @@ public class InviteService {
         record.setInviterId(userId);
         record.setSceneCode(sceneCode);
         record.setSourceType(0);  // 海报扫码
-        inviteRecordMapper.insert(record);
+        try {
+            inviteRecordMapper.insert(record);
+        } catch (DuplicateKeyException e) {
+            log.info("invite_record 已存在（并发写入），跳过: sceneCode={}", sceneCode);
+        }
     }
 
     /**
@@ -320,25 +328,41 @@ public class InviteService {
                         .setSql("invited_count = invited_count + 1")
                         .eq(User::getId, inviterUserId));
 
-        // 6. 推广数达到 5 → 自动升级为契约会员（原子更新，仅升级不降级）
+        // 6. 推广数达到阈值 → 自动升级为契约会员（原子更新，仅升级不降级）
         userMapper.update(null,
                 new LambdaUpdateWrapper<User>()
                         .set(User::getMemberLevel, 1)
                         .eq(User::getId, inviterUserId)
                         .eq(User::getMemberLevel, 0)
-                        .ge(User::getInvitedCount, 5));
-        log.info("用户 {} 推广数+1，若已达5则自动升级契约会员", inviterUserId);
+                        .ge(User::getInvitedCount, memberThreshold));
+        log.info("用户 {} 推广数+1，若已达{}则自动升级契约会员", inviterUserId, memberThreshold);
 
-        // 7. 回填 invite_record 的 invitee_id
+        // 7. 回填 invite_record（先尝试 UPDATE 预写记录，未命中则 INSERT，兼容卡片分享路径无预写记录的场景）
         String sceneCode = scene;
         if (!scene.startsWith(SCENE_PREFIX)) {
             sceneCode = SCENE_PREFIX + scene;
         }
-        inviteRecordMapper.update(null,
+        boolean inviteUpdated = inviteRecordMapper.update(null,
                 new LambdaUpdateWrapper<InviteRecord>()
                         .set(InviteRecord::getInviteeId, inviteeUserId)
                         .set(InviteRecord::getBoundAt, java.time.LocalDateTime.now())
-                        .eq(InviteRecord::getSceneCode, sceneCode));
+                        .eq(InviteRecord::getSceneCode, sceneCode)) > 0;
+
+        if (!inviteUpdated) {
+            // 卡片分享路径没有预写 invite_record，直接 INSERT
+            InviteRecord record = new InviteRecord();
+            record.setInviterId(inviterUserId);
+            record.setInviteeId(inviteeUserId);
+            record.setSceneCode(sceneCode);
+            record.setSourceType(1);  // 分享卡片
+            record.setBoundAt(java.time.LocalDateTime.now());
+            try {
+                inviteRecordMapper.insert(record);
+            } catch (DuplicateKeyException e) {
+                // 并发写入场景，已有其他请求先写入，不再重试
+                log.info("invite_record 已存在（并发写入），跳过 INSERT: sceneCode={}", sceneCode);
+            }
+        }
 
         log.info("邀请绑定成功: inviter={} -> invitee={}, scene={}", inviterUserId, inviteeUserId, sceneCode);
     }
@@ -349,6 +373,13 @@ public class InviteService {
     public long getInviteCount(Long userId) {
         User user = userMapper.selectById(userId);
         return user != null && user.getInvitedCount() != null ? user.getInvitedCount() : 0;
+    }
+
+    /**
+     * 获取契约会员升级阈值
+     */
+    public int getMemberThreshold() {
+        return memberThreshold;
     }
 
     /**
