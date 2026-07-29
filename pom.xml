@@ -103,6 +103,13 @@
             <version>4.7.0</version>
         </dependency>
 
+        <!-- WxJava 小程序 SDK（wxacode 生成、动态海报） -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

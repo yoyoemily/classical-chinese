@@ -60,6 +60,7 @@ public class UserService {
         result.put("title", level <= TITLES.length ? TITLES[level - 1] : "翰林");
         result.put("totalXP", user.getTotalXp());
         result.put("currentStreak", user.getCurrentStreak());
+        result.put("longestStreak", user.getLongestStreak() != null ? user.getLongestStreak() : 0);
         result.put("memberLevel", user.getMemberLevel() != null ? user.getMemberLevel() : 0);
         result.put("nickName", user.getNickName() != null ? user.getNickName() : "");
         result.put("avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "");

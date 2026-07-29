@@ -199,13 +199,16 @@ CREATE TABLE `user` (
   current_streak INT          NOT NULL DEFAULT 0 COMMENT '当前连续学习天数',
   longest_streak INT          NOT NULL DEFAULT 0 COMMENT '历史最长连续天数',
   member_level   TINYINT      NOT NULL DEFAULT 0 COMMENT '会员级别：0=非会员，1=普通会员',
+  invited_by     BIGINT       COMMENT '邀请人（上级）用户ID，首次登录写入，不可修改',
+  invited_count  INT          NOT NULL DEFAULT 0 COMMENT '已邀请人数（推广数）',
   last_active_at DATETIME     COMMENT '最后活跃时间（LoginInterceptor 每次请求更新）',
   deleted        TINYINT      NOT NULL DEFAULT 0 COMMENT '逻辑删除: 0=正常, 1=已删除',
   data_cleared_at DATETIME    COMMENT '最近一次清除学习数据的时间',
   created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_openid_deleted (open_id, deleted),
-  INDEX idx_union_id (union_id)
+  INDEX idx_union_id (union_id),
+  INDEX idx_invited_by (invited_by)
 ) ENGINE=InnoDB COMMENT='用户';
 
 -- ============================================
@@ -477,3 +480,19 @@ CREATE TABLE redeem_code (
   INDEX idx_redeem_mp_open_id (mp_open_id),
   INDEX idx_redeem_code (code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学习码兑换记录';
+
+-- ============================================
+-- 29. 邀请关系明细
+-- ============================================
+CREATE TABLE invite_record (
+  id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  inviter_id      BIGINT       NOT NULL COMMENT '邀请人用户ID',
+  invitee_id      BIGINT       COMMENT '被邀请人用户ID（登录后回填，可空）',
+  scene_code      VARCHAR(32)  NOT NULL COMMENT '小程序码 scene 值（i_{userId}）',
+  source_type     TINYINT      NOT NULL DEFAULT 0 COMMENT '0=海报扫码 1=分享卡片',
+  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  bound_at        DATETIME     COMMENT '绑定时间（登录回填时写入）',
+  INDEX idx_invite_record_inviter (inviter_id),
+  INDEX idx_invite_record_invitee (invitee_id),
+  UNIQUE INDEX idx_invite_record_scene (scene_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请关系明细';

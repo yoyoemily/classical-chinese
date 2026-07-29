@@ -19,6 +19,9 @@ public class User {
     private Integer longestStreak;
     private Integer memberLevel;
 
+    private Long invitedBy;
+    private Integer invitedCount;
+
     private Integer deleted;
 
     private LocalDateTime dataClearedAt;
