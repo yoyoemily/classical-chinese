@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 邀请服务 — 小程序码生成、海报合成、邀请关系绑定
@@ -69,10 +68,7 @@ public class InviteService {
     private static final int AVATAR_Y = 116;
     private static final String LINE_COLOR = "#2e5d3c";  // 与海报主色一致
 
-    // 内存缓存（1 小时 TTL）
-    private final Map<Long, byte[]> posterCache = new ConcurrentHashMap<>();
-    private final Map<Long, Long> cacheTimestamps = new ConcurrentHashMap<>();
-    private static final long CACHE_TTL_MS = 3600_000L;
+    // wxacode.getUnlimited 微信侧已有同 scene+page 缓存，合成廉价无需额外缓存
 
     /**
      * 生成用户专属海报（含小程序码）
@@ -80,15 +76,8 @@ public class InviteService {
      * @return PNG 字节数组
      */
     public byte[] generatePoster(Long userId) {
-        // 查缓存
-        Long ts = cacheTimestamps.get(userId);
-        if (ts != null && System.currentTimeMillis() - ts < CACHE_TTL_MS) {
-            byte[] cached = posterCache.get(userId);
-            if (cached != null) return cached;
-        }
-
         try {
-            // 0. 查用户（用于获取头像和昵称）
+            // 0. 查用户（每次实时查询，确保头像/昵称为最新）
             User user = userMapper.selectById(userId);
 
             // 1. 生成小程序码
@@ -99,10 +88,6 @@ public class InviteService {
 
             // 3. 预写 invite_record（幂等，同一 userId 只写一次）
             ensureInviteRecord(userId);
-
-            // 4. 缓存
-            posterCache.put(userId, posterBytes);
-            cacheTimestamps.put(userId, System.currentTimeMillis());
 
             return posterBytes;
         } catch (Exception e) {
@@ -327,15 +312,7 @@ public class InviteService {
                 new LambdaUpdateWrapper<User>()
                         .setSql("invited_count = invited_count + 1")
                         .eq(User::getId, inviterUserId));
-
-        // 6. 推广数达到阈值 → 自动升级为契约会员（原子更新，仅升级不降级）
-        userMapper.update(null,
-                new LambdaUpdateWrapper<User>()
-                        .set(User::getMemberLevel, 1)
-                        .eq(User::getId, inviterUserId)
-                        .eq(User::getMemberLevel, 0)
-                        .ge(User::getInvitedCount, memberThreshold));
-        log.info("用户 {} 推广数+1，若已达{}则自动升级契约会员", inviterUserId, memberThreshold);
+        log.info("用户 {} 推广数+1", inviterUserId);
 
         // 7. 回填 invite_record（先尝试 UPDATE 预写记录，未命中则 INSERT，兼容卡片分享路径无预写记录的场景）
         String sceneCode = scene;
