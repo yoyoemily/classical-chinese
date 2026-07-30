@@ -30,4 +30,4 @@ app:
   source-data-path: classpath:source.json
 
 invite:
-  member-threshold: 5   # 推广人数达到此阈值后自动升级为契约会员
+  member-threshold: 5   # 推广人数阈值（仅用于前端进度条展示，不再自动升级契约会员）
