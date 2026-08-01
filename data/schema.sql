@@ -500,3 +500,16 @@ CREATE TABLE invite_record (
   INDEX idx_invite_record_invitee (invitee_id),
   UNIQUE INDEX idx_invite_record_scene (scene_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请关系明细';
+
+-- ============================================
+-- 30. 系统公告
+-- ============================================
+CREATE TABLE announcement (
+  id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
+  title        VARCHAR(128) NOT NULL COMMENT '公告标题',
+  content      TEXT         NOT NULL COMMENT '公告正文',
+  publish_time DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+  created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_publish_time (publish_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统公告';
