@@ -285,9 +285,9 @@ CREATE TABLE user_answer_history (
 -- ============================================
 CREATE TABLE feedback (
   id            BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  user_id       BIGINT       COMMENT '用户ID（可为空，允许未登录反馈）',
+  user_id       BIGINT       COMMENT '用户ID',
   category      VARCHAR(24)  NOT NULL COMMENT '错误类别: sentence_text/translation/definition/source/annotation/article_info/other',
-  source        VARCHAR(24)  NOT NULL COMMENT '反馈来源: learning/word_summary/article_reader',
+  source        VARCHAR(24)  NOT NULL COMMENT '反馈来源: learning/word_summary/article_reader/classic_reader',
   description   VARCHAR(512) NOT NULL DEFAULT '' COMMENT '用户补充描述',
   sentence_id   VARCHAR(32)  COMMENT '关联的句子ID',
   word_id       VARCHAR(32)  COMMENT '关联的字词ID',
@@ -300,11 +300,14 @@ CREATE TABLE feedback (
   article_title VARCHAR(128) COMMENT '选篇标题（冗余可读）',
   class_name    VARCHAR(64)  COMMENT '经典名称（冗余可读）',
   resolved      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已处理',
+  reply         VARCHAR(1024) COMMENT '管理员回复内容',
+  read_at       DATETIME     COMMENT '用户阅读回复时间（NULL=未读）',
   created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_category (category),
   INDEX idx_source (source),
-  INDEX idx_resolved (resolved)
+  INDEX idx_resolved (resolved),
+  INDEX idx_user_id_read_at (user_id, resolved, read_at)
 ) ENGINE=InnoDB COMMENT='错误反馈';
 
 -- ============================================

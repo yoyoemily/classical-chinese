@@ -1,15 +1,12 @@
-package com.bogutongjin.entity;
+package com.bogutongjin.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/** 反馈详情（含完整 context 字段 + reply + readAt） */
 @Data
-@TableName("feedback")
-public class Feedback {
-    @TableId(type = IdType.AUTO)
+public class FeedbackDetailResponse {
     private Long id;
-    private Long userId;
     private String category;
     private String source;
     private String description;
@@ -25,12 +22,7 @@ public class Feedback {
     private String className;
     private Integer resolved;
     private String reply;
-
     private LocalDateTime readAt;
-
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
 }
