@@ -26,4 +26,9 @@ public class WordBookController {
         if (detail == null) return Result.fail(10003, "词书不存在");
         return Result.ok(detail);
     }
+
+    @GetMapping("/{id}/quick-words")
+    public Result<List<Map<String, Object>>> getQuickWords(@PathVariable String id) {
+        return Result.ok(wordBookService.getQuickWords(id));
+    }
 }

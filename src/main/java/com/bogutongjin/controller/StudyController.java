@@ -30,6 +30,16 @@ public class StudyController {
         return Result.ok(studyService.getTodayTask(userId, wordBookId, dailyNew, dailyReview));
     }
 
+    /** 获取今日学习摘要（轻量，仅数字，不加载题目数据。用于首页） */
+    @GetMapping("/today-summary")
+    public Result<Map<String, Object>> getTodaySummary(
+            @RequestParam String wordBookId,
+            @RequestParam(required = false) Integer dailyNew,
+            @RequestParam(required = false) Integer dailyReview,
+            @CurrentUser Long userId) {
+        return Result.ok(studyService.getTodaySummary(userId, wordBookId, dailyNew, dailyReview));
+    }
+
     /** 提交答题结果 */
     @PostMapping("/answer")
     public Result<Map<String, Object>> submitAnswer(

@@ -19,6 +19,7 @@ public class ContentService {
     private final WordBookMapper wordBookMapper;
     private final ArticleKeywordMapper articleKeywordMapper;
     private final ArticleSentenceMapper articleSentenceMapper;
+    private final ArticleMapper articleMapper;
 
     public Map<String, Object> getWordDetail(String entryId) {
         WordBookEntry entry = wordBookEntryMapper.selectById(entryId);
@@ -52,13 +53,22 @@ public class ContentService {
                 : articleSentenceMapper.selectBatchIds(sentenceIds).stream()
                         .collect(Collectors.toMap(ArticleSentence::getId, s -> s));
 
-        // 批量预加载 quizDistractor（按 quizItemId）
+        // 批量预加载 article（按 sentence 关联的 articleId）
+        Set<String> articleIds = sentenceMap.values().stream()
+                .map(ArticleSentence::getArticleId).filter(Objects::nonNull).collect(Collectors.toSet());
+        Map<String, Article> articleMap = articleIds.isEmpty() ? Map.of()
+                : articleMapper.selectBatchIds(articleIds).stream()
+                        .collect(Collectors.toMap(Article::getId, a -> a));
+
+        // 批量预加载 quizDistractor（按 quizItemId，只取 text）
         Set<String> quizItemIds = quizItems.stream().map(QuizItem::getId).collect(Collectors.toSet());
-        Map<String, List<QuizDistractor>> distractorMap = quizItemIds.isEmpty() ? Map.of()
-                : quizDistractorMapper.selectList(
-                        new LambdaQueryWrapper<QuizDistractor>().in(QuizDistractor::getQuizItemId, quizItemIds)
-                                .orderByAsc(QuizDistractor::getSortOrder))
-                        .stream().collect(Collectors.groupingBy(QuizDistractor::getQuizItemId));
+        Map<String, List<String>> distractorMap = new LinkedHashMap<>();
+        if (!quizItemIds.isEmpty()) {
+            quizDistractorMapper.selectList(
+                    new LambdaQueryWrapper<QuizDistractor>().in(QuizDistractor::getQuizItemId, quizItemIds)
+                            .orderByAsc(QuizDistractor::getSortOrder))
+                    .forEach(d -> distractorMap.computeIfAbsent(d.getQuizItemId(), k -> new ArrayList<>()).add(d.getText()));
+        }
 
         result.put("keyWordRefs", quizItems.stream().map(qi -> {
             Map<String, Object> rm = new LinkedHashMap<>();
@@ -90,8 +100,45 @@ public class ContentService {
             qm.put("difficulty", q.getDifficulty());
             qm.put("targetWord", q.getTargetWord());
             qm.put("kidRef", q.getKidRef());
-            List<QuizDistractor> distractors = distractorMap.getOrDefault(q.getId(), List.of());
-            qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
+            qm.put("distractors", distractorMap.getOrDefault(q.getId(), List.of()));
+
+            String sentenceText = q.getSentenceText();
+            String sentenceTranslation = q.getSentenceTranslation();
+            String sentenceSource = q.getSentenceSource();
+            String articleId = "";
+            String audioUrl = "";
+
+            if (q.getKidRef() != null && !q.getKidRef().isEmpty()) {
+                ArticleKeyword ak = akMap.get(q.getKidRef());
+                ArticleSentence as = ak != null ? sentenceMap.get(ak.getArticleSentenceId()) : null;
+                boolean needFallback = sentenceText == null || sentenceText.isEmpty()
+                        || sentenceTranslation == null || sentenceTranslation.isEmpty()
+                        || sentenceSource == null || sentenceSource.isEmpty();
+                if (needFallback) {
+                    if (as != null) {
+                        if (sentenceText == null || sentenceText.isEmpty()) sentenceText = as.getText();
+                        if (sentenceTranslation == null || sentenceTranslation.isEmpty()) sentenceTranslation = as.getTranslation();
+                        if (as.getArticleId() != null) {
+                            articleId = as.getArticleId();
+                            if (sentenceSource == null || sentenceSource.isEmpty()) {
+                                Article article = articleMap.get(as.getArticleId());
+                                if (article != null) sentenceSource = article.getTitle();
+                            }
+                        }
+                    }
+                } else {
+                    if (as != null) {
+                        if (as.getArticleId() != null) articleId = as.getArticleId();
+                        if (as.getAudioUrl() != null) audioUrl = as.getAudioUrl();
+                    }
+                }
+            }
+
+            qm.put("sentenceText", sentenceText != null ? sentenceText : "");
+            qm.put("sentenceTranslation", sentenceTranslation != null ? sentenceTranslation : "");
+            qm.put("sentenceSource", sentenceSource != null ? sentenceSource : "");
+            qm.put("articleId", articleId);
+            qm.put("audioUrl", audioUrl);
             return qm;
         }).collect(Collectors.toList()));
 
