@@ -162,4 +162,24 @@ public class WordBookService {
             return List.of();
         }
     }
+
+    /** 获取词书的快捷选字列表（按字数→拼音排序） */
+    public List<Map<String, Object>> getQuickWords(String bookId) {
+        List<WordBookEntry> entries = wordBookEntryMapper.selectList(
+                new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, bookId)
+                        .orderByAsc(WordBookEntry::getSortOrder));
+
+        return entries.stream()
+                .sorted(Comparator
+                        .comparingInt((WordBookEntry e) -> e.getCharacter().length())
+                        .thenComparing(e -> e.getPinyin() != null ? e.getPinyin() : e.getCharacter()))
+                .map(e -> {
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("entryId", e.getId());
+                    item.put("character", e.getCharacter());
+                    item.put("pinyin", e.getPinyin());
+                    return item;
+                })
+                .collect(Collectors.toList());
+    }
 }
