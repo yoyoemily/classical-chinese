@@ -171,16 +171,25 @@ public class ContentService {
                 new LambdaQueryWrapper<WordBookEntry>().in(WordBookEntry::getWordBookId, bookIds)
                         .orderByAsc(WordBookEntry::getSortOrder));
 
-        // 3. 按 wordType 分组，shi/xu 合并为 shixu
+        // 3. 按 wordType 分组，shi/xu 合并为 shixu，同一分组内按 character 去重
         Map<String, List<Map<String, Object>>> result = new LinkedHashMap<>();
         result.put("shixu", new ArrayList<>());
         result.put("tongjia", new ArrayList<>());
         result.put("huoyong", new ArrayList<>());
         result.put("gujinyi", new ArrayList<>());
 
+        // 用于去重：每个分组内已见过的 character
+        Map<String, java.util.Set<String>> seenChars = new LinkedHashMap<>();
+        for (String k : result.keySet()) {
+            seenChars.put(k, new java.util.HashSet<>());
+        }
+
         for (WordBookEntry entry : entries) {
             String key = resolveGroupKey(entry.getWordType());
             if (key == null) continue;
+
+            // 同一分组内同一 character 只保留首次出现
+            if (!seenChars.get(key).add(entry.getCharacter())) continue;
 
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("entryId", entry.getId());
