@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 登录拦截器 — 从 Authorization header 解析 JWT，注入 userId 到 request attribute
@@ -21,6 +22,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
     private final UserMapper userMapper;
+
+    /** 节流缓存：userId → 上次更新 last_active_at 的时间戳(ms)，避免每次请求都写库 */
+    private final ConcurrentHashMap<Long, Long> lastActiveUpdateCache = new ConcurrentHashMap<>();
+    private static final long UPDATE_THROTTLE_MS = 60 * 60 * 1000; // 1 小时内不重复更新
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -54,14 +59,19 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         request.setAttribute("userId", userId);
 
-        // 异步更新 last_active_at（不阻塞请求，避免并发时多条相同的 UPDATE）
-        CompletableFuture.runAsync(() -> {
-            try {
-                userMapper.updateLastActiveAt(userId);
-            } catch (Exception ignored) {
-                // 更新失败不影响请求
-            }
-        });
+        // 节流更新 last_active_at：1 小时内更新过则跳过，减少无效 DB 写入
+        long now = System.currentTimeMillis();
+        Long lastUpdate = lastActiveUpdateCache.get(userId);
+        if (lastUpdate == null || now - lastUpdate > UPDATE_THROTTLE_MS) {
+            lastActiveUpdateCache.put(userId, now);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    userMapper.updateLastActiveAt(userId);
+                } catch (Exception ignored) {
+                    // 更新失败不影响请求
+                }
+            });
+        }
 
         return true;
     }
