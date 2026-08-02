@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * 登录拦截器 — 从 Authorization header 解析 JWT，注入 userId 到 request attribute
  *
@@ -52,12 +54,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         request.setAttribute("userId", userId);
 
-        // 异步更新 last_active_at（不阻塞请求）
-        try {
-            userMapper.updateLastActiveAt(userId);
-        } catch (Exception ignored) {
-            // 更新失败不影响请求
-        }
+        // 异步更新 last_active_at（不阻塞请求，避免并发时多条相同的 UPDATE）
+        CompletableFuture.runAsync(() -> {
+            try {
+                userMapper.updateLastActiveAt(userId);
+            } catch (Exception ignored) {
+                // 更新失败不影响请求
+            }
+        });
 
         return true;
     }

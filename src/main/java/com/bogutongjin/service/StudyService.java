@@ -179,6 +179,82 @@ public class StudyService {
         return result;
     }
 
+    /** 今日学习摘要：仅统计数字 + 词进度（无题目数据），一次查询 user_word_progress。用于首页 */
+    public Map<String, Object> getTodaySummary(Long userId, String wordBookId, Integer dailyNew, Integer dailyReview) {
+        WordBook book = wordBookMapper.selectById(wordBookId);
+        if (book == null) throw new ResourceNotFoundException("词书不存在");
+
+        int newLimit = dailyNew != null ? dailyNew : 20;
+        int reviewLimit = dailyReview != null ? dailyReview : Integer.MAX_VALUE;
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayStart = today.atStartOfDay();
+
+        long todayNewCount = userWordProgressMapper.selectCount(
+                new LambdaQueryWrapper<UserWordProgress>()
+                        .eq(UserWordProgress::getUserId, userId)
+                        .ge(UserWordProgress::getCreatedAt, todayStart));
+        boolean dailyNewLimitReached = todayNewCount >= newLimit;
+
+        // 一次性查询 user_word_progress（按 wordBookId 过滤），不再查 word_book_entry 等大表
+        List<UserWordProgress> allProgress = userWordProgressMapper.selectList(
+                new LambdaQueryWrapper<UserWordProgress>()
+                        .eq(UserWordProgress::getUserId, userId)
+                        .eq(UserWordProgress::getWordBookId, wordBookId));
+
+        int reviewCount = 0;
+        int newCount = 0;
+        Set<String> inProgress = new HashSet<>();
+        Map<String, Object> wpMap = new LinkedHashMap<>();
+
+        for (UserWordProgress wp : allProgress) {
+            inProgress.add(wp.getEntryId());
+            boolean isDone = "done".equals(wp.getStage());
+            if (!isDone && wp.getNextReviewDate() != null && !wp.getNextReviewDate().isAfter(today)) {
+                reviewCount++;
+            }
+
+            Map<String, Object> wpItem = new LinkedHashMap<>();
+            wpItem.put("stage", wp.getStage());
+            wpItem.put("correctCount", wp.getCorrectCount());
+            wpItem.put("wrongCount", wp.getWrongCount());
+            wpItem.put("resetCount", wp.getResetCount());
+            wpMap.put(wp.getEntryId(), wpItem);
+        }
+
+        // 新词数 = 词书总词数 - 已在进度中的（剔除 done），再受限额钳制
+        int totalEntries = book.getTotalWords() != null ? book.getTotalWords() : 0;
+        int remainingNew = Math.max(0, totalEntries - (int) allProgress.stream()
+                .filter(p -> !"done".equals(p.getStage())).count()
+                - (int) allProgress.stream().filter(p -> "done".equals(p.getStage())).count());
+        // 简化：新词 = 词书总词数 - 已开始学习的词数（含 done），受剩余配额钳制
+        int startedCount = (int) allProgress.size();
+        newCount = Math.max(0, totalEntries - startedCount);
+
+        // 配额控制
+        if (reviewCount > reviewLimit) reviewCount = reviewLimit;
+        int remainingNewQuota = (int) Math.max(0, newLimit - todayNewCount);
+        if (remainingNewQuota == 0) {
+            newCount = 0;
+        } else if (newCount > remainingNewQuota) {
+            newCount = remainingNewQuota;
+        }
+
+        int wordsLearned = startedCount;
+        int wordsMastered = (int) allProgress.stream().filter(p -> "done".equals(p.getStage())).count();
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("newWords", newCount);
+        result.put("reviewWords", reviewCount);
+        result.put("totalWords", newCount + reviewCount);
+        result.put("estimatedMinutes", (newCount + reviewCount) * 2);
+        result.put("dailyNewLimitReached", dailyNewLimitReached);
+        result.put("wordsLearned", wordsLearned);
+        result.put("wordsMastered", wordsMastered);
+        result.put("wordProgresses", wpMap);
+        return result;
+    }
+
     /** 从批量预载的 Map 中组装单个 todayEntry（纯内存操作，零 SQL） */
     private Map<String, Object> assembleTodayEntry(WordBookEntry entry, UserWordProgress up, boolean isReview,
             Map<String, List<QuizItem>> qiByEntry, Map<String, List<String>> distByQi,
