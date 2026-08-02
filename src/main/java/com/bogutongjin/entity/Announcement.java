@@ -12,6 +12,9 @@ public class Announcement {
     private String title;
     private String content;
 
+    /** 是否置顶 */
+    private Boolean isPinned;
+
     /** 发布时间 */
     private LocalDateTime publishTime;
 

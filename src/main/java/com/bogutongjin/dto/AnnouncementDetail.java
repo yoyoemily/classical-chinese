@@ -2,13 +2,12 @@ package com.bogutongjin.dto;
 
 import lombok.Data;
 
-/** 公告列表项（不含正文，减少网络传输） */
+/** 公告详情（含正文） */
 @Data
-public class AnnouncementListItem {
+public class AnnouncementDetail {
     private Long id;
     private String title;
-    /** 是否置顶 */
-    private Boolean isPinned;
+    private String content;
     /** 发布时间，格式 yyyy-MM-dd HH:mm */
     private String publishTime;
 }
