@@ -6,6 +6,7 @@ import com.bogutongjin.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -198,6 +199,19 @@ public class ContentService {
             item.put("wordBookId", entry.getWordBookId());
             result.add(item);
         }
+
+        // 按字数（单字→多字）→拼音排序
+        Comparator<Map<String, Object>> cmp = Comparator
+                .<Map<String, Object>>comparingInt(m -> {
+                    String ch = (String) m.get("character");
+                    return ch != null ? ch.length() : 0;
+                })
+                .thenComparing(m -> {
+                    String py = (String) m.get("pinyin");
+                    return py != null ? py : "";
+                }, Collator.getInstance(Locale.CHINESE));
+        result.sort(cmp);
+
         return result;
     }
 
@@ -243,6 +257,21 @@ public class ContentService {
             item.put("character", entry.getCharacter());
             item.put("pinyin", entry.getPinyin());
             result.get(key).add(item);
+        }
+
+        // 4. 每组内按字数（单字→双字→多字）→拼音排序
+        Comparator<Map<String, Object>> cmp = Comparator
+                .<Map<String, Object>>comparingInt(m -> {
+                    String ch = (String) m.get("character");
+                    return ch != null ? ch.length() : 0;
+                })
+                .thenComparing(m -> {
+                    String py = (String) m.get("pinyin");
+                    return py != null ? py : "";
+                }, Collator.getInstance(Locale.CHINESE));
+
+        for (List<Map<String, Object>> list : result.values()) {
+            list.sort(cmp);
         }
 
         return result;
