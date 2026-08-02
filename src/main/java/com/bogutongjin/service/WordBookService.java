@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.text.Collator;
 import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +116,9 @@ public class WordBookService {
                 qm.put("difficulty", q.getDifficulty());
                 qm.put("targetWord", q.getTargetWord());
                 qm.put("kidRef", q.getKidRef());
+                qm.put("sentenceText", q.getSentenceText() != null ? q.getSentenceText() : "");
+                qm.put("sentenceTranslation", q.getSentenceTranslation() != null ? q.getSentenceTranslation() : "");
+                qm.put("sentenceSource", q.getSentenceSource() != null ? q.getSentenceSource() : "");
                 // 干扰项——从批量预加载的 Map 取
                 List<QuizDistractor> distractors = distractorMap.getOrDefault(q.getId(), List.of());
                 qm.put("distractors", distractors.stream().map(QuizDistractor::getText).collect(Collectors.toList()));
@@ -164,13 +168,13 @@ public class WordBookService {
         }
     }
 
-    /** 获取词书的快捷选字列表（按字数→中文字典序排序） */
+    /** 获取词书的快捷选字列表（按字数→拼音排序） */
     public List<Map<String, Object>> getQuickWords(String bookId) {
         List<WordBookEntry> entries = wordBookEntryMapper.selectList(
                 new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, bookId)
                         .orderByAsc(WordBookEntry::getSortOrder));
 
-        Collator collator = Collator.getInstance(java.util.Locale.CHINA);
+        Collator collator = Collator.getInstance(Locale.CHINA);
         return entries.stream()
                 .sorted(Comparator
                         .comparingInt((WordBookEntry e) -> e.getCharacter().length())
