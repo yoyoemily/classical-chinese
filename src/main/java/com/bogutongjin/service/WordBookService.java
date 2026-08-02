@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.text.Collator;
 import java.util.stream.Collectors;
 
 @Service
@@ -163,16 +164,17 @@ public class WordBookService {
         }
     }
 
-    /** 获取词书的快捷选字列表（按字数→拼音排序） */
+    /** 获取词书的快捷选字列表（按字数→中文字典序排序） */
     public List<Map<String, Object>> getQuickWords(String bookId) {
         List<WordBookEntry> entries = wordBookEntryMapper.selectList(
                 new LambdaQueryWrapper<WordBookEntry>().eq(WordBookEntry::getWordBookId, bookId)
                         .orderByAsc(WordBookEntry::getSortOrder));
 
+        Collator collator = Collator.getInstance(java.util.Locale.CHINA);
         return entries.stream()
                 .sorted(Comparator
                         .comparingInt((WordBookEntry e) -> e.getCharacter().length())
-                        .thenComparing(e -> e.getPinyin() != null ? e.getPinyin() : e.getCharacter()))
+                        .thenComparing(e -> e.getPinyin() != null ? e.getPinyin() : e.getCharacter(), collator))
                 .map(e -> {
                     Map<String, Object> item = new LinkedHashMap<>();
                     item.put("entryId", e.getId());
