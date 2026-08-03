@@ -613,6 +613,10 @@ public class DataImportService {
                 "VALUES (?, ?, ?, ?)";
 
         for (SourceArticle a : articles) {
+            if (a.getHasContent() == null) {
+                throw new RuntimeException(String.format(
+                        "文章缺少 hasContent 字段: id=%s, title=%s", a.getId(), a.getTitle()));
+            }
             int sortOrder;
             String artId = a.getId();
             if (artId.startsWith("art_shell_")) {
@@ -621,10 +625,9 @@ public class DataImportService {
             } else {
                 sortOrder = Integer.parseInt(artId.replace("art_", ""));
             }
-            int hasContent = artId.startsWith("art_shell_") ? 0 : 1;
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
                     nvl(a.getCategory(), "prose"), a.getTextbook(), a.getBackground(), a.getFullTextAudioUrl(),
-                    sortOrder, hasContent);
+                    sortOrder, a.getHasContent());
 
             if (CollUtil.isEmpty(a.getSentences())) continue;
 

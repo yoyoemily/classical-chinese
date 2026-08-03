@@ -121,14 +121,17 @@ public class InviteService {
      * 将小程序码合成到海报模板上
      */
     private byte[] compositePoster(byte[] wxacodeBytes, User user) throws Exception {
-        // 加载模板图
+        // 加载模板图（转为 ARGB 全彩画布，避免索引色调色板导致头像/二维码偏色模糊）
         ClassPathResource templateResource = new ClassPathResource("static/assets/share-poster-template.png");
-        BufferedImage poster;
+        BufferedImage poster = new BufferedImage(POSTER_WIDTH, POSTER_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         try (InputStream is = templateResource.getInputStream()) {
-            poster = ImageIO.read(is);
-        }
-        if (poster == null) {
-            throw new IllegalStateException("海报模板文件无效：static/assets/share-poster-template.png");
+            BufferedImage raw = ImageIO.read(is);
+            if (raw == null) {
+                throw new IllegalStateException("海报模板文件无效：static/assets/share-poster-template.png");
+            }
+            Graphics2D initG = poster.createGraphics();
+            initG.drawImage(raw, 0, 0, null);
+            initG.dispose();
         }
 
         Graphics2D posterG2d = poster.createGraphics();
