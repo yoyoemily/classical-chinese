@@ -3,6 +3,7 @@ package com.bogutongjin.service;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bogutongjin.entity.User;
 import com.bogutongjin.mapper.UserMapper;
 import com.bogutongjin.util.JwtUtil;
@@ -129,7 +130,7 @@ public class AuthService {
      */
     private User findOrCreateByOpenId(String openId) {
         User user = userMapper.selectOne(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
+                new LambdaQueryWrapper<User>()
                         .eq(User::getOpenId, openId)
                         .eq(User::getDeleted, 0));
         if (user != null) return user;
