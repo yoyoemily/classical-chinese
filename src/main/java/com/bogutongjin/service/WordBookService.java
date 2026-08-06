@@ -17,7 +17,6 @@ public class WordBookService {
 
     private final WordBookMapper wordBookMapper;
     private final WordBookEntryMapper wordBookEntryMapper;
-    private final WordEntryKeywordRefMapper wordEntryKeywordRefMapper;
     private final QuizItemMapper quizItemMapper;
     private final QuizDistractorMapper quizDistractorMapper;
     private final WordUsageMapper wordUsageMapper;
@@ -53,21 +52,14 @@ public class WordBookService {
         // 批量预加载所有关联数据
         Set<String> entryIds = entries.stream().map(WordBookEntry::getId).collect(Collectors.toSet());
 
-        // 1. 关键词引用
-        Map<String, List<WordEntryKeywordRef>> keyWordRefMap = entryIds.isEmpty() ? Map.of()
-                : wordEntryKeywordRefMapper.selectList(
-                        new LambdaQueryWrapper<WordEntryKeywordRef>().in(WordEntryKeywordRef::getEntryId, entryIds)
-                                .orderByAsc(WordEntryKeywordRef::getSortOrder))
-                        .stream().collect(Collectors.groupingBy(WordEntryKeywordRef::getEntryId));
-
-        // 2. 答题项
+        // 1. 答题项
         Map<String, List<QuizItem>> quizItemMap = entryIds.isEmpty() ? Map.of()
                 : quizItemMapper.selectList(
                         new LambdaQueryWrapper<QuizItem>().in(QuizItem::getEntryId, entryIds)
                                 .orderByAsc(QuizItem::getSortOrder))
                         .stream().collect(Collectors.groupingBy(QuizItem::getEntryId));
 
-        // 3. 干扰项（按所有 quizItemId 批量加载）
+        // 2. 干扰项（按所有 quizItemId 批量加载）
         Set<String> allQuizItemIds = quizItemMap.values().stream()
                 .flatMap(List::stream).map(QuizItem::getId).collect(Collectors.toSet());
         Map<String, List<QuizDistractor>> distractorMap = allQuizItemIds.isEmpty() ? Map.of()
@@ -99,13 +91,8 @@ public class WordBookService {
             em.put("similarHomophones", parseJsonArray(e.getSimilarHomophones()));
             em.put("similarShapes", parseJsonArray(e.getSimilarShapes()));
 
-            // 关键词引用（从 Map 取）
-            List<WordEntryKeywordRef> keyWordRefs = keyWordRefMap.getOrDefault(e.getId(), List.of());
-            em.put("keyWordRefs", keyWordRefs.stream().map(r -> {
-                Map<String, Object> rm = new LinkedHashMap<>();
-                rm.put("kid", r.getKid());
-                return rm;
-            }).collect(Collectors.toList()));
+            // 关键词引用（从 quizItem 驱动，与 ContentService 对齐）
+            em.put("keyWordRefs", List.of());
 
             // Quiz 题目（含干扰项，均从 Map 取）
             List<QuizItem> quizItems = quizItemMap.getOrDefault(e.getId(), List.of());

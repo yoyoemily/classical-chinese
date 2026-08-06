@@ -55,15 +55,8 @@ public class SourceData {
         private String wordType;
         private List<String> similarHomophones;
         private List<String> similarShapes;
-        private List<SourceKeyWordRef> keyWordRefs;
         private List<SourceQuizItem> quizItems;
         private List<SourceWordUsage> usages;
-    }
-
-    // ---- 字词-关键词引用 ----
-    @Data
-    public static class SourceKeyWordRef {
-        private String kid;
     }
 
     // ---- 考题 ----
