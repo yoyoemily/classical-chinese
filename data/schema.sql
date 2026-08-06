@@ -52,19 +52,7 @@ CREATE TABLE word_book_entry (
 ) ENGINE=InnoDB COMMENT='字词条目';
 
 -- ============================================
--- 3. 字词条目-关键词引用
--- ============================================
-CREATE TABLE word_entry_keyword_ref (
-  id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
-  entry_id    VARCHAR(32)  NOT NULL COMMENT '字词条目ID',
-  kid         VARCHAR(64)  NOT NULL COMMENT '引用的 article_keyword.kid',
-  sort_order  INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
-  INDEX idx_entry_id (entry_id),
-  INDEX idx_kid (kid)
-) ENGINE=InnoDB COMMENT='字词条目-关键词引用';
-
--- ============================================
--- 4. 考题
+-- 3. 考题
 -- ============================================
 CREATE TABLE quiz_item (
   id                  VARCHAR(32)  NOT NULL PRIMARY KEY COMMENT '考题ID',
@@ -150,7 +138,7 @@ CREATE TABLE article_keyword (
   word_text            VARCHAR(32)  NOT NULL COMMENT '生词文本',
   definition           VARCHAR(256) NOT NULL COMMENT '释义',
   mastery_level        VARCHAR(16)  COMMENT '掌握程度，可为空',
-  kid                  VARCHAR(64)  UNIQUE COMMENT '全局唯一关键词标识，供 word_entry_keyword_ref 和 quiz_item 引用',
+  kid                  VARCHAR(64)  UNIQUE COMMENT '全局唯一关键词标识，供 quiz_item 引用',
   match_word           VARCHAR(128) COMMENT '消歧用：多字上下文片段，用于定位句中具体出现位置',
   word_type            VARCHAR(16)  COMMENT '生词类型：shi/xu/tongjia/gujinyi/huoyong',
   sort_order           TINYINT      NOT NULL DEFAULT 0,

@@ -55,15 +55,8 @@ public class SourceData {
         private String wordType;
         private List<String> similarHomophones;
         private List<String> similarShapes;
-        private List<SourceKeyWordRef> keyWordRefs;
         private List<SourceQuizItem> quizItems;
         private List<SourceWordUsage> usages;
-    }
-
-    // ---- 字词-关键词引用 ----
-    @Data
-    public static class SourceKeyWordRef {
-        private String kid;
     }
 
     // ---- 考题 ----
@@ -104,7 +97,6 @@ public class SourceData {
         /** 是否可阅读：1=正常文章，0=壳文章（不可见）。导入时必填，不设则报错。 */
         private Integer hasContent;
         private List<SourceArticleSentence> sentences;
-        private List<String> relatedWordIds;
     }
 
     @Data

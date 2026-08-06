@@ -130,7 +130,7 @@ public class DataImportService {
     }
 
     /**
-     * 清空词书数据（6 张表）：word_book, word_book_entry, word_entry_keyword_ref, quiz_item, quiz_distractor, word_usage
+     * 清空词书数据（5 张表）：word_book, word_book_entry, quiz_item, quiz_distractor, word_usage
      */
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> clearWordBookData() {
@@ -138,7 +138,6 @@ public class DataImportService {
         String[] tables = {
                 "quiz_distractor",
                 "quiz_item",
-                "word_entry_keyword_ref",
                 "word_usage",
                 "word_book_entry",
                 "word_book"
@@ -443,8 +442,6 @@ public class DataImportService {
                 "WHERE qi.entry_id IN (SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
         jdbc.update("DELETE FROM quiz_item WHERE entry_id IN " +
                 "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
-        jdbc.update("DELETE FROM word_entry_keyword_ref WHERE entry_id IN " +
-                "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
         jdbc.update("DELETE FROM word_usage WHERE entry_id IN " +
                 "(SELECT id FROM word_book_entry WHERE word_book_id = ?)", wordBookId);
         jdbc.update("DELETE FROM word_book_entry WHERE word_book_id = ?", wordBookId);
@@ -541,9 +538,6 @@ public class DataImportService {
                 nvl(entry.getMnemonic()), nvl(entry.getWordType()),
                 similarHomophonesJson, similarShapesJson, sortOrder);
 
-        // 插入关键词引用
-        insertKeyWordRefs(entry.getId(), entry.getKeyWordRefs());
-
         // 插入考题
         if (CollUtil.isNotEmpty(entry.getQuizItems())) {
             for (int i = 0; i < entry.getQuizItems().size(); i++) {
@@ -553,16 +547,6 @@ public class DataImportService {
 
         // 插入用法（只读型词书的释义/例句）
         insertWordUsages(entry.getId(), entry.getUsages());
-    }
-
-    private void insertKeyWordRefs(String entryId, List<SourceKeyWordRef> refs) {
-        if (CollUtil.isEmpty(refs)) return;
-        String sql = "INSERT INTO word_entry_keyword_ref (entry_id, kid, sort_order) VALUES (?, ?, ?)";
-        List<Object[]> batch = new ArrayList<>();
-        for (int i = 0; i < refs.size(); i++) {
-            batch.add(new Object[]{entryId, refs.get(i).getKid(), i});
-        }
-        jdbc.batchUpdate(sql, batch);
     }
 
     private void insertQuizItem(String entryId, SourceQuizItem qi, int sortOrder) {
