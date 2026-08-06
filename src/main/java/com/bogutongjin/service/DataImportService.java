@@ -601,14 +601,9 @@ public class DataImportService {
                 throw new RuntimeException(String.format(
                         "文章缺少 hasContent 字段: id=%s, title=%s", a.getId(), a.getTitle()));
             }
-            int sortOrder;
-            String artId = a.getId();
-            if (artId.startsWith("art_shell_")) {
-                // 壳文章 offset 10000 起
-                sortOrder = 10000 + Integer.parseInt(artId.replace("art_shell_", ""));
-            } else {
-                sortOrder = Integer.parseInt(artId.replace("art_", ""));
-            }
+            int sortOrder = a.getHasContent() == 1
+                    ? Integer.parseInt(a.getId().replaceFirst("^art_(shell_)?", ""))
+                    : 0;
             jdbc.update(articleSql, a.getId(), a.getTitle(), nvl(a.getAuthor()), nvl(a.getDynasty()),
                     nvl(a.getCategory(), "prose"), a.getTextbook(), a.getBackground(), a.getFullTextAudioUrl(),
                     sortOrder, a.getHasContent());
