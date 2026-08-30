@@ -310,6 +310,7 @@ public class StudyService {
             qm.put("sentenceText", sentenceText != null ? sentenceText : "");
             qm.put("sentenceTranslation", sentenceTranslation != null ? sentenceTranslation : "");
             qm.put("sentenceSource", sentenceSource != null ? sentenceSource : "");
+            qm.put("ttsText", q.getTtsText() != null ? q.getTtsText() : "");
             qm.put("articleId", articleId);
             return qm;
         }).collect(Collectors.toList()));

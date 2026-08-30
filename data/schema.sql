@@ -64,6 +64,7 @@ CREATE TABLE quiz_item (
   sentence_text       VARCHAR(512) COMMENT '挖空句原文',
   sentence_translation VARCHAR(512) COMMENT '挖空句译文',
   sentence_source     VARCHAR(64)  COMMENT '挖空句出处（篇名）',
+  tts_text            VARCHAR(512) COMMENT 'TTS发音替换文本（同音字替换多音字，空则用原句发音）',
   sort_order          INT          NOT NULL DEFAULT 0 COMMENT '排序序号',
   INDEX idx_entry_id (entry_id),
   INDEX idx_kid_ref (kid_ref),
