@@ -22,6 +22,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -80,6 +81,12 @@ public class InviteService {
             // 0. 查用户（每次实时查询，确保头像/昵称为最新）
             User user = userMapper.selectById(userId);
 
+            // 头像或昵称未设置 → 返回默认海报（不生成小程序码、不合成、不预写 invite_record）
+            if (!hasProfile(user)) {
+                log.info("用户 {} 未设置头像或昵称，返回默认海报 share-poster.png", userId);
+                return loadDefaultPoster();
+            }
+
             // 1. 生成小程序码
             byte[] wxacodeBytes = generateWxacode(userId);
 
@@ -93,6 +100,25 @@ public class InviteService {
         } catch (Exception e) {
             log.error("生成海报失败: userId={}", userId, e);
             throw new RuntimeException("海报生成失败，请重试");
+        }
+    }
+
+    /**
+     * 头像和昵称都已设置才合成个性化海报，否则用默认海报
+     */
+    private boolean hasProfile(User user) {
+        return user != null
+                && user.getAvatarUrl() != null && !user.getAvatarUrl().isBlank()
+                && user.getNickName() != null && !user.getNickName().isBlank();
+    }
+
+    /**
+     * 读取 classpath 下的默认海报（含通用小程序码，无 scene）
+     */
+    private byte[] loadDefaultPoster() throws IOException {
+        ClassPathResource resource = new ClassPathResource("static/assets/share-poster.png");
+        try (InputStream is = resource.getInputStream()) {
+            return is.readAllBytes();
         }
     }
 
