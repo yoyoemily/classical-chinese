@@ -17,5 +17,6 @@ public class QuizItem implements Serializable {
     private String sentenceText;
     private String sentenceTranslation;
     private String sentenceSource;
+    private String ttsText;
     private Integer sortOrder;
 }
